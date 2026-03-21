@@ -1,0 +1,16 @@
+[Bb]in/
+[Oo]bj/
+appsettings.json
+
+*.user
+*.userosscache
+*.sln.docstates
+
+.idea/
+*.sln.DotSettings.user
+
+sqlite.db
+sqlite.db-shm
+sqlite.db-wal
+
+.dockerignore
