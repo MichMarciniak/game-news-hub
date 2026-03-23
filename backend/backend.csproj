@@ -22,9 +22,12 @@
     </ItemGroup>
 
     <ItemGroup>
-      <Folder Include="Entities\" />
+      <Folder Include="Common\" />
       <Folder Include="Mappings\" />
-      <Folder Include="Services\" />
+      <Folder Include="Migrations\" />
+      <Folder Include="Services\Background\" />
+      <Folder Include="Services\Implementations\" />
+      <Folder Include="Services\Interfaces\" />
     </ItemGroup>
 
 </Project>
