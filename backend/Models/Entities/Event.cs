@@ -7,7 +7,6 @@ public class Event
     public int Id { get; set; } //id z igdb
     public string Name { get; set; }
     
-    [Column(TypeName = "text")]
     public string Description { get; set; }
                                             
     public DateTimeOffset StartTime { get; set; }
