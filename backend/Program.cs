@@ -1,6 +1,7 @@
 using System.Text;
 using backend.Configuration;
 using backend.Data;
+using backend.Extensions;
 using backend.Models.Entities;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Identity;
@@ -12,6 +13,8 @@ using Scalar.AspNetCore;
 var builder = WebApplication.CreateBuilder(args);
 
 var connectionString = builder.Configuration.GetConnectionString("DefaultConnection");
+
+//DATABSE + IDENTITY
 builder.Services.AddDbContext<AppDbContext>(options =>
     options.UseSqlite(connectionString)
 );
@@ -21,52 +24,24 @@ builder.Services.AddIdentity<AppUser, IdentityRole<int>>()
 
 builder.Services.Configure<IdentityOptions>(IdentityConfig.ConfigIdentity);
 
-// później config jwt
-var jwtSettings = builder.Configuration.GetSection("Jwt");
-var key = Encoding.ASCII.GetBytes(jwtSettings["Key"]!);
 
-builder.Services.AddAuthentication(options =>
-{
-    options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
-    options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
-})
-.AddJwtBearer(options =>
-{
-    options.TokenValidationParameters = new TokenValidationParameters
-    {
-        ValidateIssuerSigningKey = true,
-        IssuerSigningKey = new SymmetricSecurityKey(key),
-        ValidateIssuer = false,
-        ValidateAudience = false,
-        ClockSkew = TimeSpan.Zero
-    };
-});
+// CONFIG + SERVICES
+builder.Services.Configure<ApiConfig>(
+    builder.Configuration.GetSection("Api"));
+
+builder.Services.AddIgdbServices(builder.Configuration);
+
+// AUTH + OPENAPI
+builder.Services.AddJwtAuthentication(builder.Configuration);
+builder.Services.AddAuthDocumentation();
 
 
 builder.Services.AddControllers();
-builder.Services.AddOpenApi(options =>
-{
-    options.AddDocumentTransformer((document, context, cancelToken) =>
-    {
-        document.Components ??= new OpenApiComponents();
-        document.Components.SecuritySchemes ??= new Dictionary<string, IOpenApiSecurityScheme>();
-        
-        var scheme = new OpenApiSecurityScheme
-        {
-            Type = SecuritySchemeType.Http,
-            Scheme = "bearer",
-            BearerFormat = "JWT",
-            In = ParameterLocation.Header,
-        };
 
-        document.Components.SecuritySchemes.Add("Bearer", scheme);
-
-        return Task.CompletedTask;
-    });
-});
 
 var app = builder.Build();
 
+// DB MIGRATION
 using (var scope = app.Services.CreateScope())
 {
     var db = scope.ServiceProvider.GetRequiredService<AppDbContext>();

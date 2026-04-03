@@ -25,7 +25,6 @@
       <Folder Include="Common\" />
       <Folder Include="Mappings\" />
       <Folder Include="Migrations\" />
-      <Folder Include="Services\Background\" />
       <Folder Include="Services\Implementations\" />
       <Folder Include="Services\Interfaces\" />
     </ItemGroup>
