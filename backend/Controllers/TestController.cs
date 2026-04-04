@@ -11,10 +11,12 @@ public class TestController : ControllerBase
 {
 
     private readonly IgdbAuthService _authService;
+    private readonly IgdbClient _client;
 
-    public TestController(IgdbAuthService service)
+    public TestController(IgdbAuthService service, IgdbClient client)
     {
         _authService = service;
+        _client = client;
     }
     
     [Authorize]
@@ -34,6 +36,15 @@ public class TestController : ControllerBase
             message = "This is just for testing. Delete it later",
             token = token,
         });
+    }
+
+    [Authorize]
+    [HttpGet("games")]
+    public async Task<IActionResult> GetGames()
+    {
+        var games = await _client.GetGamesFromIgdb();
+
+        return Ok(games);
     }
     
 }

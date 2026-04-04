@@ -3,6 +3,7 @@ using backend.Configuration;
 using backend.Data;
 using backend.Extensions;
 using backend.Models.Entities;
+using backend.Services.Background;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;

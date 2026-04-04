@@ -22,47 +22,45 @@ public class AuthController : ControllerBase
     }
 
     [HttpPost("register")]
-    public async Task<IActionResult> Register(AuthDto.Register model)
+    public async Task<IActionResult> Register(LoginRequest request)
     {
-        var user = new AppUser { UserName = model.Username };
-        var result = await _userManager.CreateAsync(user, model.Password);
+        var user = new AppUser { UserName = request.Username };
+        var result = await _userManager.CreateAsync(user, request.Password);
 
         if (result.Succeeded) return Ok("Register successful");
         return BadRequest(result.Errors);
     }
 
     [HttpPost("login")]
-    public async Task<IActionResult> Login(AuthDto.Login model)
+    public async Task<IActionResult> Login(LoginRequest request)
     {
-        var user = await _userManager.FindByNameAsync(model.Username);
-        if (user != null && await _userManager.CheckPasswordAsync(user, model.Password))
+        var user = await _userManager.FindByNameAsync(request.Username);
+        if (user == null || !await _userManager.CheckPasswordAsync(user, request.Password)) return Unauthorized();
+        
+        var tokenHandler = new JwtSecurityTokenHandler();
+        var key = Encoding.ASCII.GetBytes(_configuration["Jwt:Key"]!);
+
+        var tokenDescriptor = new SecurityTokenDescriptor
         {
-            var tokenHandler = new JwtSecurityTokenHandler();
-            var key = Encoding.ASCII.GetBytes(_configuration["Jwt:Key"]!);
-
-            var tokenDescriptor = new SecurityTokenDescriptor
+            Subject = new ClaimsIdentity(new[]
             {
-                Subject = new ClaimsIdentity(new[]
-                {
-                    new Claim(ClaimTypes.Name, user.UserName!),
-                    new Claim(ClaimTypes.NameIdentifier, user.Id.ToString())
-                }),
-                Expires = DateTime.UtcNow.AddDays(7),
-                SigningCredentials = new SigningCredentials(
-                    new SymmetricSecurityKey(key),
-                    SecurityAlgorithms.HmacSha256Signature
-                )
-            };
+                new Claim(ClaimTypes.Name, user.UserName!),
+                new Claim(ClaimTypes.NameIdentifier, user.Id.ToString())
+            }),
+            Expires = DateTime.UtcNow.AddDays(7),
+            SigningCredentials = new SigningCredentials(
+                new SymmetricSecurityKey(key),
+                SecurityAlgorithms.HmacSha256Signature
+            )
+        };
 
-            var token = tokenHandler.CreateToken(tokenDescriptor);
+        var token = tokenHandler.CreateToken(tokenDescriptor);
             
-            return Ok(new
-            {
-                Token = tokenHandler.WriteToken(token)
-            });
-        }
+        return Ok(new
+        {
+            Token = tokenHandler.WriteToken(token)
+        });
 
-        return Unauthorized();
     }
 
 

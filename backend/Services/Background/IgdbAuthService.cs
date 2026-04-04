@@ -48,12 +48,15 @@ public class IgdbAuthService
             response.EnsureSuccessStatusCode();
             var data = await response.Content.ReadFromJsonAsync<TwitchToken>();
 
-            if (data is null) throw new Exception("Failed to decode Twitch Token");
+            if (data is null || string.IsNullOrEmpty(data.AccessToken))
+                throw new Exception("Failed to get Twitch Access Token");
 
             _cachedToken = data.AccessToken;
             _expiresAt = DateTime.UtcNow.AddSeconds(data.ExpiresIn - 60);
             
             _logger.LogInformation("Refreshed Twitch access token.");
+            _logger.LogInformation(data.AccessToken);
+            _logger.LogInformation(_cachedToken);
 
             return _cachedToken;
         }

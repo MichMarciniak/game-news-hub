@@ -60,7 +60,7 @@ public static class ServiceCollectionExtensions
 
     public static IServiceCollection AddIgdbServices(this IServiceCollection services, IConfiguration config)
     {
-        var igdbOptions = config.GetSection("IgdbSettings").Get<ApiConfig>();
+        var igdbOptions = config.GetSection("Api").Get<ApiConfig>();
 
         services.AddHttpClient<IgdbClient>(client =>
         {

@@ -2,15 +2,16 @@ using System.ComponentModel.DataAnnotations;
 
 namespace backend.Models.DTOs;
 
-public static class AuthDto
+public record RegisterRequest
 {
-    public record Register(
-        [Required] [MaxLength(100)] string Username,
-        [Required] string Password
-    );
+    [Required] [MaxLength(100)] public string Username { get; set; }
 
-    public record Login(
-        [Required] [MaxLength(100)] string Username,
-        [Required] string Password
-    );
-}
+    [Required] public string Password { get; set; }
+};
+
+public record LoginRequest
+{
+    [Required] [MaxLength(100)] public string Username { get; set; }
+
+    [Required] public string Password { get; set; }
+};
