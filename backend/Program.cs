@@ -4,6 +4,7 @@ using backend.Data;
 using backend.Extensions;
 using backend.Models.Entities;
 using backend.Services.Background;
+using backend.Services.Implementations;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
@@ -31,6 +32,7 @@ builder.Services.Configure<ApiConfig>(
     builder.Configuration.GetSection("Api"));
 
 builder.Services.AddIgdbServices(builder.Configuration);
+builder.Services.AddDomainServices();
 
 // AUTH + OPENAPI
 builder.Services.AddJwtAuthentication(builder.Configuration);

@@ -1,4 +1,6 @@
 using backend.Services.Background;
+using backend.Services.Implementations;
+using backend.Services.Interfaces;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Mvc;
@@ -12,11 +14,13 @@ public class TestController : ControllerBase
 
     private readonly IgdbAuthService _authService;
     private readonly IgdbClient _client;
+    private readonly IGameSyncService _gameSyncService;
 
-    public TestController(IgdbAuthService service, IgdbClient client)
+    public TestController(IgdbAuthService service, IgdbClient client, IGameSyncService gameSyncService)
     {
         _authService = service;
         _client = client;
+        _gameSyncService = gameSyncService;
     }
     
     [Authorize]
@@ -45,6 +49,15 @@ public class TestController : ControllerBase
         var games = await _client.GetGamesFromIgdb();
 
         return Ok(games);
+    }
+
+    [Authorize]
+    [HttpGet("sync")]
+    public async Task<IActionResult> SyncGames()
+    {
+        await _gameSyncService.SyncUpcomingGamesAsync(10);
+
+        return Ok();
     }
     
 }

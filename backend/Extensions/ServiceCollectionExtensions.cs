@@ -1,6 +1,8 @@
 using System.Text;
 using backend.Configuration;
 using backend.Services.Background;
+using backend.Services.Implementations;
+using backend.Services.Interfaces;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi;
@@ -69,6 +71,17 @@ public static class ServiceCollectionExtensions
         });
 
         services.AddSingleton<IgdbAuthService>();
+
+        return services;
+    }
+
+    public static IServiceCollection AddDomainServices(this IServiceCollection services)
+    {
+        services.AddScoped<IGenreService, GenreService>();
+        //services.AddScoped<IPlatformService, PlatformService>();
+        //services.AddScoped<IGameService, GameService>();
+        
+        services.AddScoped<IGameSyncService, GameSyncService>();
 
         return services;
     }
