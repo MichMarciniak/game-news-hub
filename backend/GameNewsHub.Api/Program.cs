@@ -1,11 +1,12 @@
+using System.Security.Claims;
 using System.Text;
 using backend.Configuration;
 using backend.Data;
 using backend.Extensions;
 using backend.Models.Entities;
-using backend.Services.Background;
-using backend.Services.Implementations;
+using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
@@ -34,12 +35,28 @@ builder.Services.Configure<ApiConfig>(
 builder.Services.AddIgdbServices(builder.Configuration);
 builder.Services.AddDomainServices();
 
-// AUTH + OPENAPI
-builder.Services.AddJwtAuthentication(builder.Configuration);
+// OPENAPI
 builder.Services.AddAuthDocumentation();
 
-
 builder.Services.AddControllers();
+
+// AUTHENTICATION - Dev mode or normal
+if (builder.Environment.IsDevelopment())
+{
+    builder.Services.AddAuthentication("DevScheme")
+        .AddScheme<AuthenticationSchemeOptions, AuthDevHandler>("DevScheme", null);
+    
+    builder.Services.AddAuthorization(options =>
+    {
+        options.DefaultPolicy = new AuthorizationPolicyBuilder("DevScheme")
+            .RequireAuthenticatedUser()
+            .Build();
+    });
+}
+else
+{
+    builder.Services.AddJwtAuthentication(builder.Configuration);
+}
 
 
 var app = builder.Build();
@@ -62,6 +79,7 @@ if (app.Environment.IsDevelopment())
 
 // app.UseHttpsRedirection();
 app.UseAuthentication();
+
 app.UseAuthorization();
 
 app.MapControllers();

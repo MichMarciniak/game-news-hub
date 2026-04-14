@@ -4,7 +4,7 @@ namespace backend.Models.Entities;
 
 public class AppUser : IdentityUser<int>
 {
-    public DateTimeOffset CreatedAt { get; set; } = DateTimeOffset.UtcNow;
+    public DateTimeOffset CreatedAt { get; set; }
 
     public ICollection<UserInterest> Interests { get; set; }
     public ICollection<Platform> Platforms { get; set; }

@@ -1,8 +1,6 @@
-using backend.Services.Background;
-using backend.Services.Implementations;
 using backend.Services.Interfaces;
+using GameNewsHub.Api.Services.Background;
 using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Mvc;
 
 namespace backend.Controllers;

@@ -1,10 +1,9 @@
 using backend.Data;
-using backend.Models.DTOs;
 using backend.Models.Entities;
 using backend.Services.Interfaces;
 using Microsoft.EntityFrameworkCore;
 
-namespace backend.Services.Implementations;
+namespace GameNewsHub.Api.Services;
 
 public class GenreService : IGenreService
 {

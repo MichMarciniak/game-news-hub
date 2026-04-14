@@ -2,7 +2,7 @@ using backend.Configuration;
 using backend.Models.DTOs;
 using Microsoft.Extensions.Options;
 
-namespace backend.Services.Background;
+namespace GameNewsHub.Api.Services.Background;
 
 public class IgdbAuthService
 {
