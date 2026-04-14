@@ -1,3 +1,4 @@
+using System.Dynamic;
 using backend.Data;
 using backend.Models.Entities;
 using backend.Services.Interfaces;
@@ -16,7 +17,12 @@ public class GenreService : IGenreService
     
     public async Task<Genre> GetOrCreateAsync(int igdbId, string name)
     {
-        var genre = await _context.Genres.FirstOrDefaultAsync(g => g.Id == igdbId);
+        if (igdbId < 0)
+            throw new ArgumentException("Igdb Id cannot be < 0", nameof(name));
+        if (string.IsNullOrWhiteSpace(name))
+            throw new ArgumentException("Genre name cannot be empty", nameof(name));
+        
+        var genre = await _context.Genres.FirstOrDefaultAsync(g => g.IgdbId == igdbId);
 
         if (genre != null) return genre;
         
