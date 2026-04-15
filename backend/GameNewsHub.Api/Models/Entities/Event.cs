@@ -14,7 +14,8 @@ public class Event
 
     public int IgdbId { get; set; }
 
-    public ICollection<Game> Games { get; set; }
+    public ICollection<Game> Games { get; set; } = new List<Game>();
+    public ICollection<EventGenreWeight> GenreWeights { get; set; } = new List<EventGenreWeight>();
 
     // moze bedzie potrzebne pozniej
     // public boolean is_user_added {get; set;}

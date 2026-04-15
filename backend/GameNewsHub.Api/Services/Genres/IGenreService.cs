@@ -1,7 +1,6 @@
-using backend.Models.DTOs;
 using backend.Models.Entities;
 
-namespace backend.Services.Interfaces;
+namespace GameNewsHub.Api.Services.Genres;
 
 public interface IGenreService
 {

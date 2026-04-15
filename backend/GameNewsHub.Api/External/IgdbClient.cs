@@ -1,10 +1,8 @@
 using backend.Configuration;
 using backend.Models.DTOs;
-using backend.Services.Interfaces;
-using GameNewsHub.Api.Services.Interfaces;
 using Microsoft.Extensions.Options;
 
-namespace GameNewsHub.Api.Services.Background;
+namespace GameNewsHub.Api.External;
 
 public class IgdbClient : IIgdbClient
 {

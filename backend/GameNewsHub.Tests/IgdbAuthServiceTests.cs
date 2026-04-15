@@ -1,6 +1,6 @@
 using System.Net;
 using backend.Configuration;
-using GameNewsHub.Api.Services.Background;
+using GameNewsHub.Api.External;
 using Microsoft.AspNetCore.Server.Kestrel.Core.Internal.Http;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;

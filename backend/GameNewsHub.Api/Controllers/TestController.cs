@@ -1,5 +1,5 @@
-using backend.Services.Interfaces;
-using GameNewsHub.Api.Services.Background;
+using GameNewsHub.Api.External;
+using GameNewsHub.Api.Services.Games;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 

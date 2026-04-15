@@ -1,10 +1,10 @@
 using backend.Data;
 using backend.Models.Entities;
-using backend.Services.Interfaces;
-using GameNewsHub.Api.Services.Background;
+using GameNewsHub.Api.External;
+using GameNewsHub.Api.Services.Genres;
 using Microsoft.EntityFrameworkCore;
 
-namespace GameNewsHub.Api.Services;
+namespace GameNewsHub.Api.Services.Games;
 
 public class GameSyncService : IGameSyncService
 {

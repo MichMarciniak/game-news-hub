@@ -1,6 +1,6 @@
 using backend.Models.DTOs;
 
-namespace GameNewsHub.Api.Services.Interfaces;
+namespace GameNewsHub.Api.External;
 
 public interface IIgdbClient
 {

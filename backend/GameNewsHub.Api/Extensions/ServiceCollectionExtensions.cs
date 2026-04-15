@@ -1,8 +1,9 @@
 using System.Text;
 using backend.Configuration;
-using backend.Services.Interfaces;
+using GameNewsHub.Api.External;
 using GameNewsHub.Api.Services;
-using GameNewsHub.Api.Services.Background;
+using GameNewsHub.Api.Services.Games;
+using GameNewsHub.Api.Services.Genres;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi;

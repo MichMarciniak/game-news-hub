@@ -1,10 +1,8 @@
-using System.Dynamic;
 using backend.Data;
 using backend.Models.Entities;
-using backend.Services.Interfaces;
 using Microsoft.EntityFrameworkCore;
 
-namespace GameNewsHub.Api.Services;
+namespace GameNewsHub.Api.Services.Genres;
 
 public class GenreService : IGenreService
 {

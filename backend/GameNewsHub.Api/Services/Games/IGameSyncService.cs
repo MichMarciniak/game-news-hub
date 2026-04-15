@@ -1,4 +1,4 @@
-namespace backend.Services.Interfaces;
+namespace GameNewsHub.Api.Services.Games;
 
 public interface IGameSyncService
 {

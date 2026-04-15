@@ -17,6 +17,9 @@ public class EventConfiguration : IEntityTypeConfiguration<Event>
 
         builder.HasMany(x => x.Games)
             .WithMany() // nie ma relacji w Game
-            .UsingEntity("GameEvents"); 
+            .UsingEntity("GameEvents");
+
+        builder.HasMany(e => e.GenreWeights)
+            .WithOne();
     }
 }
