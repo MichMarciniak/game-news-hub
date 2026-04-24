@@ -21,5 +21,8 @@ public class EventConfiguration : IEntityTypeConfiguration<Event>
 
         builder.HasMany(e => e.GenreWeights)
             .WithOne();
+
+        builder.Property(e => e.Status)
+            .HasConversion<string>();
     }
 }

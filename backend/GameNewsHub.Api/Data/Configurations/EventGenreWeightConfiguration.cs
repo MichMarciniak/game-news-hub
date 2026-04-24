@@ -11,7 +11,7 @@ public class EventGenreWeightConfiguration : IEntityTypeConfiguration<EventGenre
         builder.HasKey(egw => new { egw.EventId, egw.GenreId });
 
         builder.HasOne<Event>()
-            .WithMany()
+            .WithMany(e => e.GenreWeights)
             .HasForeignKey(egw => egw.EventId)
             .OnDelete(DeleteBehavior.Cascade);
 

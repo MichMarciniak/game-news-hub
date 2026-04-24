@@ -61,6 +61,8 @@ using (var scope = app.Services.CreateScope())
 {
     var db = scope.ServiceProvider.GetRequiredService<AppDbContext>();
     db.Database.Migrate();
+
+   
 }
 
 if (app.Environment.IsDevelopment())
@@ -69,7 +71,14 @@ if (app.Environment.IsDevelopment())
     app.MapScalarApiReference();
     app.UseSwaggerUI(opt => 
         opt.SwaggerEndpoint("/openapi/v1.json", "GameNews Api")
-    );
+    ); 
+    
+    app.Lifetime.ApplicationStarted.Register(() =>
+    {
+        Console.ForegroundColor = ConsoleColor.Cyan;
+        Console.WriteLine("\n Scalar API: http://localhost:5190/scalar");
+        Console.ResetColor();
+    });
 }
 
 // app.UseHttpsRedirection();

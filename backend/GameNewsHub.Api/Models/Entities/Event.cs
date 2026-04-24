@@ -12,6 +12,8 @@ public class Event
     public DateTimeOffset StartTime { get; set; }
     public DateTimeOffset? EndTime { get; set; }
 
+    public EventSyncStatus Status { get; set; }
+
     public int IgdbId { get; set; }
 
     public ICollection<Game> Games { get; set; } = new List<Game>();
@@ -19,4 +21,12 @@ public class Event
 
     // moze bedzie potrzebne pozniej
     // public boolean is_user_added {get; set;}
+    
+}
+
+public enum EventSyncStatus
+{
+    Pending,
+    Ready,
+    NoData
 }

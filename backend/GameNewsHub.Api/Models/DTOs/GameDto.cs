@@ -10,3 +10,5 @@ public record GameResponse
     public List<PlatformDto>? Platforms { get; set; }
     public CoverDto? Cover { get; set; }
 }
+
+public record GameIdContainer(int Id);

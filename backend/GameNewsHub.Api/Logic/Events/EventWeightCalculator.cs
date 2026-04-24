@@ -1,6 +1,6 @@
 using backend.Models.Entities;
 
-namespace GameNewsHub.Api.Services.Events;
+namespace GameNewsHub.Api.Logic.Events;
 
 public class EventWeightCalculator : IEventWeightCalculator
 {

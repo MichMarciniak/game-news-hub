@@ -23,7 +23,6 @@
 
     <ItemGroup>
       <Folder Include="Common\" />
-      <Folder Include="Logic\Events\" />
       <Folder Include="Logic\Scoring\" />
       <Folder Include="Mappings\" />
       <Folder Include="Migrations\" />

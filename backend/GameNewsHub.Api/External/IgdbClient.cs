@@ -45,4 +45,9 @@ public class IgdbClient : IIgdbClient
         return games ?? new List<GameResponse>();
 
     }
+
+    public Task GetEventsFromIgdb(int days = 5)
+    {
+        throw new NotImplementedException();
+    }
 }
