@@ -26,6 +26,7 @@
       <Folder Include="Logic\Scoring\" />
       <Folder Include="Mappings\" />
       <Folder Include="Migrations\" />
+      <Folder Include="Services\Background\" />
     </ItemGroup>
 
 </Project>

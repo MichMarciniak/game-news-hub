@@ -46,8 +46,9 @@ public class IgdbClient : IIgdbClient
 
     }
 
-    public Task GetEventsFromIgdb(int days = 5)
+    public Task<List<EventResponse>> GetEventsFromIgdb(long from, long to)
     {
         throw new NotImplementedException();
     }
+
 }
