@@ -60,7 +60,6 @@ public class EventSyncService : IEventSyncService
          * wysyła do clienta, który pobiera dane
          * jeśli dany event ma dane, to aktualizuje bazę i status na Ready?
          *
-         * pomyśl co jeśli api nie da endTime
          */
 
         var statusToProcess = new[] { EventSyncStatus.Pending, EventSyncStatus.NoData };
