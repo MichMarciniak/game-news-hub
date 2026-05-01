@@ -27,7 +27,7 @@ public class Event
 
 public enum EventSyncStatus
 {
-    Pending,
-    Ready,
-    NoData
+    Pending, //czeka na pobranie danych
+    Ready,   // wszystkie dane są
+    NoData   // dane niepełne - prawdopodobnie jeszcze się nie zakończył
 }

@@ -8,11 +8,11 @@ using backend.Data;
 
 #nullable disable
 
-namespace backend.Migrations
+namespace GameNewsHub.Api.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    [Migration("20260424142504_AddEventStatus")]
-    partial class AddEventStatus
+    [Migration("20260501094418_Initial")]
+    partial class Initial
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -316,8 +316,8 @@ namespace backend.Migrations
                         .IsRequired()
                         .HasColumnType("text");
 
-                    b.Property<DateTimeOffset?>("EndTime")
-                        .HasColumnType("TEXT");
+                    b.Property<long?>("EndTime")
+                        .HasColumnType("INTEGER");
 
                     b.Property<int>("IgdbId")
                         .HasColumnType("INTEGER");
@@ -326,8 +326,8 @@ namespace backend.Migrations
                         .IsRequired()
                         .HasColumnType("TEXT");
 
-                    b.Property<DateTimeOffset>("StartTime")
-                        .HasColumnType("TEXT");
+                    b.Property<long>("StartTime")
+                        .HasColumnType("INTEGER");
 
                     b.Property<string>("Status")
                         .IsRequired()

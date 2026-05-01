@@ -7,7 +7,7 @@ using backend.Data;
 
 #nullable disable
 
-namespace backend.Migrations
+namespace GameNewsHub.Api.Migrations
 {
     [DbContext(typeof(AppDbContext))]
     partial class AppDbContextModelSnapshot : ModelSnapshot
@@ -313,8 +313,8 @@ namespace backend.Migrations
                         .IsRequired()
                         .HasColumnType("text");
 
-                    b.Property<DateTimeOffset?>("EndTime")
-                        .HasColumnType("TEXT");
+                    b.Property<long?>("EndTime")
+                        .HasColumnType("INTEGER");
 
                     b.Property<int>("IgdbId")
                         .HasColumnType("INTEGER");
@@ -323,8 +323,8 @@ namespace backend.Migrations
                         .IsRequired()
                         .HasColumnType("TEXT");
 
-                    b.Property<DateTimeOffset>("StartTime")
-                        .HasColumnType("TEXT");
+                    b.Property<long>("StartTime")
+                        .HasColumnType("INTEGER");
 
                     b.Property<string>("Status")
                         .IsRequired()

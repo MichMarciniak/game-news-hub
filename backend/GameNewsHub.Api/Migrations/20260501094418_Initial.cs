@@ -3,7 +3,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 #nullable disable
 
-namespace backend.Migrations
+namespace GameNewsHub.Api.Migrations
 {
     /// <inheritdoc />
     public partial class Initial : Migration
@@ -61,12 +61,30 @@ namespace backend.Migrations
                         .Annotation("Sqlite:Autoincrement", true),
                     Name = table.Column<string>(type: "TEXT", nullable: false),
                     Description = table.Column<string>(type: "text", nullable: false),
-                    StartTime = table.Column<DateTimeOffset>(type: "TEXT", nullable: false),
-                    EndTime = table.Column<DateTimeOffset>(type: "TEXT", nullable: true)
+                    StartTime = table.Column<long>(type: "INTEGER", nullable: false),
+                    EndTime = table.Column<long>(type: "INTEGER", nullable: true),
+                    Status = table.Column<string>(type: "TEXT", nullable: false),
+                    IgdbId = table.Column<int>(type: "INTEGER", nullable: false)
                 },
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_Events", x => x.Id);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "Games",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "INTEGER", nullable: false)
+                        .Annotation("Sqlite:Autoincrement", true),
+                    Title = table.Column<string>(type: "TEXT", nullable: false),
+                    Summary = table.Column<string>(type: "text", nullable: false),
+                    CoverUrl = table.Column<string>(type: "TEXT", nullable: true),
+                    IgdbId = table.Column<int>(type: "INTEGER", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Games", x => x.Id);
                 });
 
             migrationBuilder.CreateTable(
@@ -75,11 +93,26 @@ namespace backend.Migrations
                 {
                     Id = table.Column<int>(type: "INTEGER", nullable: false)
                         .Annotation("Sqlite:Autoincrement", true),
-                    Name = table.Column<string>(type: "TEXT", nullable: false)
+                    Name = table.Column<string>(type: "TEXT", nullable: false),
+                    IgdbId = table.Column<int>(type: "INTEGER", nullable: false)
                 },
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_Genres", x => x.Id);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "Platforms",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "INTEGER", nullable: false)
+                        .Annotation("Sqlite:Autoincrement", true),
+                    Name = table.Column<string>(type: "TEXT", nullable: false),
+                    IgdbId = table.Column<int>(type: "INTEGER", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Platforms", x => x.Id);
                 });
 
             migrationBuilder.CreateTable(
@@ -189,49 +222,100 @@ namespace backend.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "Platforms",
+                name: "GameEvents",
                 columns: table => new
                 {
-                    Id = table.Column<int>(type: "INTEGER", nullable: false)
-                        .Annotation("Sqlite:Autoincrement", true),
-                    Name = table.Column<string>(type: "TEXT", nullable: false),
-                    AppUserId = table.Column<int>(type: "INTEGER", nullable: true)
+                    EventId = table.Column<int>(type: "INTEGER", nullable: false),
+                    GamesId = table.Column<int>(type: "INTEGER", nullable: false)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_Platforms", x => x.Id);
+                    table.PrimaryKey("PK_GameEvents", x => new { x.EventId, x.GamesId });
                     table.ForeignKey(
-                        name: "FK_Platforms_AspNetUsers_AppUserId",
-                        column: x => x.AppUserId,
-                        principalTable: "AspNetUsers",
-                        principalColumn: "Id");
+                        name: "FK_GameEvents_Events_EventId",
+                        column: x => x.EventId,
+                        principalTable: "Events",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_GameEvents_Games_GamesId",
+                        column: x => x.GamesId,
+                        principalTable: "Games",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.CreateTable(
-                name: "Games",
+                name: "UserGames",
                 columns: table => new
                 {
-                    Id = table.Column<int>(type: "INTEGER", nullable: false)
-                        .Annotation("Sqlite:Autoincrement", true),
-                    Title = table.Column<string>(type: "TEXT", nullable: false),
-                    Summary = table.Column<string>(type: "TEXT", nullable: false),
-                    CoverUrl = table.Column<string>(type: "TEXT", nullable: true),
-                    AppUserId = table.Column<int>(type: "INTEGER", nullable: true),
-                    EventId = table.Column<int>(type: "INTEGER", nullable: true)
+                    AppUserId = table.Column<int>(type: "INTEGER", nullable: false),
+                    FollowedGamesId = table.Column<int>(type: "INTEGER", nullable: false)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_Games", x => x.Id);
+                    table.PrimaryKey("PK_UserGames", x => new { x.AppUserId, x.FollowedGamesId });
                     table.ForeignKey(
-                        name: "FK_Games_AspNetUsers_AppUserId",
+                        name: "FK_UserGames_AspNetUsers_AppUserId",
                         column: x => x.AppUserId,
                         principalTable: "AspNetUsers",
-                        principalColumn: "Id");
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
-                        name: "FK_Games_Events_EventId",
+                        name: "FK_UserGames_Games_FollowedGamesId",
+                        column: x => x.FollowedGamesId,
+                        principalTable: "Games",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "EventGenreWeight",
+                columns: table => new
+                {
+                    EventId = table.Column<int>(type: "INTEGER", nullable: false),
+                    GenreId = table.Column<int>(type: "INTEGER", nullable: false),
+                    Weight = table.Column<double>(type: "REAL", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_EventGenreWeight", x => new { x.EventId, x.GenreId });
+                    table.ForeignKey(
+                        name: "FK_EventGenreWeight_Events_EventId",
                         column: x => x.EventId,
                         principalTable: "Events",
-                        principalColumn: "Id");
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_EventGenreWeight_Genres_GenreId",
+                        column: x => x.GenreId,
+                        principalTable: "Genres",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "GameGenres",
+                columns: table => new
+                {
+                    GamesId = table.Column<int>(type: "INTEGER", nullable: false),
+                    GenresId = table.Column<int>(type: "INTEGER", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_GameGenres", x => new { x.GamesId, x.GenresId });
+                    table.ForeignKey(
+                        name: "FK_GameGenres_Games_GamesId",
+                        column: x => x.GamesId,
+                        principalTable: "Games",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_GameGenres_Genres_GenresId",
+                        column: x => x.GenresId,
+                        principalTable: "Genres",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.CreateTable(
@@ -260,31 +344,7 @@ namespace backend.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "GameGenre",
-                columns: table => new
-                {
-                    GamesId = table.Column<int>(type: "INTEGER", nullable: false),
-                    GenresId = table.Column<int>(type: "INTEGER", nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_GameGenre", x => new { x.GamesId, x.GenresId });
-                    table.ForeignKey(
-                        name: "FK_GameGenre_Games_GamesId",
-                        column: x => x.GamesId,
-                        principalTable: "Games",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
-                    table.ForeignKey(
-                        name: "FK_GameGenre_Genres_GenresId",
-                        column: x => x.GenresId,
-                        principalTable: "Genres",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
-                });
-
-            migrationBuilder.CreateTable(
-                name: "GamePlatform",
+                name: "GamePlatforms",
                 columns: table => new
                 {
                     GamesId = table.Column<int>(type: "INTEGER", nullable: false),
@@ -292,20 +352,49 @@ namespace backend.Migrations
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_GamePlatform", x => new { x.GamesId, x.PlatformsId });
+                    table.PrimaryKey("PK_GamePlatforms", x => new { x.GamesId, x.PlatformsId });
                     table.ForeignKey(
-                        name: "FK_GamePlatform_Games_GamesId",
+                        name: "FK_GamePlatforms_Games_GamesId",
                         column: x => x.GamesId,
                         principalTable: "Games",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
-                        name: "FK_GamePlatform_Platforms_PlatformsId",
+                        name: "FK_GamePlatforms_Platforms_PlatformsId",
                         column: x => x.PlatformsId,
                         principalTable: "Platforms",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                 });
+
+            migrationBuilder.CreateTable(
+                name: "UserPlatforms",
+                columns: table => new
+                {
+                    AppUserId = table.Column<int>(type: "INTEGER", nullable: false),
+                    PlatformsId = table.Column<int>(type: "INTEGER", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_UserPlatforms", x => new { x.AppUserId, x.PlatformsId });
+                    table.ForeignKey(
+                        name: "FK_UserPlatforms_AspNetUsers_AppUserId",
+                        column: x => x.AppUserId,
+                        principalTable: "AspNetUsers",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_UserPlatforms_Platforms_PlatformsId",
+                        column: x => x.PlatformsId,
+                        principalTable: "Platforms",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.InsertData(
+                table: "AspNetUsers",
+                columns: new[] { "Id", "AccessFailedCount", "ConcurrencyStamp", "CreatedAt", "Email", "EmailConfirmed", "LockoutEnabled", "LockoutEnd", "NormalizedEmail", "NormalizedUserName", "PasswordHash", "PhoneNumber", "PhoneNumberConfirmed", "SecurityStamp", "TwoFactorEnabled", "UserName" },
+                values: new object[] { 1, 0, "39949666-4c4c-4740-9e6e-210170a4a621", new DateTimeOffset(new DateTime(2026, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), new TimeSpan(0, 0, 0, 0, 0)), null, false, false, null, null, null, null, null, false, null, false, "DevUser" });
 
             migrationBuilder.CreateIndex(
                 name: "IX_AspNetRoleClaims_RoleId",
@@ -339,40 +428,71 @@ namespace backend.Migrations
                 column: "NormalizedEmail");
 
             migrationBuilder.CreateIndex(
+                name: "IX_AspNetUsers_UserName",
+                table: "AspNetUsers",
+                column: "UserName",
+                unique: true);
+
+            migrationBuilder.CreateIndex(
                 name: "UserNameIndex",
                 table: "AspNetUsers",
                 column: "NormalizedUserName",
                 unique: true);
 
             migrationBuilder.CreateIndex(
-                name: "IX_GameGenre_GenresId",
-                table: "GameGenre",
+                name: "IX_EventGenreWeight_GenreId",
+                table: "EventGenreWeight",
+                column: "GenreId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Events_StartTime",
+                table: "Events",
+                column: "StartTime");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_GameEvents_GamesId",
+                table: "GameEvents",
+                column: "GamesId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_GameGenres_GenresId",
+                table: "GameGenres",
                 column: "GenresId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_GamePlatform_PlatformsId",
-                table: "GamePlatform",
+                name: "IX_GamePlatforms_PlatformsId",
+                table: "GamePlatforms",
                 column: "PlatformsId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_Games_AppUserId",
+                name: "IX_Games_Title",
                 table: "Games",
-                column: "AppUserId");
+                column: "Title");
 
             migrationBuilder.CreateIndex(
-                name: "IX_Games_EventId",
-                table: "Games",
-                column: "EventId");
+                name: "IX_Genres_Name",
+                table: "Genres",
+                column: "Name");
 
             migrationBuilder.CreateIndex(
-                name: "IX_Platforms_AppUserId",
+                name: "IX_Platforms_Name",
                 table: "Platforms",
-                column: "AppUserId");
+                column: "Name");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_UserGames_FollowedGamesId",
+                table: "UserGames",
+                column: "FollowedGamesId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_UserInterests_GenreId",
                 table: "UserInterests",
                 column: "GenreId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_UserPlatforms_PlatformsId",
+                table: "UserPlatforms",
+                column: "PlatformsId");
         }
 
         /// <inheritdoc />
@@ -394,31 +514,43 @@ namespace backend.Migrations
                 name: "AspNetUserTokens");
 
             migrationBuilder.DropTable(
-                name: "GameGenre");
+                name: "EventGenreWeight");
 
             migrationBuilder.DropTable(
-                name: "GamePlatform");
+                name: "GameEvents");
+
+            migrationBuilder.DropTable(
+                name: "GameGenres");
+
+            migrationBuilder.DropTable(
+                name: "GamePlatforms");
+
+            migrationBuilder.DropTable(
+                name: "UserGames");
 
             migrationBuilder.DropTable(
                 name: "UserInterests");
 
             migrationBuilder.DropTable(
+                name: "UserPlatforms");
+
+            migrationBuilder.DropTable(
                 name: "AspNetRoles");
-
-            migrationBuilder.DropTable(
-                name: "Games");
-
-            migrationBuilder.DropTable(
-                name: "Platforms");
-
-            migrationBuilder.DropTable(
-                name: "Genres");
 
             migrationBuilder.DropTable(
                 name: "Events");
 
             migrationBuilder.DropTable(
+                name: "Games");
+
+            migrationBuilder.DropTable(
+                name: "Genres");
+
+            migrationBuilder.DropTable(
                 name: "AspNetUsers");
+
+            migrationBuilder.DropTable(
+                name: "Platforms");
         }
     }
 }
