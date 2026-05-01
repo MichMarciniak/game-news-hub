@@ -2,6 +2,7 @@ using System.Text;
 using backend.Configuration;
 using GameNewsHub.Api.External;
 using GameNewsHub.Api.Services;
+using GameNewsHub.Api.Services.Events;
 using GameNewsHub.Api.Services.Games;
 using GameNewsHub.Api.Services.Genres;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
@@ -65,13 +66,13 @@ public static class ServiceCollectionExtensions
     {
         var igdbOptions = config.GetSection("Api").Get<ApiConfig>();
 
-        services.AddHttpClient<IgdbClient>(client =>
+        services.AddSingleton<IgdbAuthService>();
+        
+        services.AddHttpClient<IIgdbClient, IgdbClient>(client =>
         {
             client.BaseAddress = new Uri(igdbOptions.BaseUrl);
             client.DefaultRequestHeaders.Add("Client-ID", igdbOptions.ClientId);
         });
-
-        services.AddSingleton<IgdbAuthService>();
 
         return services;
     }
@@ -82,6 +83,7 @@ public static class ServiceCollectionExtensions
         //services.AddScoped<IPlatformService, PlatformService>();
         //services.AddScoped<IGameService, GameService>();
         
+        services.AddScoped<IEventSyncService, EventSyncService>();
         services.AddScoped<IGameSyncService, GameSyncService>();
 
         return services;

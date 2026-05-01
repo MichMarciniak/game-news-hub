@@ -1,4 +1,5 @@
 using GameNewsHub.Api.External;
+using GameNewsHub.Api.Services.Events;
 using GameNewsHub.Api.Services.Games;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -11,14 +12,16 @@ public class TestController : ControllerBase
 {
 
     private readonly IgdbAuthService _authService;
-    private readonly IgdbClient _client;
+    private readonly IIgdbClient _client;
     private readonly IGameSyncService _gameSyncService;
+    private readonly IEventSyncService _eventSyncService;
 
-    public TestController(IgdbAuthService service, IgdbClient client, IGameSyncService gameSyncService)
+    public TestController(IgdbAuthService service, IIgdbClient client, IGameSyncService gameSyncService, IEventSyncService eventSyncService)
     {
         _authService = service;
         _client = client;
         _gameSyncService = gameSyncService;
+        _eventSyncService = eventSyncService;
     }
     
     [Authorize]
@@ -50,10 +53,21 @@ public class TestController : ControllerBase
     }
 
     [Authorize]
-    [HttpGet("sync")]
+    [HttpGet("games/sync")]
     public async Task<IActionResult> SyncGames()
     {
         await _gameSyncService.SyncUpcomingGamesAsync(10);
+
+        return Ok();
+    }
+    
+    [Authorize]
+    [HttpGet("events/sync")]
+    public async Task<IActionResult> SyncEvents()
+    {
+        await _eventSyncService.DiscoverNewEventsAsync();
+
+        await _eventSyncService.HydrateEventsAsync();
 
         return Ok();
     }

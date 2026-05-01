@@ -8,12 +8,12 @@ namespace GameNewsHub.Api.Services.Games;
 
 public class GameSyncService : IGameSyncService
 {
-    private readonly IgdbClient _client;
+    private readonly IIgdbClient _client;
     private readonly IGenreService _genreService;
     private readonly AppDbContext _context;
     private readonly ILogger<GameSyncService> _logger;
 
-    public GameSyncService(IgdbClient client, IGenreService service, AppDbContext context, ILogger<GameSyncService> logger)
+    public GameSyncService(IIgdbClient client, IGenreService service, AppDbContext context, ILogger<GameSyncService> logger)
     {
         _client = client;
         _genreService = service;

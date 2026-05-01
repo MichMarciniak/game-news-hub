@@ -52,4 +52,31 @@ public class EventSyncService : IEventSyncService
             _logger.LogInformation($"Added {newEvents.Count()} new events");
         }
     }
+
+    public async Task HydrateEventsAsync()
+    {
+        /*
+         * szuka w bazie zakończone eventy, ze statusem NoData
+         * wysyła do clienta, który pobiera dane
+         * jeśli dany event ma dane, to aktualizuje bazę i status na Ready?
+         *
+         * pomyśl co jeśli api nie da endTime
+         */
+
+        var statusToProcess = new[] { EventSyncStatus.Pending, EventSyncStatus.NoData };
+
+        var timeNow = DateTimeOffset.UtcNow.ToUnixTimeSeconds();
+        var noDataEvents = await _context.Events
+            .Where(e => statusToProcess.Contains(e.Status))
+            .Where(e => e.EndTime > timeNow)
+            .Select(e => e.Id)
+            .ToListAsync();
+
+        if (noDataEvents.Any())
+        {
+            var req = await _client.UpdateEventsFromIgdb(noDataEvents);
+        }
+
+
+    }
 }
