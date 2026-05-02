@@ -2,6 +2,7 @@ using backend.Data;
 using backend.Models.Entities;
 using GameNewsHub.Api.External;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Diagnostics;
 
 namespace GameNewsHub.Api.Services.Events;
 
@@ -64,18 +65,48 @@ public class EventSyncService : IEventSyncService
 
         var statusToProcess = new[] { EventSyncStatus.Pending, EventSyncStatus.NoData };
 
-        var timeNow = DateTimeOffset.UtcNow.ToUnixTimeSeconds();
+        // jak nie ma przez 3 dni od zakończenia, to pewnie nie będzie
+        var timeThreshold = DateTimeOffset.UtcNow.AddDays(-3).ToUnixTimeSeconds();
         var noDataEvents = await _context.Events
             .Where(e => statusToProcess.Contains(e.Status))
-            .Where(e => e.EndTime > timeNow)
-            .Select(e => e.Id)
+            .Where(e => e.EndTime > timeThreshold)
+            .Select(e => e.IgdbId)
             .ToListAsync();
 
-        if (noDataEvents.Any())
+        if (!noDataEvents.Any())
         {
-            var req = await _client.UpdateEventsFromIgdb(noDataEvents);
+            return;
         }
+        
+        var res = await _client.UpdateEventsFromIgdb(noDataEvents);
 
+        var igdbIds = res.Select(e => e.Id).ToList();
 
+        var events = await _context.Events
+            .Where(e => igdbIds.Contains(e.IgdbId))
+            .ToListAsync();
+
+        foreach (var e in events)
+        {
+            var apiData = res.FirstOrDefault(r => r.Id == e.IgdbId);
+            if (apiData == null) continue;
+
+            e.Name = apiData.Name;
+            e.Description = apiData.Description;
+
+            if (apiData.Games != null && apiData.Games.Any())
+            {
+                _logger.LogInformation($"Changing status of event: {e.Id} | {e.IgdbId} to Ready");
+                e.Status = EventSyncStatus.Ready;
+                
+                // przypisanie gier do eventu
+                // pobranie gier brakujących
+                // obliczenie score patrząc na genres
+            }
+            else
+            {
+                e.Status = EventSyncStatus.NoData;
+            }
+        }
     }
 }

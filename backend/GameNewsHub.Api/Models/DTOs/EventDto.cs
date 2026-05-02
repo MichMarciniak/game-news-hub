@@ -4,7 +4,7 @@ namespace backend.Models.DTOs;
 
 public record EventResponse
 {
-    public int Id { get; set; }
+    public int Id { get; set; } // igdb id
     
     public string Name { get; set; }
     
