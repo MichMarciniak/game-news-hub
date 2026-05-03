@@ -1,6 +1,7 @@
 using backend.Data;
 using backend.Models.Entities;
 using GameNewsHub.Api.External;
+using GameNewsHub.Api.Services.Games;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Diagnostics;
 
@@ -11,12 +12,14 @@ public class EventSyncService : IEventSyncService
     private readonly IIgdbClient _client;
     private readonly AppDbContext _context;
     private readonly ILogger<EventSyncService> _logger;
+    private readonly IGameSyncService _gameSyncService;
 
-    public EventSyncService(IIgdbClient client, AppDbContext context, ILogger<EventSyncService> logger)
+    public EventSyncService(IIgdbClient client, AppDbContext context, ILogger<EventSyncService> logger, IGameSyncService gameSyncService)
     {
         _client = client;
         _context = context;
         _logger = logger;
+        _gameSyncService = gameSyncService;
     }
 
     public async Task DiscoverNewEventsAsync()
@@ -97,11 +100,19 @@ public class EventSyncService : IEventSyncService
             if (apiData.Games != null && apiData.Games.Any())
             {
                 _logger.LogInformation($"Changing status of event: {e.Id} | {e.IgdbId} to Ready");
-                e.Status = EventSyncStatus.Ready;
+                
+                // pobranie brakujących gier
+                var gameIds = apiData.Games.Select(g => g.Id).ToList();
+                var gamesInDb = await _gameSyncService.GetOrCreateGamesAsync(gameIds);
                 
                 // przypisanie gier do eventu
-                // pobranie gier brakujących
+                e.Games = gamesInDb;
+
+                e.Status = EventSyncStatus.Ready;
                 // obliczenie score patrząc na genres
+                
+                
+                
             }
             else
             {

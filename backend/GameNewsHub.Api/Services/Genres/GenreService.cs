@@ -1,5 +1,7 @@
 using backend.Data;
+using backend.Models.DTOs;
 using backend.Models.Entities;
+using GameNewsHub.Api.Mappings;
 using Microsoft.EntityFrameworkCore;
 
 namespace GameNewsHub.Api.Services.Genres;
@@ -23,9 +25,49 @@ public class GenreService : IGenreService
         var genre = await _context.Genres.FirstOrDefaultAsync(g => g.IgdbId == igdbId);
 
         if (genre != null) return genre;
+
+        genre = await AddGenre(igdbId, name);
+
+        return genre;
+    }
+
+    public async Task<ICollection<Genre>> GetOrCreateBatchAsync(IEnumerable<GenreDto> genreDtos)
+    {
+        if (genreDtos == null || !genreDtos.Any())
+        {
+            return new List<Genre>();
+        }
+
+        var incomingIds = genreDtos.Select(g => g.Id).ToList();
+
+        var existing = await _context.Genres
+            .Where(g => incomingIds.Contains(g.IgdbId))
+            .ToListAsync();
         
-        genre = new Genre {IgdbId = igdbId, Name = name};
+        var missing = genreDtos.Except(existing.Select(g => g.ToDto()));
+
+        if (missing.Any())
+        {
+            var newGenres = missing.Select(g => new Genre
+            {
+                IgdbId = g.Id,
+                Name = g.Name
+            }).ToList();
+            
+            _context.Genres.AddRange(newGenres);
+            await _context.SaveChangesAsync();
+            
+            existing.AddRange(newGenres);
+        }
+
+        return existing;
+    }
+
+    private async Task<Genre> AddGenre(int igdbId, string name)
+    {
+        var genre = new Genre {IgdbId = igdbId, Name = name};
         _context.Genres.Add(genre);
+        await _context.SaveChangesAsync();
 
         return genre;
     }

@@ -1,4 +1,5 @@
 using backend.Data;
+using backend.Models.DTOs;
 using backend.Models.Entities;
 using GameNewsHub.Api.External;
 using GameNewsHub.Api.Services.Genres;
@@ -52,4 +53,55 @@ public class GameSyncService : IGameSyncService
         await _context.SaveChangesAsync();
         _logger.LogInformation("Game sync finished.");
     }
+
+    public async Task<ICollection<Game>> GetOrCreateGamesAsync(IEnumerable<int> gameIds)
+    {
+        if (gameIds == null || !gameIds.Any()) return new List<Game>();
+
+        var existingGames = await _context.Games
+            .Include(g => g.Genres)
+            .Where(g => gameIds.Contains(g.IgdbId))
+            .ToListAsync();
+
+        var existingIds = existingGames.Select(g => g.IgdbId).ToList();
+
+        var missingIds = gameIds.Except(existingIds).ToList();
+
+        if (!missingIds.Any())
+        {
+            return existingGames;
+        }
+        
+        // pobierz brakujące dane z igdb api
+        var externalGames = await _client.UpdateMissingGames(missingIds);
+
+        var allGenres = externalGames
+            .Where(g => g.Genres != null)
+            .SelectMany(g => g.Genres)
+            .Distinct()
+            .ToList();
+
+        var genres = await _genreService.GetOrCreateBatchAsync(allGenres);
+
+        var newGames = externalGames.Select(dto => new Game
+        {
+            IgdbId = dto.Id,
+            Title = dto.Name,
+            Summary = dto.Summary,
+            // mapowanie gatunków
+            Genres = MapGenres(dto.Genres, genres)
+        }).ToList();
+        
+        _context.Games.AddRange(newGames);
+        await _context.SaveChangesAsync();
+
+        return existingGames.Concat(newGames).ToList();
+    }
+
+    private ICollection<Genre> MapGenres(IEnumerable<GenreDto> dtos, IEnumerable<Genre> genres)
+    {
+        var ids = dtos.Select(d => d.Id).ToList();
+        return genres.Where(g => ids.Contains(g.IgdbId)).ToList();
+    }
+
 }
