@@ -1,6 +1,7 @@
 using backend.Data;
 using backend.Models.Entities;
 using GameNewsHub.Api.External;
+using GameNewsHub.Api.Logic.Events;
 using GameNewsHub.Api.Services.Games;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Diagnostics;
@@ -13,13 +14,19 @@ public class EventSyncService : IEventSyncService
     private readonly AppDbContext _context;
     private readonly ILogger<EventSyncService> _logger;
     private readonly IGameSyncService _gameSyncService;
+    private readonly IEventWeightCalculator _calculator;
 
-    public EventSyncService(IIgdbClient client, AppDbContext context, ILogger<EventSyncService> logger, IGameSyncService gameSyncService)
+    public EventSyncService(IIgdbClient client,
+        AppDbContext context,
+        ILogger<EventSyncService> logger,
+        IGameSyncService gameSyncService,
+        IEventWeightCalculator calculator)
     {
         _client = client;
         _context = context;
         _logger = logger;
         _gameSyncService = gameSyncService;
+        _calculator = calculator;
     }
 
     public async Task DiscoverNewEventsAsync()
@@ -30,11 +37,14 @@ public class EventSyncService : IEventSyncService
          * jeśli nie ma, to dodaj i ustaw status na Pending 
          */
 
-        var from = DateTimeOffset.UtcNow.AddDays(-5).ToUnixTimeSeconds();
-        var to = DateTimeOffset.UtcNow.AddDays(5).ToUnixTimeSeconds();
+        var from = DateTimeOffset.UtcNow.AddDays(-10).ToUnixTimeSeconds();
+        var to = DateTimeOffset.UtcNow.AddDays(10).ToUnixTimeSeconds();
         var externalEvents = await _client.GetEventsFromIgdb(from, to);
 
+        var incomingIds = externalEvents.Select(e => e.Id).ToList();
+
         var existingItd = await _context.Events
+            .Where(e => incomingIds.Contains(e.IgdbId))
             .Select(e => e.IgdbId)
             .ToListAsync();
 
@@ -45,6 +55,7 @@ public class EventSyncService : IEventSyncService
                 IgdbId = e.Id,
                 Name = e.Name,
                 StartTime = e.StartTime,
+                EndTime = e.EndTime,
                 Description = e.Description,
                 Status = EventSyncStatus.Pending
             });
@@ -66,13 +77,11 @@ public class EventSyncService : IEventSyncService
          *
          */
 
-        var statusToProcess = new[] { EventSyncStatus.Pending, EventSyncStatus.NoData };
-
         // jak nie ma przez 3 dni od zakończenia, to pewnie nie będzie
-        var timeThreshold = DateTimeOffset.UtcNow.AddDays(-3).ToUnixTimeSeconds();
+        var timeThreshold = DateTimeOffset.UtcNow.AddDays(-10).ToUnixTimeSeconds();
         var noDataEvents = await _context.Events
-            .Where(e => statusToProcess.Contains(e.Status))
-            .Where(e => e.EndTime > timeThreshold)
+            .Where(e => e.Status != EventSyncStatus.Ready)
+            .Where(e => e.StartTime > timeThreshold)
             .Select(e => e.IgdbId)
             .ToListAsync();
 
@@ -96,6 +105,7 @@ public class EventSyncService : IEventSyncService
 
             e.Name = apiData.Name;
             e.Description = apiData.Description;
+            e.EndTime = apiData.EndTime; //na wypadek żeby jeszcze nie było
 
             if (apiData.Games != null && apiData.Games.Any())
             {
@@ -108,16 +118,25 @@ public class EventSyncService : IEventSyncService
                 // przypisanie gier do eventu
                 e.Games = gamesInDb;
 
-                e.Status = EventSyncStatus.Ready;
                 // obliczenie score patrząc na genres
                 
-                
-                
+                if (e.GenreWeights != null) e.GenreWeights.Clear();
+
+                var calculatedWeights = _calculator.CalculateScores(e.Id, gamesInDb);
+
+                foreach (var weight in calculatedWeights)
+                {
+                    e.GenreWeights.Add(weight);
+                }
+
+                e.Status = EventSyncStatus.Ready;
             }
             else
             {
                 e.Status = EventSyncStatus.NoData;
             }
         }
+
+        await _context.SaveChangesAsync();
     }
 }

@@ -12,6 +12,8 @@ public class EventConfiguration : IEntityTypeConfiguration<Event>
 
         builder.HasIndex(x => x.StartTime);
 
+        builder.HasIndex(x => x.IgdbId).IsUnique();
+
         builder.Property(x => x.Description)
             .HasColumnType("text");
 

@@ -1,7 +1,9 @@
 using System.Text;
 using backend.Configuration;
 using GameNewsHub.Api.External;
+using GameNewsHub.Api.Logic.Events;
 using GameNewsHub.Api.Services;
+using GameNewsHub.Api.Services.Background;
 using GameNewsHub.Api.Services.Events;
 using GameNewsHub.Api.Services.Games;
 using GameNewsHub.Api.Services.Genres;
@@ -82,9 +84,13 @@ public static class ServiceCollectionExtensions
         services.AddScoped<IGenreService, GenreService>();
         //services.AddScoped<IPlatformService, PlatformService>();
         //services.AddScoped<IGameService, GameService>();
+        services.AddScoped<IEventWeightCalculator, EventWeightCalculator>();
         
         services.AddScoped<IEventSyncService, EventSyncService>();
         services.AddScoped<IGameSyncService, GameSyncService>();
+
+        services.AddHostedService<EventDiscoveryWorker>();
+        services.AddHostedService<EventHydrationWorker>();
 
         return services;
     }

@@ -9,6 +9,7 @@ public class EventDiscoveryWorker : BackgroundService
     private readonly ILogger<EventDiscoveryWorker> _logger;
     private readonly IServiceProvider _serviceProvider;
     private readonly TimeSpan _checkInterval = TimeSpan.FromDays(1);
+    private static readonly SemaphoreSlim _semaphore = new SemaphoreSlim(1, 1);
 
     public EventDiscoveryWorker(ILogger<EventDiscoveryWorker> logger, IServiceProvider serviceProvider)
     {
@@ -18,9 +19,12 @@ public class EventDiscoveryWorker : BackgroundService
     
     protected override async Task ExecuteAsync(CancellationToken stoppingToken)
     {
+        await Task.Delay(1000);
+        
         _logger.LogInformation("EventDiscoveryWorker is starting.");
         while (!stoppingToken.IsCancellationRequested)
         {
+            await _semaphore.WaitAsync(stoppingToken);
             try
             {
                 _logger.LogInformation($"Starting event discovery at: {DateTimeOffset.Now}");
@@ -38,6 +42,10 @@ public class EventDiscoveryWorker : BackgroundService
             catch (Exception ex)
             {
                 _logger.LogError(ex, "An error occured during event discovery.");
+            }
+            finally
+            {
+                _semaphore.Release();
             }
             await Task.Delay(_checkInterval, stoppingToken);
         }
