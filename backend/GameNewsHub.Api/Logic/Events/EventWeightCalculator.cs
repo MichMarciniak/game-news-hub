@@ -1,4 +1,4 @@
-using backend.Models.Entities;
+using GameNewsHub.Api.Entities;
 
 namespace GameNewsHub.Api.Logic.Events;
 

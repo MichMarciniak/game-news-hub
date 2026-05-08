@@ -1,4 +1,6 @@
-using backend.Models.DTOs;
+using GameNewsHub.Api.Sync.Events;
+using GameNewsHub.Api.Sync.Games;
+using GameNewsHub.Contracts;
 
 namespace GameNewsHub.Api.External;
 

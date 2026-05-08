@@ -1,4 +1,4 @@
-using backend.Models.Entities;
+using GameNewsHub.Api.Entities;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 

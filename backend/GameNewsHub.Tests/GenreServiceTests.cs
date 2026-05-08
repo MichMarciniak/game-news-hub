@@ -1,7 +1,7 @@
 using backend.Data;
-using backend.Models.Entities;
+using GameNewsHub.Api.Entities;
+using GameNewsHub.Api.Features.Genres;
 using GameNewsHub.Api.Services;
-using GameNewsHub.Api.Services.Genres;
 using Microsoft.Data.Sqlite;
 using Microsoft.EntityFrameworkCore;
 

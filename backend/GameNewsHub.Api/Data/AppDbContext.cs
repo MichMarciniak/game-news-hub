@@ -1,4 +1,4 @@
-using backend.Models.Entities;
+using GameNewsHub.Api.Entities;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;

@@ -1,12 +1,14 @@
 using System.Text;
 using backend.Configuration;
 using GameNewsHub.Api.External;
+using GameNewsHub.Api.Features.Genres;
 using GameNewsHub.Api.Logic.Events;
 using GameNewsHub.Api.Services;
-using GameNewsHub.Api.Services.Background;
-using GameNewsHub.Api.Services.Events;
 using GameNewsHub.Api.Services.Games;
-using GameNewsHub.Api.Services.Genres;
+using GameNewsHub.Api.Sync;
+using GameNewsHub.Api.Sync.Events;
+using GameNewsHub.Api.Sync.Games;
+using GameNewsHub.Api.Sync.Workers;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi;

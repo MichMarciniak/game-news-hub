@@ -1,7 +1,7 @@
 using backend.Configuration;
 using backend.Data;
 using backend.Extensions;
-using backend.Models.Entities;
+using GameNewsHub.Api.Entities;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;

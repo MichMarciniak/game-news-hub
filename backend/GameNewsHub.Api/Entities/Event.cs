@@ -1,0 +1,31 @@
+namespace GameNewsHub.Api.Entities;
+
+public class Event
+{
+    public int Id { get; set; } 
+    public string Name { get; set; }
+    
+    public string Description { get; set; }
+                                            
+    // daty w unix time
+    public long StartTime { get; set; }
+    public long? EndTime { get; set; }
+
+    public EventSyncStatus Status { get; set; }
+
+    public int IgdbId { get; set; }
+
+    public ICollection<Game> Games { get; set; } = new List<Game>();
+    public ICollection<EventGenreWeight> GenreWeights { get; set; } = new List<EventGenreWeight>();
+
+    // moze bedzie potrzebne pozniej
+    // public boolean is_user_added {get; set;}
+    
+}
+
+public enum EventSyncStatus
+{
+    Pending, //czeka na pobranie danych
+    Ready,   // wszystkie dane są
+    NoData   // dane niepełne - prawdopodobnie jeszcze się nie zakończył
+}

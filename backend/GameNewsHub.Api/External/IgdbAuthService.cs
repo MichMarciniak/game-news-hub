@@ -1,5 +1,5 @@
 using backend.Configuration;
-using backend.Models.DTOs;
+using GameNewsHub.Contracts;
 using Microsoft.Extensions.Options;
 
 namespace GameNewsHub.Api.External;
