@@ -3,7 +3,6 @@ using backend.Configuration;
 using GameNewsHub.Api.External;
 using GameNewsHub.Api.Features.Genres;
 using GameNewsHub.Api.Features.Games;
-using GameNewsHub.Api.Logic.Events;
 using GameNewsHub.Api.Sync.Events;
 using GameNewsHub.Api.Sync.Games;
 using GameNewsHub.Api.Sync.Workers;
@@ -75,22 +74,6 @@ public static class ServiceCollectionExtensions
             client.BaseAddress = new Uri(igdbOptions.BaseUrl);
             client.DefaultRequestHeaders.Add("Client-ID", igdbOptions.ClientId);
         });
-
-        return services;
-    }
-
-    public static IServiceCollection AddDomainServices(this IServiceCollection services)
-    {
-        services.AddScoped<IGenreService, GenreService>();
-        //services.AddScoped<IPlatformService, PlatformService>();
-        //services.AddScoped<IGameService, GameService>();
-        services.AddScoped<IEventWeightCalculator, EventWeightCalculator>();
-        
-        services.AddScoped<IEventSyncService, EventSyncService>();
-        services.AddScoped<IGameSyncService, GameSyncService>();
-
-        services.AddHostedService<EventDiscoveryWorker>();
-        services.AddHostedService<EventHydrationWorker>();
 
         return services;
     }

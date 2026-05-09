@@ -1,7 +1,6 @@
 using backend.Data;
 using GameNewsHub.Api.Entities;
 using GameNewsHub.Api.External;
-using GameNewsHub.Api.Logic.Events;
 using GameNewsHub.Api.Sync.Games;
 using Microsoft.EntityFrameworkCore;
 
