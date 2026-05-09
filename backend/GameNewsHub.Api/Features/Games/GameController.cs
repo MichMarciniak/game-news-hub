@@ -1,4 +1,3 @@
-using GameNewsHub.Api.Services.Games;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 

@@ -62,6 +62,11 @@ public class GenreService : IGenreService
         return existing;
     }
 
+    public Task<List<GenreDto>> GetGenreListAsync()
+    {
+        throw new NotImplementedException();
+    }
+
     private async Task<Genre> AddGenre(int igdbId, string name)
     {
         var genre = new Genre {IgdbId = igdbId, Name = name};

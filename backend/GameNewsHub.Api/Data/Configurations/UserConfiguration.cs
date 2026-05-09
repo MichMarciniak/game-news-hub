@@ -17,12 +17,16 @@ public class UserConfiguration : IEntityTypeConfiguration<AppUser>
             .WithOne(e => e.User)
             .OnDelete(DeleteBehavior.Cascade);
 
-        builder.HasMany(x => x.Platforms)
+        builder.HasMany(x => x.FollowedPlatforms)
             .WithMany()
             .UsingEntity("UserPlatforms");
 
         builder.HasMany(x => x.FollowedGames)
             .WithMany()
             .UsingEntity("UserGames");
+        
+        builder.HasMany(x => x.FollowedGenres)
+            .WithMany()
+            .UsingEntity("UserGenres");
     }
 }
