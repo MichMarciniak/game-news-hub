@@ -2,6 +2,8 @@ using backend.Configuration;
 using backend.Data;
 using backend.Extensions;
 using GameNewsHub.Api.Entities;
+using GameNewsHub.Api.Features;
+using GameNewsHub.Api.Features.Games;
 using GameNewsHub.Api.Features.UserInterest;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authorization;
@@ -30,7 +32,7 @@ builder.Services.Configure<ApiConfig>(
 
 builder.Services.AddIgdbServices(builder.Configuration);
 builder.Services.AddDomainServices();
-builder.Services.AddInterestServices();
+builder.Services.AddFeatureServices();
 
 // OPENAPI
 builder.Services.AddAuthDocumentation();

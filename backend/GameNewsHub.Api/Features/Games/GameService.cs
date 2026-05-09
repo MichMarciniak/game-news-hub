@@ -1,4 +1,7 @@
 using backend.Data;
+using ErrorOr;
+using GameNewsHub.Contracts;
+using Microsoft.EntityFrameworkCore;
 
 namespace GameNewsHub.Api.Features.Games;
 
@@ -12,18 +15,27 @@ public class GameService : IGameService
     }
 
 
-    public Task<List<int>> GetGamesListAsync()
+    public async Task<List<GameListResponse>> GetGamesListAsync()
+    {
+        var games = await _context.Games.Select(g => g.ToListResponse()).ToListAsync();
+        return games;
+    }
+
+    public Task<List<GameListResponse>> SearchGamesAsync(string query)
     {
         throw new NotImplementedException();
     }
 
-    public Task<List<int>> SearchGamesAsync(string query)
+    public async Task<ErrorOr<GameDetailsResponse>> GetGameDetailsAsync(int gameId)
     {
-        throw new NotImplementedException();
-    }
+        var game = await _context.Games
+            .FirstOrDefaultAsync(g => g.Id == gameId);
 
-    public Task<object> GetGameDetailsAsync(int gameId)
-    {
-        throw new NotImplementedException();
+        if (game == null)
+        {
+            return Error.NotFound("Game.NotFound", $"Game with id {gameId} not found.");
+        }
+        
+        return game.ToDetailsResponse();
     }
 }

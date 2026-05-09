@@ -1,8 +1,11 @@
+using ErrorOr;
+using GameNewsHub.Contracts;
+
 namespace GameNewsHub.Api.Features.Games;
 
 public interface IGameService
 {
-    public Task<List<int>> GetGamesListAsync();
-    public Task<List<int>> SearchGamesAsync(string query);
-    public Task<object> GetGameDetailsAsync(int gameId);
+    public Task<List<GameListResponse>> GetGamesListAsync();
+    public Task<List<GameListResponse>> SearchGamesAsync(string query);
+    public Task<ErrorOr<GameDetailsResponse>>  GetGameDetailsAsync(int gameId);
 }

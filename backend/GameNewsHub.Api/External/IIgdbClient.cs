@@ -6,8 +6,8 @@ namespace GameNewsHub.Api.External;
 
 public interface IIgdbClient
 {
-    public Task<List<GameResponse>> GetGamesFromIgdb(int limit = 5);
-    public Task<List<GameResponse>> UpdateMissingGames(IEnumerable<int> gameIds);
+    public Task<List<GameRequest>> GetGamesFromIgdb(int limit = 5);
+    public Task<List<GameRequest>> UpdateMissingGames(IEnumerable<int> gameIds);
 
     public Task<List<EventResponse>> GetEventsFromIgdb(long from, long to);
 

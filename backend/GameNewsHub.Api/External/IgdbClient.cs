@@ -51,21 +51,21 @@ public class IgdbClient : IIgdbClient
         return await response.Content.ReadFromJsonAsync<List<T>>() ?? new List<T>();
     }
 
-    public async Task<List<GameResponse>> GetGamesFromIgdb(int limit = 5)
+    public async Task<List<GameRequest>> GetGamesFromIgdb(int limit = 5)
     {
         var query = $"fields name, summary, cover.url, genres.name, platforms.name; " +
                     $"limit {limit};";
         var url = "games";
-        return await SendRequestAsync<GameResponse>(query, url);
+        return await SendRequestAsync<GameRequest>(query, url);
     }
 
-    public async Task<List<GameResponse>> UpdateMissingGames(IEnumerable<int> gameIds)
+    public async Task<List<GameRequest>> UpdateMissingGames(IEnumerable<int> gameIds)
     {
         var ids = string.Join(',', gameIds);
         var query = $"fields name, summary, cover.url, genres.name, platforms.name; " +
                     $"where id = ({ids});";
         var url = "games";
-        return await SendRequestAsync<GameResponse>(query, url);
+        return await SendRequestAsync<GameRequest>(query, url);
     }
 
     public async Task<List<EventResponse>> GetEventsFromIgdb(long from, long to)
