@@ -1,5 +1,6 @@
 using backend.Data;
 using ErrorOr;
+using GameNewsHub.Api.Features.UserInterest.Update;
 using Microsoft.EntityFrameworkCore;
 
 namespace GameNewsHub.Api.Features.UserInterest;
@@ -7,10 +8,12 @@ namespace GameNewsHub.Api.Features.UserInterest;
 public class UserInterestService : IUserInterestService
 {
     private readonly AppDbContext _context;
+    private readonly IWeightUpdateQueue _queue;
     
-    public UserInterestService(AppDbContext context)
+    public UserInterestService(AppDbContext context, IWeightUpdateQueue queue)
     {
         _context = context;
+        _queue = queue;
     }
     
     public async Task<ErrorOr<Success>> ToggleFollowGameAsync(int gameId, int userId)
@@ -36,6 +39,9 @@ public class UserInterestService : IUserInterestService
         }
         // change user interest
         await _context.SaveChangesAsync();
+        
+        await _queue.QueueUpdateAsync(userId);
+        
         return Result.Success;
     }
 
@@ -62,6 +68,9 @@ public class UserInterestService : IUserInterestService
         }
         // change user interest
         await _context.SaveChangesAsync();
+
+        await _queue.QueueUpdateAsync(userId);
+        
         return Result.Success;
     }
 

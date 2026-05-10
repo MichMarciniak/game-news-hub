@@ -13,10 +13,6 @@ public class UserConfiguration : IEntityTypeConfiguration<AppUser>
         builder.HasIndex(x => x.UserName)
             .IsUnique();
 
-        builder.HasMany(x => x.Interests)
-            .WithOne(e => e.User)
-            .OnDelete(DeleteBehavior.Cascade);
-
         builder.HasMany(x => x.FollowedPlatforms)
             .WithMany()
             .UsingEntity("UserPlatforms");
