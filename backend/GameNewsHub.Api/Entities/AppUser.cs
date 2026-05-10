@@ -10,4 +10,6 @@ public class AppUser : IdentityUser<int>
     public ICollection<Game> FollowedGames { get; set; } = new List<Game>();
     public ICollection<Genre> FollowedGenres { get; set; } = new List<Genre>();
 
+    public ICollection<Event> FollowedEvents { get; set; } = new List<Event>();
+
 }

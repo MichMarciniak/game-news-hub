@@ -25,7 +25,6 @@
     <ItemGroup>
       <Folder Include="Features\Events\" />
       <Folder Include="Migrations\" />
-      <Folder Include="Recommendations\" />
     </ItemGroup>
 
     <ItemGroup>
