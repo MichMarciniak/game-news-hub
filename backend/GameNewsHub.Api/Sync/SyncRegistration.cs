@@ -12,6 +12,7 @@ public static class SyncRegistration
         
         services.AddScoped<IEventSyncService, EventSyncService>();
         services.AddScoped<IGameSyncService, GameSyncService>();
+        services.AddScoped<IGenreSyncService, GenreSyncService>();
 
         services.AddHostedService<EventDiscoveryWorker>();
         services.AddHostedService<EventHydrationWorker>();
