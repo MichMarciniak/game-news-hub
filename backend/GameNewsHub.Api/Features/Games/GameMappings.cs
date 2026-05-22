@@ -21,6 +21,7 @@ public static class GameMappings
             Id = game.Id,
             Name = game.Title,
             Summary = game.Summary,
+            Cover = game.CoverUrl
         };
     }
 }

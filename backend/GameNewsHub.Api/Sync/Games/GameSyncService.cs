@@ -4,6 +4,7 @@ using GameNewsHub.Api.External;
 using GameNewsHub.Api.Features.Genres;
 using GameNewsHub.Contracts;
 using Microsoft.EntityFrameworkCore;
+using SQLitePCL;
 
 namespace GameNewsHub.Api.Sync.Games;
 
@@ -83,13 +84,29 @@ public class GameSyncService : IGameSyncService
 
         var genres = await _genreService.GetOrCreateBatchAsync(allGenres);
 
-        var newGames = externalGames.Select(dto => new Game
+        var newGames = externalGames.Select(dto =>
         {
-            IgdbId = dto.Id,
-            Title = dto.Name,
-            Summary = dto.Summary,
-            // mapowanie gatunków
-            Genres = MapGenres(dto.Genres, genres)
+            string rawUrl = dto.Cover?.Url;
+            string formattedCoverUrl = null;
+
+            if (!string.IsNullOrEmpty(rawUrl))
+            {
+                var bigCoverUrl = rawUrl.Replace("t_thumb", "t_cover_big");
+
+                formattedCoverUrl = bigCoverUrl.StartsWith("//")
+                    ? $"https:{bigCoverUrl}"
+                    : bigCoverUrl;
+            }
+            
+            return new Game
+            {
+                IgdbId = dto.Id,
+                Title = dto.Name,
+                Summary = dto.Summary,
+                CoverUrl = formattedCoverUrl,
+                // mapowanie gatunków
+                Genres = MapGenres(dto.Genres, genres)
+            };
         }).ToList();
         
         _context.Games.AddRange(newGames);

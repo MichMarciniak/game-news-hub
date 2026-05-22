@@ -77,4 +77,15 @@ public class RecommendationService : IRecommendationService
 
         return result;
     }
+
+    public async Task<List<EventResponse>> GetDefaultEventsList()
+    {
+        /*
+         * pobiera po liczbie obserwowanych eventów/polubieniach
+         * 
+         */
+        throw new NotImplementedException();
+    }
+    
+    
 }
