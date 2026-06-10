@@ -1,4 +1,5 @@
 using backend.Extensions;
+using GameNewsHub.Contracts;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
@@ -26,7 +27,7 @@ public class UserInterestController : ControllerBase
     }
     
     [HttpPost("follow/genre/{genreId}")]
-    public async Task<IActionResult> ToggleFollowgenre(int genreId)
+    public async Task<IActionResult> ToggleFollowGenre(int genreId)
     {
         var userId = User.GetUserId();
         var result = await _service.ToggleFollowGenreAsync(genreId, userId);
@@ -35,8 +36,18 @@ public class UserInterestController : ControllerBase
             errors => Problem(errors[0].Description));
     }
 
+    [HttpPost("follow/event/{eventId}")]
+    public async Task<IActionResult> ToggleFollowEvent(int eventId)
+    {
+        var userId = User.GetUserId();
+        var result = await _service.ToggleFollowEventAsync(eventId, userId);
+        return result.Match<IActionResult>(
+            success => Ok(),
+            errors => Problem(errors[0].Description));
+    }
+
     [HttpGet("followed/games")]
-    public async Task<IActionResult> GetFollowedGames()
+    public async Task<ActionResult<List<int>>> GetFollowedGames()
     {
         var userId = User.GetUserId();
         var result = await _service.GetFollowedGamesAsync(userId);
@@ -46,7 +57,7 @@ public class UserInterestController : ControllerBase
     }
     
     [HttpGet("followed/genres")]
-    public async Task<IActionResult> GetFollowedGenres()
+    public async Task<ActionResult<List<int>>> GetFollowedGenres()
     {
         var userId = User.GetUserId();
         var result = await _service.GetFollowedGenresAsync(userId);

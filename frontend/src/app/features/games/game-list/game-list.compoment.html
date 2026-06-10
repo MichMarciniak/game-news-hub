@@ -10,7 +10,7 @@
     <mat-list>
         @for (g of games(); track g.id) {
             <mat-list-item>
-                <a matListItemTitle [routerLink]="['/game', g.id]">{{ g.name }}</a>
+                <a matListItemTitle [routerLink]="['/games', g.id]">{{ g.name }}</a>
             </mat-list-item>
         }
     </mat-list>

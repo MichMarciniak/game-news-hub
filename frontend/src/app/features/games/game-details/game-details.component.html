@@ -15,7 +15,7 @@
       {{ followed() ? 'Unfollow' : 'Follow' }}
     </button>
 
-    @if (game()?.genres?.length) {
+    <!-- @if (game()?.genres?.length) {
       <h3>Genres</h3>
       <ul>
         @for (genre of game()?.genres ?? []; track genre.id) {
@@ -31,7 +31,7 @@
           <li>{{ platform.name }}</li>
         }
       </ul>
-    }
+    } -->
 
     <a routerLink="/games">Back to list</a>
   </section>

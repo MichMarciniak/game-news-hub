@@ -11,9 +11,12 @@
     <mat-list>
         @for (e of events(); track e.id) {
             <mat-list-item>
-                <span matListItemTitle>{{ e.name }}</span>
+                <a matListItemTitle  >{{ e.name }}</a>
                 <span matListItemLine>{{ e.matchScore }}</span>
                 <span matListItemMeta>{{ e.isFollowed }}</span>
+                <button (click)="toggleFollow(e.id)"> 
+                    {{e.isFollowed ? "Unfollow" : "Follow"}} 
+                </button>
             </mat-list-item>
         }
     </mat-list>

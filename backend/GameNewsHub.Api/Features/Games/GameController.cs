@@ -1,3 +1,4 @@
+using GameNewsHub.Contracts;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Mvc;
@@ -17,17 +18,17 @@ public class GameController : ControllerBase
     }
 
     [HttpGet("list")]
-    public async Task<IActionResult> GetGamesList()
+    public async Task<ActionResult<List<GameListResponse>>> GetGamesList()
     {
         var games = await _service.GetGamesListAsync();
         return Ok(games);
     }
     
     [HttpGet("{gameId}")]
-    public async Task<IActionResult> GetGameDetails(int gameId)
+    public async Task<ActionResult<GameDetailsResponse>> GetGameDetails(int gameId)
     {
         var result = await _service.GetGameDetailsAsync(gameId);
-        return result.Match<IActionResult>(
+        return result.Match(
             details => Ok(details),
             errors => Problem(errors[0].Description));
     }

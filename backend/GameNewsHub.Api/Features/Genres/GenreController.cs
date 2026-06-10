@@ -1,4 +1,5 @@
 using backend.Data;
+using GameNewsHub.Contracts;
 using Microsoft.AspNetCore.Mvc;
 
 namespace GameNewsHub.Api.Features.Genres;
@@ -14,7 +15,7 @@ public class GenreController : ControllerBase
     }
     
     [HttpGet("genres")]
-    public async Task<IActionResult> GetGenres()
+    public async Task<ActionResult<GenreDto>> GetGenres()
     {
         var genres = await _service.GetGenreListAsync();
         return Ok(genres);

@@ -13,6 +13,7 @@ using Microsoft.EntityFrameworkCore;
 using Scalar.AspNetCore;
 
 var builder = WebApplication.CreateBuilder(args);
+const string FrontendCorsPolicy = "FrontendCorsPolicy";
 
 var connectionString = builder.Configuration.GetConnectionString("DefaultConnection");
 
@@ -39,6 +40,16 @@ builder.Services.AddFeatureServices();
 builder.Services.AddAuthDocumentation();
 
 builder.Services.AddControllers();
+builder.Services.AddCors(options =>
+{
+    options.AddPolicy(FrontendCorsPolicy, policy =>
+    {
+        policy
+            .WithOrigins("http://localhost:4200", "http://127.0.0.1:4200")
+            .AllowAnyHeader()
+            .AllowAnyMethod();
+    });
+});
 
 // AUTHENTICATION - Dev mode or normal
 if (builder.Environment.IsDevelopment())
@@ -87,6 +98,8 @@ if (app.Environment.IsDevelopment())
 }
 
 // app.UseHttpsRedirection();
+app.UseCors(FrontendCorsPolicy);
+
 app.UseAuthentication();
 
 app.UseAuthorization();

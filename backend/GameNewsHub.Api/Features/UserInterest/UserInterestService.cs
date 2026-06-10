@@ -74,15 +74,44 @@ public class UserInterestService : IUserInterestService
         return Result.Success;
     }
 
+    public async Task<ErrorOr<Success>> ToggleFollowEventAsync(int eventId, int userId)
+    {
+        var user = await _context.Users
+            .Include(u => u.FollowedEvents)
+            .FirstOrDefaultAsync(u => u.Id == userId);
+        if (user == null) {
+            return Error.NotFound("User.NotFound", $"User with id {userId} not found.");
+        }
+
+        var ev = await _context.Events.FindAsync(eventId);
+        if (ev == null) {
+            return Error.NotFound("Event.NotFound", $"Event with id {eventId} not found.");
+        }
+
+        if (user.FollowedEvents.Contains(ev))
+        {
+            user.FollowedEvents.Remove(ev);
+        }
+        else
+        {
+            user.FollowedEvents.Add(ev);
+        }
+
+        await _context.SaveChangesAsync();
+        await _queue.QueueUpdateAsync(userId);
+
+        return Result.Success;
+    }
+
     public async Task<ErrorOr<List<int>>> GetFollowedGamesAsync(int userId)
     {
-        var user = _context.Users
+        var user = await _context.Users
             .Include(u => u.FollowedGames)
-            .FirstOrDefault(u => u.Id == userId);
+            .FirstOrDefaultAsync(u => u.Id == userId);
 
         if (user == null)
         {
-            return Error.NotFound("User.NotFound", $"User with id {userId} not) found.");
+            return Error.NotFound("User.NotFound", $"User with id {userId} not found.");
         }
         
         var followedGameIds = user.FollowedGames.Select(g => g.Id).ToList();
@@ -91,13 +120,13 @@ public class UserInterestService : IUserInterestService
 
     public async Task<ErrorOr<List<int>>> GetFollowedGenresAsync(int userId)
     {
-        var user = _context.Users
+        var user = await _context.Users
             .Include(u => u.FollowedGenres)
-            .FirstOrDefault(u => u.Id == userId);
+            .FirstOrDefaultAsync(u => u.Id == userId);
 
         if (user == null)
         {
-            return Error.NotFound("User.NotFound", $"User with id {userId} not) found.");
+            return Error.NotFound("User.NotFound", $"User with id {userId} not found.");
         }
         
         var followedGenreIds = user.FollowedGenres.Select(g => g.Id).ToList();

@@ -10,7 +10,7 @@ export const routes: Routes = [
             .then(m => m.GameListCompoment)
     },
     {
-        path: 'game/:id',
+        path: 'games/:id',
         loadComponent: () =>
             import('./features/games/game-details/game-details.component')
             .then(m => m.GameDetailsComponent)
@@ -22,5 +22,10 @@ export const routes: Routes = [
             import('./features/events/event-list-page/event-list-page.component')
                 .then(m => m.EventListPageComponent)
     },
+    // {
+    //     path: 'events/:id',
+    //     loadComponent: () =>
+    //         import('./features/events/event-details')
+    // }
     { path: '**', redirectTo: 'events' }
 ];

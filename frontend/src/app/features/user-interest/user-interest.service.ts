@@ -18,4 +18,8 @@ export class UserInterestService {
   toggleFollowGame(gameId: number): Observable<void> {
     return from(this.api.followGameGameIdPost({ gameId }));
   }
+
+  toggleFollowEvent(eventId: number): Observable<void> {
+    return from(this.api.followEventEventIdPost({eventId}))
+  }
 }
