@@ -1,0 +1,38 @@
+@if (loading()) {
+  <p>Loading...</p>
+}
+
+@if (error()) {
+  <p>{{ error() }}</p>
+}
+
+@if (!loading() && !error() && game()) {
+  <section>
+    <h2>{{ game()?.name }}</h2>
+    <p>{{ game()?.summary }}</p>
+
+    <button type="button" (click)="toggleFollow()" [disabled]="followLoading()">
+      {{ followed() ? 'Unfollow' : 'Follow' }}
+    </button>
+
+    @if (game()?.genres?.length) {
+      <h3>Genres</h3>
+      <ul>
+        @for (genre of game()?.genres ?? []; track genre.id) {
+          <li>{{ genre.name }}</li>
+        }
+      </ul>
+    }
+
+    @if (game()?.platforms?.length) {
+      <h3>Platforms</h3>
+      <ul>
+        @for (platform of game()?.platforms ?? []; track platform.id) {
+          <li>{{ platform.name }}</li>
+        }
+      </ul>
+    }
+
+    <a routerLink="/games">Back to list</a>
+  </section>
+}

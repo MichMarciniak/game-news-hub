@@ -1,0 +1,20 @@
+
+@if (loading()) {
+    <mat-spinner />
+}
+
+@if (error()) {
+    <p>{{ error() }}</p>
+}
+
+@if(!loading() && !error()) {
+    <mat-list>
+        @for (e of events(); track e.id) {
+            <mat-list-item>
+                <span matListItemTitle>{{ e.name }}</span>
+                <span matListItemLine>{{ e.matchScore }}</span>
+                <span matListItemMeta>{{ e.isFollowed }}</span>
+            </mat-list-item>
+        }
+    </mat-list>
+}

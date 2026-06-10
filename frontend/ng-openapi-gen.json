@@ -1,0 +1,12 @@
+{
+  "input": "http://localhost:5190/openapi/v1.json",
+  "output": "src/app/core/api/generated",
+  "services": true,
+  "serviceSuffix": "ApiService",
+  "apiService": "Api",
+  "modelIndex": "models",
+  "functionIndex": "functions",
+  "defaultTag": "Api",
+  "ignoreUnusedModels": true,
+  "removeStaleFiles": true
+}
