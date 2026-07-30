@@ -1,9 +1,8 @@
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;
-using GameNewsHub.Api.Entities;
-using GameNewsHub.Api.External;
-using GameNewsHub.Contracts;
+using GameNewsHub.Api.Dtos;
+using GameNewsHub.Data.Entities;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.IdentityModel.Tokens;

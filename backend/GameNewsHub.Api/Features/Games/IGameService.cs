@@ -1,5 +1,4 @@
 using ErrorOr;
-using GameNewsHub.Contracts;
 
 namespace GameNewsHub.Api.Features.Games;
 

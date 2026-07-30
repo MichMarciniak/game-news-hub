@@ -1,4 +1,4 @@
-namespace GameNewsHub.Api.Entities;
+namespace GameNewsHub.Data.Entities;
 
 public class UserGenreWeight
 {
