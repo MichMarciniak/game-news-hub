@@ -29,6 +29,7 @@
 
     <ItemGroup>
       <ProjectReference Include="..\GameNewsHub.Contracts\GameNewsHub.Contracts.csproj" />
+      <ProjectReference Include="..\GameNewsHub.Data\GameNewsHub.Data.csproj" />
     </ItemGroup>
 
 </Project>
