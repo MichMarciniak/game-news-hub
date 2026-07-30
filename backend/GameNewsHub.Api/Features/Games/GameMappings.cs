@@ -1,5 +1,4 @@
-using GameNewsHub.Api.Entities;
-using GameNewsHub.Contracts;
+using GameNewsHub.Data.Entities;
 
 namespace GameNewsHub.Api.Features.Games;
 

@@ -1,6 +1,6 @@
 using backend.Data;
-using GameNewsHub.Api.Entities;
-using GameNewsHub.Contracts;
+using GameNewsHub.Api.Dtos;
+using GameNewsHub.Data.Entities;
 using Microsoft.EntityFrameworkCore;
 using SQLitePCL;
 
@@ -78,14 +78,16 @@ public class RecommendationService : IRecommendationService
         return result;
     }
 
+    /*
     public async Task<List<EventResponse>> GetDefaultEventsList()
     {
         /*
          * pobiera po liczbie obserwowanych eventów/polubieniach
          * 
-         */
+         #1#
         throw new NotImplementedException();
     }
+    */
     
     
 }

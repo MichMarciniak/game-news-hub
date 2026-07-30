@@ -1,4 +1,4 @@
-using GameNewsHub.Contracts;
+using GameNewsHub.Api.Dtos;
 
 namespace GameNewsHub.Api.Features.Recommendations;
 

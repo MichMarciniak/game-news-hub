@@ -1,6 +1,5 @@
 using backend.Data;
 using ErrorOr;
-using GameNewsHub.Contracts;
 using Microsoft.EntityFrameworkCore;
 
 namespace GameNewsHub.Api.Features.Games;

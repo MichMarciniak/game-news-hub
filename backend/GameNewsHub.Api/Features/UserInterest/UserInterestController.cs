@@ -1,5 +1,4 @@
 using backend.Extensions;
-using GameNewsHub.Contracts;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 

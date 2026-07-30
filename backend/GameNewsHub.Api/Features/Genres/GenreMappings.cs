@@ -1,13 +1,13 @@
-using GameNewsHub.Api.Entities;
-using GameNewsHub.Contracts;
+using GameNewsHub.Api.Dtos;
+using GameNewsHub.Data.Entities;
 
 namespace GameNewsHub.Api.Features.Genres;
 
 public static class GenreMappings
 {
-    public static GenreDto ToDto(this Genre genre)
+    public static GenreResponse ToDto(this Genre genre)
     {
-        return new GenreDto
+        return new GenreResponse
         {
             Id = genre.IgdbId,
             Name = genre.Name

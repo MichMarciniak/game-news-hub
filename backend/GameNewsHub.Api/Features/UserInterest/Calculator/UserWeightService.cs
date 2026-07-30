@@ -1,5 +1,5 @@
 using backend.Data;
-using GameNewsHub.Api.Entities;
+using GameNewsHub.Data.Entities;
 using Microsoft.EntityFrameworkCore;
 
 namespace GameNewsHub.Api.Features.UserInterest.Calculator;

@@ -1,6 +1,6 @@
 using backend.Data;
-using GameNewsHub.Api.Entities;
-using GameNewsHub.Contracts;
+using GameNewsHub.Api.Dtos;
+using GameNewsHub.Data.Entities;
 using Microsoft.EntityFrameworkCore;
 
 namespace GameNewsHub.Api.Features.Genres;
@@ -15,7 +15,7 @@ public class GenreService : IGenreService
     }
     
 
-    public Task<List<GenreDto>> GetGenreListAsync()
+    public Task<List<GenreResponse>> GetGenreListAsync()
     {
         var genres = _context.Genres.Select(g => g.ToDto()).ToList();
         return Task.FromResult(genres);

@@ -1,9 +1,9 @@
-using GameNewsHub.Api.Entities;
-using GameNewsHub.Contracts;
+using GameNewsHub.Api.Dtos;
+using GameNewsHub.Data.Entities;
 
 namespace GameNewsHub.Api.Features.Genres;
 
 public interface IGenreService
 {
-    public Task<List<GenreDto>> GetGenreListAsync();
+    public Task<List<GenreResponse>> GetGenreListAsync();
 }
