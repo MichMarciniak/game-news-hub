@@ -10,7 +10,7 @@ var builder = Host.CreateApplicationBuilder(args);
 var connectionString = builder.Configuration.GetConnectionString("DefaultConnection");
 
 builder.Services.AddDbContext<AppDbContext>(options =>
-    options.UseSqlite(connectionString)
+    options.UseNpgsql(connectionString)
 );
 
 builder.Services.Configure<ApiConfig>(

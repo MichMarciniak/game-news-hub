@@ -8,9 +8,9 @@ namespace GameNewsHub.Api.Features.UserInterest;
 [Authorize]
 public class UserInterestController : ControllerBase
 {
-    private readonly IUserInterestService _service;
+    private readonly UserInterestService _service;
 
-    public UserInterestController(IUserInterestService service)
+    public UserInterestController(UserInterestService service)
     {
         _service = service;
     }

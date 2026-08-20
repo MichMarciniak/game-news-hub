@@ -5,7 +5,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace GameNewsHub.Api.Features.UserInterest;
 
-public class UserInterestService : IUserInterestService
+public class UserInterestService 
 {
     private readonly AppDbContext _context;
     private readonly IWeightUpdateQueue _queue;

@@ -4,7 +4,7 @@ public static class GameRegistration
 {
     public static IServiceCollection AddGameServices(this IServiceCollection services)
     {
-        services.AddScoped<IGameService, GameService>();
+        services.AddScoped<GameService>();
         return services;
     }
 }

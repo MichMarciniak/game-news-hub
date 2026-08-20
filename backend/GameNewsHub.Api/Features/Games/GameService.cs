@@ -4,7 +4,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace GameNewsHub.Api.Features.Games;
 
-public class GameService : IGameService
+public class GameService 
 {
     private readonly AppDbContext _context;
 

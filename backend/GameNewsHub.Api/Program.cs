@@ -16,7 +16,7 @@ var connectionString = builder.Configuration.GetConnectionString("DefaultConnect
 
 //DATABSE + IDENTITY
 builder.Services.AddDbContext<AppDbContext>(options =>
-    options.UseSqlite(connectionString)
+    options.UseNpgsql(connectionString)
 );
 
 builder.Services.AddIdentity<AppUser, IdentityRole<int>>()

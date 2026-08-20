@@ -7,7 +7,7 @@ public static class UserInterestRegistration
 {
     public static IServiceCollection AddInterestServices(this IServiceCollection services)
     {
-        services.AddScoped<IUserInterestService, UserInterestService>();
+        services.AddScoped<UserInterestService>();
 
         services.AddScoped<UserGenreWeightCalculator>();
         services.AddScoped<IUserWeightService, UserWeightService>();

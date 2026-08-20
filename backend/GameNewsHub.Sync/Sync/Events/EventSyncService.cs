@@ -35,7 +35,7 @@ public class EventSyncService : IEventSyncService
          * jeśli nie ma, to dodaj i ustaw status na Pending 
          */
 
-        var from = DateTimeOffset.UtcNow.AddDays(-10).ToUnixTimeSeconds();
+        var from = DateTimeOffset.UtcNow.AddDays(-410).ToUnixTimeSeconds();
         var to = DateTimeOffset.UtcNow.AddDays(10).ToUnixTimeSeconds();
         var externalEvents = await _client.GetEventsFromIgdb(from, to);
 
@@ -76,7 +76,7 @@ public class EventSyncService : IEventSyncService
          */
 
         // jak nie ma przez 3 dni od zakończenia, to pewnie nie będzie
-        var timeThreshold = DateTimeOffset.UtcNow.AddDays(-10).ToUnixTimeSeconds();
+        var timeThreshold = DateTimeOffset.UtcNow.AddDays(-410).ToUnixTimeSeconds();
         var noDataEvents = await _context.Events
             .Where(e => e.Status != EventSyncStatus.Ready)
             .Where(e => e.StartTime > timeThreshold)

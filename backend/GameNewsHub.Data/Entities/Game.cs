@@ -11,5 +11,11 @@ public class Game
     public ICollection<Genre> Genres { get; set; } = new List<Genre>();
     public ICollection<Platform> Platforms { get; set; } = new List<Platform>();
 
+    public GameType Type { get; set; } = GameType.MainGame;
+    public int? ParentGameIgdbId { get; set; }
+    public int? ParentGameId { get; set; }
+    public Game? ParentGame { get; set; }
+    public ICollection<Game> ChildGames { get; set; } = new List<Game>();
+
     public int IgdbId { get; set; }
 }

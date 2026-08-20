@@ -2,7 +2,6 @@ using backend.Data;
 using GameNewsHub.Api.Dtos;
 using GameNewsHub.Data.Entities;
 using Microsoft.EntityFrameworkCore;
-using SQLitePCL;
 
 namespace GameNewsHub.Api.Features.Recommendations;
 

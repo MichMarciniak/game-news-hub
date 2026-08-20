@@ -2,6 +2,7 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 using backend.Data;
@@ -11,9 +12,11 @@ using backend.Data;
 namespace Data.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    partial class AppDbContextModelSnapshot : ModelSnapshot
+    [Migration("20260819173102_PostgresInit")]
+    partial class PostgresInit
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -215,12 +218,6 @@ namespace Data.Migrations
                     b.Property<int>("IgdbId")
                         .HasColumnType("integer");
 
-                    b.Property<int?>("ParentGameId")
-                        .HasColumnType("integer");
-
-                    b.Property<int?>("ParentGameIgdbId")
-                        .HasColumnType("integer");
-
                     b.Property<string>("Summary")
                         .IsRequired()
                         .HasColumnType("text");
@@ -229,12 +226,7 @@ namespace Data.Migrations
                         .IsRequired()
                         .HasColumnType("text");
 
-                    b.Property<int>("Type")
-                        .HasColumnType("integer");
-
                     b.HasKey("Id");
-
-                    b.HasIndex("ParentGameId");
 
                     b.HasIndex("Title");
 
@@ -545,16 +537,6 @@ namespace Data.Migrations
                         .IsRequired();
                 });
 
-            modelBuilder.Entity("GameNewsHub.Data.Entities.Game", b =>
-                {
-                    b.HasOne("GameNewsHub.Data.Entities.Game", "ParentGame")
-                        .WithMany("ChildGames")
-                        .HasForeignKey("ParentGameId")
-                        .OnDelete(DeleteBehavior.Restrict);
-
-                    b.Navigation("ParentGame");
-                });
-
             modelBuilder.Entity("GamePlatforms", b =>
                 {
                     b.HasOne("GameNewsHub.Data.Entities.Game", null)
@@ -674,11 +656,6 @@ namespace Data.Migrations
             modelBuilder.Entity("GameNewsHub.Data.Entities.Event", b =>
                 {
                     b.Navigation("GenreWeights");
-                });
-
-            modelBuilder.Entity("GameNewsHub.Data.Entities.Game", b =>
-                {
-                    b.Navigation("ChildGames");
                 });
 #pragma warning restore 612, 618
         }

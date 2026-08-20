@@ -9,9 +9,9 @@ namespace GameNewsHub.Api.Features.Games;
 [Route("[controller]")]
 public class GameController : ControllerBase
 {
-    private readonly IGameService _service;
+    private readonly GameService _service;
 
-    public GameController(IGameService service)
+    public GameController(GameService service)
     {
         _service = service;
     }

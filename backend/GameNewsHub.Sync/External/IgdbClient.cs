@@ -61,7 +61,7 @@ public class IgdbClient : IIgdbClient
     public async Task<List<IgdbGameResponse>> UpdateMissingGames(IEnumerable<int> gameIds)
     {
         var ids = string.Join(',', gameIds);
-        var query = $"fields name, summary, cover.url, genres.name, platforms.name; " +
+        var query = $"fields name, summary, cover.url, genres.name, platforms.name, category, parent_game; " +
                     $"where id = ({ids});";
         var url = "games";
         return await SendRequestAsync<IgdbGameResponse>(query, url);
@@ -71,7 +71,7 @@ public class IgdbClient : IIgdbClient
     {
         var query = $"fields name, start_time, end_time, description, games.id; " + 
                     $"where start_time >= {from} & start_time <= {to};" +
-                    $"sort start_time asc;";
+                    $"sort start_time asc; limit 500;";
         var url = "events";
         return await SendRequestAsync<IgdbEventResponse>(query, url);
     }
@@ -80,7 +80,7 @@ public class IgdbClient : IIgdbClient
     {
         var ids = string.Join(",", eventIds);
         var query = $"fields name, start_time, end_time, description, games.id;" +
-                    $"where id = ({ids});";
+                    $"where id = ({ids}); limit 500;";
         var url = "events";
         return await SendRequestAsync<IgdbEventResponse>(query, url);
     }

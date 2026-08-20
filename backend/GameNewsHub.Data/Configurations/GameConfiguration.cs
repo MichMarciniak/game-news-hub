@@ -12,6 +12,8 @@ public class GameConfiguration : IEntityTypeConfiguration<Game>
 
         builder.HasIndex(x => x.Title);
 
+        builder.HasIndex(x => x.ParentGameId);
+
         builder.Property(x => x.Summary)
             .HasColumnType("text");
 
@@ -22,5 +24,11 @@ public class GameConfiguration : IEntityTypeConfiguration<Game>
         builder.HasMany(x => x.Platforms)
             .WithMany(e => e.Games)
             .UsingEntity("GamePlatforms");
+
+        // self reference: gra (DLC/mod/...) -> gra bazowa
+        builder.HasOne(x => x.ParentGame)
+            .WithMany(x => x.ChildGames)
+            .HasForeignKey(x => x.ParentGameId)
+            .OnDelete(DeleteBehavior.Restrict);
     }
 }

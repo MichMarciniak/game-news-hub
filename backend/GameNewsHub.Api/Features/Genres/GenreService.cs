@@ -5,7 +5,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace GameNewsHub.Api.Features.Genres;
 
-public class GenreService : IGenreService
+public class GenreService 
 {
     private readonly AppDbContext _context;
 

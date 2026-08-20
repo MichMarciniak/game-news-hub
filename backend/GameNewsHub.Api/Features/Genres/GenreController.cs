@@ -7,9 +7,9 @@ namespace GameNewsHub.Api.Features.Genres;
 [ApiController]
 public class GenreController : ControllerBase
 {
-    private readonly IGenreService _service;
+    private readonly GenreService _service;
     
-    public GenreController(IGenreService service)
+    public GenreController(GenreService service)
     {
         _service = service;
     }
