@@ -27,11 +27,11 @@ public class GameSyncService : IGameSyncService
 
         foreach (var dto in rawGames)
         {
-            if (await _context.Games.AnyAsync(g => g.IgdbId == dto.Id)) continue;
+            if (await _context.Games.AnyAsync(g => g.IgdbId == dto.IgdbId)) continue;
 
             var game = new Game
             {
-                IgdbId = dto.Id,
+                IgdbId = dto.IgdbId,
                 Title = dto.Name,
                 Summary = dto.Summary,
                 CoverUrl = dto.Cover?.Url?.Replace("t_thumb", "t_720p").Insert(0, "https:")
@@ -41,7 +41,7 @@ public class GameSyncService : IGameSyncService
             {
                 foreach (var gDto in dto.Genres)
                 {
-                    var genre = await _genreService.GetOrCreateAsync(gDto.Id, gDto.Name);
+                    var genre = await _genreService.GetOrCreateAsync(gDto.IgdbId, gDto.Name);
                     game.Genres.Add(genre);
                 }
             }
@@ -60,7 +60,7 @@ public class GameSyncService : IGameSyncService
 
     // przeciążenie z visited, chroni przed nieskonczona rekurencja
     // gdyby parent_game tworzył cykl w igdb
-    public async Task<ICollection<Game>> GetOrCreateGamesAsync(IEnumerable<int> gameIds, HashSet<int> visited)
+    private async Task<ICollection<Game>> GetOrCreateGamesAsync(IEnumerable<int> gameIds, HashSet<int> visited)
     {
         if (gameIds == null || !gameIds.Any()) return new List<Game>();
 
@@ -85,7 +85,7 @@ public class GameSyncService : IGameSyncService
 
         var allGenres = externalGames
             .SelectMany(g => g.Genres ?? Enumerable.Empty<IgdbGenreResponse>())
-            .Distinct()
+            .DistinctBy(g => g.IgdbId) // ????????????????????????????????????/
             .ToList();
         var genres = await _genreService.GetOrCreateBatchAsync(allGenres);
 
@@ -103,12 +103,12 @@ public class GameSyncService : IGameSyncService
             
             return new Game
             {
-                IgdbId = dto.Id,
+                IgdbId = dto.IgdbId,
                 Title = dto.Name,
                 Summary = dto.Summary,
                 CoverUrl = formattedCoverUrl,
-                Type = dto.GameType != null ? (GameType)dto.GameType.Id : GameType.MainGame,
-                ParentGameIgdbId = dto.ParentGame?.Id,
+                Type = dto.GameType != null ? (GameType)dto.GameType.IgdbId : GameType.MainGame,
+                ParentGameIgdbId = dto.ParentGame,
                 Genres = MapGenres(dto.Genres, genres)
             };
         }).ToList();
@@ -127,7 +127,7 @@ public class GameSyncService : IGameSyncService
     {
         if (dtos == null || !dtos.Any()) return new List<Genre>();
         
-        var ids = dtos.Select(d => d.Id).ToList();
+        var ids = dtos.Select(d => d.IgdbId).ToList();
         return genres.Where(g => ids.Contains(g.IgdbId)).ToList();
     }
 
@@ -141,18 +141,15 @@ public class GameSyncService : IGameSyncService
 
         if (!parentIgdbIds.Any()) return;
 
-        await GetOrCreateGamesAsync(parentIgdbIds, visited);
-
-        var parentGames = await _context.Games
-            .Where(g => parentIgdbIds.Contains(g.IgdbId))
-            .ToListAsync();
+        var parentGames = await GetOrCreateGamesAsync(parentIgdbIds, visited);
 
         foreach (var g in games.Where(g => g.ParentGameIgdbId.HasValue))
         {
             var parent = parentGames.FirstOrDefault(p => p.IgdbId == g.ParentGameIgdbId.Value);
             if (parent != null)
             {
-                g.ParentGameId = parent.Id;
+                // bezpieczniej niż po Id
+                g.ParentGame = parent;
             }
         }
 

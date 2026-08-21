@@ -21,21 +21,21 @@ public class PlatformSyncService : IPlatformSyncService
             return new List<Platform>();
         }
 
-        var ids = platformDtos.Select(p => p.Id).ToList();
+        var ids = platformDtos.Select(p => p.IgdbId).ToList();
 
         var existing = await _context.Platforms
             .Where(p => ids.Contains(p.IgdbId))
             .ToListAsync();
 
         var existingIds = existing.Select(p => p.IgdbId).ToHashSet();
-        var missing = platformDtos.Where(p => !existingIds.Contains(p.Id)).ToList();
+        var missing = platformDtos.Where(p => !existingIds.Contains(p.IgdbId)).ToList();
 
         if (missing.Count == 0) return existing;
         
         var newPlatforms = missing.Select(p => new Platform
         {
             Name = p.Name,
-            IgdbId = p.Id
+            IgdbId = p.IgdbId
         }).ToList();
         
         _context.Platforms.AddRange(newPlatforms);

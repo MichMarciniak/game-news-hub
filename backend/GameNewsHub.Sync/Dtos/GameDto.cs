@@ -4,7 +4,8 @@ namespace GameNewsHub.Sync.Dtos;
 
 public record IgdbGameResponse 
 {
-    public int Id{ get; set; }
+    [JsonPropertyName("id")]
+    public int IgdbId{ get; set; }
     public string Name { get; set; } = string.Empty;
     public string Summary { get; set; } = string.Empty;
 
@@ -15,7 +16,7 @@ public record IgdbGameResponse
     public IgdbGameTypeDto? GameType { get; set; }
     
     [JsonPropertyName("parent_game")]
-    public IgdbParentGameDto? ParentGame { get; set; }
+    public int? ParentGame { get; set; }
     
     public IgdbCoverResponse? Cover { get; set; }
 }
@@ -24,12 +25,7 @@ public record GameIdContainer(int Id);
 
 public class IgdbGameTypeDto
 {
-    public int Id { get; set; }
+    [JsonPropertyName("id")]
+    public int IgdbId { get; set; }
     public string Type { get; set; } = string.Empty;
-}
-
-public class IgdbParentGameDto
-{
-    public int Id { get; set; }
-    public string Name { get; set; } = string.Empty;
 }

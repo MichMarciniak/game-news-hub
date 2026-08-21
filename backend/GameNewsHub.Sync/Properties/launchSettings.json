@@ -1,11 +1,22 @@
 ﻿{
   "$schema": "https://json.schemastore.org/launchsettings.json",
   "profiles": {
-    "GameNewsHub.Sync": {
+    "Standard": {
       "commandName": "Project",
       "dotnetRunMessages": true,
       "environmentVariables": {
-        "DOTNET_ENVIRONMENT": "Development"
+        "DOTNET_ENVIRONMENT": "Development",
+        "IgdbMode": "Standard",
+        "SyncDaysRange": "30"
+      }
+    },
+    "Bulk": {
+      "commandName": "Project",
+      "dotnetRunMessages": true,
+      "environmentVariables": {
+        "DOTNET_ENVIRONMENT": "Development",
+        "IgdbMode": "Bulk",
+        "SyncDaysRange": "410"
       }
     }
   }

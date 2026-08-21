@@ -11,7 +11,7 @@ public class IgdbAuthService
     private readonly SemaphoreSlim _semaphore = new SemaphoreSlim(1, 1);
     private readonly ILogger<IgdbAuthService> _logger;
 
-    private string? _cachedToken;
+    private volatile string? _cachedToken;
     private DateTime _expiresAt;
 
     public IgdbAuthService(IOptions<ApiConfig> config, HttpClient client, ILogger<IgdbAuthService> logger)
@@ -55,6 +55,8 @@ public class IgdbAuthService
             _expiresAt = DateTime.UtcNow.AddSeconds(data.ExpiresIn - 60);
             
             _logger.LogInformation("Refreshed Twitch access token.");
+            
+            // TODO delete this later, for now it's fine
             _logger.LogInformation(data.AccessToken);
             _logger.LogInformation(_cachedToken);
 

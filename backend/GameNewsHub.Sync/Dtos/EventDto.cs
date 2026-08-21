@@ -4,7 +4,8 @@ namespace GameNewsHub.Sync.Dtos;
 
 public record IgdbEventResponse
 {
-    public int Id { get; set; } // igdb id
+    [JsonPropertyName("id")] 
+    public int IgdbId { get; set; } 
     
     public string Name { get; set; }
     

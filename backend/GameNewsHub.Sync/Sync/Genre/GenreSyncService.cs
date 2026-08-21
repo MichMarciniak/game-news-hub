@@ -37,20 +37,20 @@ public class GenreSyncService : IGenreSyncService
             return new List<Genre>();
         }
 
-        var incomingIds = genreDtos.Select(g => g.Id).ToList();
+        var incomingIds = genreDtos.Select(g => g.IgdbId).ToList();
 
         var existing = await _context.Genres
             .Where(g => incomingIds.Contains(g.IgdbId))
             .ToListAsync();
 
         var existingIds = existing.Select(g => g.IgdbId).ToHashSet();
-        var missing = genreDtos.Where(g => !existingIds.Contains(g.Id)).ToList();
+        var missing = genreDtos.Where(g => !existingIds.Contains(g.IgdbId)).ToList();
 
         if (missing.Any())
         {
             var newGenres = missing.Select(g => new Genre
             {
-                IgdbId = g.Id,
+                IgdbId = g.IgdbId,
                 Name = g.Name
             }).ToList();
             
