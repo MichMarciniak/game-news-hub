@@ -1,5 +1,7 @@
-﻿using ErrorOr;
+﻿using backend.Extensions;
+using ErrorOr;
 using GameNewsHub.Contracts;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Mvc;
 
@@ -10,10 +12,12 @@ namespace GameNewsHub.Api.Features.Events;
 public class EventController : ControllerBase
 {
     private readonly EventService _service;
+    private readonly FollowEventService _followService;
     
-    public  EventController(EventService service)
+    public  EventController(EventService service, FollowEventService followService)
     {
         _service = service;
+        _followService = followService;
     }
 
     [HttpGet]
@@ -32,5 +36,27 @@ public class EventController : ControllerBase
             detail => Ok(detail),
             errors => Problem(errors[0].Description)
         );
+    }
+
+    [HttpPost("{eventId}/follow")]
+    [Authorize]
+    public async Task<IActionResult> FollowEvent(int eventId)
+    {
+        var userId = User.GetUserId();
+        var result = await _followService.Follow(userId, eventId);
+        return result.Match<IActionResult>(
+            success => Ok(),
+            errors => Problem(errors[0].Description));
+    }
+    
+    [HttpDelete("{eventId}/follow")]
+    [Authorize]
+    public async Task<IActionResult> UnfollowEvent(int eventId)
+    {
+        var userId = User.GetUserId();
+        var result = await _followService.Unfollow(userId, eventId);
+        return result.Match<IActionResult>(
+            success => Ok(),
+            errors => Problem(errors[0].Description));
     }
 }
