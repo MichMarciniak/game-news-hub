@@ -55,7 +55,7 @@ public abstract class BaseIgdbClient : IIgdbClient
         foreach (var chunk in chunks)
         {
             var ids = string.Join(',', chunk);
-            var query = $"fields name, summary, cover.url, genres.name, platforms.name, category, parent_game; " +
+            var query = $"fields name, summary, cover.url, genres.name, platforms.name, category, parent_game, game_type.type; " +
                         $"where id = ({ids}); limit {chunkSize};";
 
             var url = "games";

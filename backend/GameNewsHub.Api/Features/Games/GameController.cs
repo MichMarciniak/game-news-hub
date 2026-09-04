@@ -1,3 +1,6 @@
+using backend.Extensions;
+using ErrorOr;
+using GameNewsHub.Contracts;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Mvc;
@@ -7,28 +10,59 @@ namespace GameNewsHub.Api.Features.Games;
 [Authorize]
 [ApiController]
 [Route("[controller]")]
-public class GameController : ControllerBase
+public class GameController : ControllerBase 
 {
     private readonly GameService _service;
+    private readonly FollowGameService _followService;
 
-    public GameController(GameService service)
+    public GameController(GameService service, FollowGameService followGameService)
     {
         _service = service;
+        _followService = followGameService;
     }
 
     [HttpGet("list")]
-    public async Task<ActionResult<List<GameListResponse>>> GetGamesList()
+    public async Task<ActionResult<List<GameListItemDto>>> GetGamesList()
     {
         var games = await _service.GetGamesListAsync();
         return Ok(games);
     }
     
     [HttpGet("{gameId}")]
-    public async Task<ActionResult<GameDetailsResponse>> GetGameDetails(int gameId)
+    public async Task<ActionResult<GameDetailDto>> GetGameDetails(int gameId)
     {
         var result = await _service.GetGameDetailsAsync(gameId);
         return result.Match(
             details => Ok(details),
+            errors => Problem(errors[0].Description ));
+    }
+
+    [HttpGet("{gameId}/addons")]
+    public async Task<ActionResult<GameDetailDto>> GetGameAddons(int gameId)
+    {
+        var result = await _service.GetGameAddons(gameId);
+        return result.Match(
+            details => Ok(details),
+            errors => Problem(errors[0].Description));
+    }
+
+    [HttpPost("{gameId}/follow")]
+    public async Task<IActionResult> FollowGame(int gameId)
+    {
+        int userId = User.GetUserId();
+        var result = await _followService.Follow(userId, gameId);
+        return result.Match<IActionResult>(
+            success => Ok(),
+            errors => Problem(errors[0].Description));
+    }
+
+    [HttpDelete("{gameId}/follow")]
+    public async Task<IActionResult> UnfollowGame(int gameId)
+    {
+        int userId = User.GetUserId();
+        var result = await _followService.Unfollow(userId, gameId);
+        return result.Match<IActionResult>(
+            success => NoContent(),
             errors => Problem(errors[0].Description));
     }
 

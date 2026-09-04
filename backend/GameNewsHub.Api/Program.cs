@@ -37,7 +37,7 @@ builder.Services.AddCors(options =>
     options.AddPolicy(FrontendCorsPolicy, policy =>
     {
         policy
-            .WithOrigins("http://localhost:4200", "http://127.0.0.1:4200")
+            .WithOrigins("http://localhost:4200", "http://127.0.0.1:4200", "http://localhost:5180")
             .AllowAnyHeader()
             .AllowAnyMethod();
     });
@@ -70,7 +70,6 @@ using (var scope = app.Services.CreateScope())
     var db = scope.ServiceProvider.GetRequiredService<AppDbContext>();
     db.Database.Migrate();
 
-   
 }
 
 if (app.Environment.IsDevelopment())

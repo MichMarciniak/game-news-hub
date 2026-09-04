@@ -1,7 +1,7 @@
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;
-using GameNewsHub.Api.Dtos;
+using GameNewsHub.Contracts;
 using GameNewsHub.Data.Entities;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
@@ -22,7 +22,7 @@ public class AuthController : ControllerBase
     }
 
     [HttpPost("register")]
-    public async Task<IActionResult> Register(LoginRequest request)
+    public async Task<IActionResult> Register(LoginDto request)
     {
         var user = new AppUser { UserName = request.Username };
         var result = await _userManager.CreateAsync(user, request.Password);
@@ -32,7 +32,7 @@ public class AuthController : ControllerBase
     }
 
     [HttpPost("login")]
-    public async Task<IActionResult> Login(LoginRequest request)
+    public async Task<IActionResult> Login(LoginDto request)
     {
         var user = await _userManager.FindByNameAsync(request.Username);
         if (user == null || !await _userManager.CheckPasswordAsync(user, request.Password)) return Unauthorized();

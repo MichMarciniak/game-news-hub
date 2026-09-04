@@ -1,4 +1,4 @@
-﻿namespace GameNewsHub.Data.Entities;
+﻿namespace Data.Entities;
 
 public enum GameType
 {

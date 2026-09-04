@@ -1,3 +1,5 @@
+using Data.Entities;
+
 namespace GameNewsHub.Data.Entities;
 
 public class Game

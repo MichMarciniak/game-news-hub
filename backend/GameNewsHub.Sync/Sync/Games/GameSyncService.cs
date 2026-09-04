@@ -1,4 +1,5 @@
 using backend.Data;
+using Data.Entities;
 using GameNewsHub.Data.Entities;
 using GameNewsHub.Sync.Dtos;
 using GameNewsHub.Sync.External;
