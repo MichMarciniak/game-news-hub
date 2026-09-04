@@ -27,6 +27,13 @@ public class GameController : ControllerBase
         var games = await _service.GetGamesListAsync();
         return Ok(games);
     }
+
+    [HttpGet("search")]
+    public async Task<ActionResult<List<GameListItemDto>>> SearchGames(string? query, int page = 1, int pageSize = 25)
+    {
+        var games = await _service.SearchGamesAsync(query, page, pageSize);
+        return Ok(games);
+    }
     
     [HttpGet("{gameId}")]
     public async Task<ActionResult<GameDetailDto>> GetGameDetails(int gameId)

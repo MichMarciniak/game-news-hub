@@ -3,6 +3,7 @@ using Data.Entities;
 using ErrorOr;
 using GameNewsHub.Api.Mappings;
 using GameNewsHub.Contracts;
+using GameNewsHub.Data.Entities;
 using Microsoft.EntityFrameworkCore;
 
 namespace GameNewsHub.Api.Features.Games;
@@ -27,9 +28,23 @@ public class GameService
         return games;
     }
 
-    public Task<List<GameListItemDto>> SearchGamesAsync(string query)
+    public async Task<List<GameListItemDto>> SearchGamesAsync(string? query, int page, int pageSize)
     {
-        throw new NotImplementedException();
+        IQueryable<Game> dbQuery = _context.Games.Where(g => g.Type == GameType.MainGame);
+
+        if (!string.IsNullOrWhiteSpace(query))
+        {
+            dbQuery = dbQuery.Where(g => g.Title.ToLower().Contains(query.ToLower()));
+        }
+        
+        var games = await dbQuery
+            .OrderBy(g => g.Title)
+            .Select(g => g.ToListItemDto())
+            .Skip((page - 1) * pageSize)
+            .Take(pageSize)
+            .ToListAsync();
+        
+        return games;
     }
 
     public async Task<ErrorOr<GameDetailDto>> GetGameDetailsAsync(int gameId)
