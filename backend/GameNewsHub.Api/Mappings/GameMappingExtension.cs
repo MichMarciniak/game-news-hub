@@ -14,7 +14,9 @@ public static class GameMappingExtension
             Title = game.Title,
             Summary = game.Summary,
             CoverUrl = game.CoverUrl,
-            Genres = game.Genres.Select(g => g.ToDto()).ToList()
+            Genres = game.Genres.Select(g => g.ToDto()).ToList(),
+            Addons = game.ChildGames.Select(g => g.ToListItemDto()).ToList(),
+            ParentGameId = game.ParentGameId
         };
     }
 

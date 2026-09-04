@@ -50,6 +50,7 @@ public class GameService
     public async Task<ErrorOr<GameDetailDto>> GetGameDetailsAsync(int gameId)
     {
         var game = await _context.Games
+            .Include(g => g.ChildGames)
             .FirstOrDefaultAsync(g => g.Id == gameId);
 
         if (game == null)
