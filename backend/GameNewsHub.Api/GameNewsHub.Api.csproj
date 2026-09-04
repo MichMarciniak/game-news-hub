@@ -22,10 +22,6 @@
     </ItemGroup>
 
     <ItemGroup>
-      <Folder Include="Features\Events\" />
-    </ItemGroup>
-
-    <ItemGroup>
       <ProjectReference Include="..\GameNewsHub.Client\GameNewsHub.Client.csproj" />
       <ProjectReference Include="..\GameNewsHub.Contracts\GameNewsHub.Contracts.csproj" />
       <ProjectReference Include="..\GameNewsHub.Data\GameNewsHub.Data.csproj" />

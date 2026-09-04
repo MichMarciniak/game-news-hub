@@ -1,3 +1,4 @@
+using GameNewsHub.Api.Features.Events;
 using GameNewsHub.Api.Features.Games;
 using GameNewsHub.Api.Features.Genres;
 using GameNewsHub.Api.Features.Recommendations;
@@ -13,6 +14,7 @@ public static class FeaturesRegistration
         services.AddGenreServices();
         services.AddRecommendationServices();
         services.AddUsersServices();
+        services.AddEventServices();
         return services;
     }
 }
