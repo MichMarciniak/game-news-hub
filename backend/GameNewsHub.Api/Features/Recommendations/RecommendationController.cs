@@ -1,6 +1,7 @@
 using System.Security.Claims;
 using backend.Extensions;
 using GameNewsHub.Api.Dtos;
+using GameNewsHub.Contracts;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
@@ -11,9 +12,9 @@ namespace GameNewsHub.Api.Features.Recommendations;
 [Route("[controller]")]
 public class RecommendationController : ControllerBase
 {
-    private readonly IRecommendationService _service;
+    private readonly RecommendationService _service;
 
-    public RecommendationController(IRecommendationService service)
+    public RecommendationController(RecommendationService service)
     {
         _service = service;
     }
@@ -26,6 +27,19 @@ public class RecommendationController : ControllerBase
         var result = await _service.GetRecommendedEventList(userId);
         return Ok(result);
     }
-    
+
+    /*
+    [HttpGet("events/newtest")]
+    public async Task<ActionResult<List<RecommendationDto>>> GetNewRecommendations()
+    {
+        var userId = User.GetUserId();
+
+        var result = await _service.GetNewRecommendations(userId);
+        return result.Match(
+            details => Ok(details),
+            errors => Problem(errors[0].Description)
+        );
+    }
+    */   
     
 }

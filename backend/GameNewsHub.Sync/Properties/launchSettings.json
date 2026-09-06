@@ -16,7 +16,7 @@
       "environmentVariables": {
         "DOTNET_ENVIRONMENT": "Development",
         "IgdbMode": "Bulk",
-        "SyncDaysRange": "410"
+        "SyncDaysRange": "600"
       }
     }
   }

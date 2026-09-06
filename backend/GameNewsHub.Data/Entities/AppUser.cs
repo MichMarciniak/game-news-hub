@@ -5,7 +5,10 @@ namespace GameNewsHub.Data.Entities;
 public class AppUser : IdentityUser<int>
 {
     public DateTimeOffset CreatedAt { get; set; }
-    
+
+    public bool ShowFutureRecommendations { get; set; } = true;
+    //public bool NotificationsEnabled { get; set; } = false;
+
     public ICollection<Platform> FollowedPlatforms { get; set; } = new List<Platform>();
     public ICollection<Game> FollowedGames { get; set; } = new List<Game>();
     public ICollection<Genre> FollowedGenres { get; set; } = new List<Genre>();

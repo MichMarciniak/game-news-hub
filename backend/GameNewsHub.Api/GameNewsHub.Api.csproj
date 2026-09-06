@@ -27,4 +27,8 @@
       <ProjectReference Include="..\GameNewsHub.Data\GameNewsHub.Data.csproj" />
     </ItemGroup>
 
+    <ItemGroup>
+      <Folder Include="Features\Admin\" />
+    </ItemGroup>
+
 </Project>

@@ -4,7 +4,7 @@ public static class RecommendationRegister
 {
     public static IServiceCollection AddRecommendationServices(this IServiceCollection service)
     {
-        service.AddScoped<IRecommendationService, RecommendationService>();
+        service.AddScoped< RecommendationService>();
         return service;
     }
 }

@@ -1,17 +1,21 @@
+using backend.Configuration;
 using backend.Data;
 using GameNewsHub.Api.Dtos;
 using GameNewsHub.Data.Entities;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Options;
 
 namespace GameNewsHub.Api.Features.Recommendations;
 
-public class RecommendationService : IRecommendationService
+public class RecommendationService
 {
     private readonly AppDbContext _context;
+    private readonly RecommendationWeights _weights;
 
-    public RecommendationService(AppDbContext context)
+    public RecommendationService(AppDbContext context, IOptions<RecommendationWeights> options)
     {
         _context = context;
+        _weights = options.Value;
     }
     
     public async Task<List<EventRecommendationResponse>> GetRecommendedEventList(int userId)
@@ -22,44 +26,46 @@ public class RecommendationService : IRecommendationService
          * 3. weight
          */
 
-        var userWeights = await _context.UserGenreWeights
-            .Where(w => w.UserId == userId)
-            .ToDictionaryAsync(w => w.GenreId, w => w.Weight);
+        var user = await _context.Users
+            .Include(u => u.FollowedGames)
+            .ThenInclude(g => g.Genres)
+            .Include(u => u.FollowedEvents)
+            .FirstOrDefaultAsync(u => u.Id == userId);
 
-        var followedGameIds = await _context.Users
-            .Where(u => u.Id == userId)
-            .SelectMany(u => u.FollowedGames)
-            .Select(g => g.Id)
-            .ToListAsync();
+        if (user == null) return new List<EventRecommendationResponse>();
 
-        var followedEventsIds = await _context.Users
-            .Where(u => u.Id == userId)
-            .SelectMany(u => u.FollowedEvents)
-            .Select(e => e.Id)
-            .ToListAsync();
+        var userGenreWeights = user.FollowedGames
+            .SelectMany(g => g.Genres)
+            .GroupBy(genre => genre.Id)
+            .ToDictionary(g => g.Key, g => (double)g.Count());
+
+        var followedGameIds = user.FollowedGames.Select(g => g.Id);
+        var followedEventIds = user.FollowedEvents.Select(e => e.Id);
+
+        var now = DateTimeOffset.UtcNow;
 
         var events = await _context.Events
             .Include(e => e.GenreWeights)
             .Include(e => e.Games)
+            .Where(e => e.StartTime <= now)
             .Where(e => e.Status == EventSyncStatus.Ready)
             .ToListAsync();
 
         var result = events.Select(e =>
             {
-                bool isFollowed = followedEventsIds.Contains(e.Id);
+                bool isFollowed = followedEventIds.Contains(e.Id);
                 bool containsFollowedGame = e.Games.Any(g => followedGameIds.Contains(g.Id));
 
-                double matchScore = 0;
-                foreach (var gw in e.GenreWeights)
-                {
-                    var uw = userWeights.TryGetValue(gw.GenreId, out var value) ? value : 0;
-                    matchScore += gw.Weight * uw;
-                }
+                double matchScore = e.GenreWeights.Sum(gw =>
+                    gw.Weight * userGenreWeights.GetValueOrDefault(gw.GenreId, 0));
+
+                double recencyBoost = GetRecencyBoost(e.StartTime, now);
 
                 double priority = 0;
-                if (isFollowed) priority += 1000;
-                if (containsFollowedGame) priority += 100;
-                priority += (matchScore * 10);
+                if (isFollowed) priority += _weights.FollowedEventBonus;
+                if (containsFollowedGame) priority += _weights.FollowedGameBonus;
+                priority += (matchScore * _weights.GenreMatchMultiplier);
+                priority += recencyBoost;
 
                 return new EventRecommendationResponse
                 {
@@ -77,6 +83,14 @@ public class RecommendationService : IRecommendationService
         return result;
     }
 
+    private double GetRecencyBoost(DateTimeOffset startTime, DateTimeOffset now)
+    {
+        var daysUntil = (startTime - now).TotalDays;
+        if (daysUntil <= 7) return 2;
+        if (daysUntil <= 30) return 1;
+        return 0;
+    }
+
     /*
     public async Task<List<EventResponse>> GetDefaultEventsList()
     {
@@ -87,6 +101,84 @@ public class RecommendationService : IRecommendationService
         throw new NotImplementedException();
     }
     */
-    
-    
+ 
+    /*
+    public async Task<ErrorOr<List<RecommendationDto>>> GetNewRecommendations(int userId)
+    {
+        var user = await _context.Users
+            .AsSplitQuery()
+            .Include(u => u.FollowedGames)
+            .Include(u => u.FollowedEvents)
+            .Include(u => u.FollowedGenres)
+            .FirstOrDefaultAsync(u => u.Id == userId);
+
+        if (user == null)
+        {
+            return Error.NotFound("User.NotFound", $"User with id {userId} was not found");
+        }
+
+        var followedEvents = user.FollowedEvents.ToList();
+
+        var followedGames = user.FollowedGames.ToList();
+
+        var followedGenres = user.FollowedGenres.ToList();
+
+        var events = await _context.Events
+            .Include(e => e.GenreWeights)
+            .Include(e => e.Games)
+            .Where(e => e.Status == EventSyncStatus.Ready)
+            .ToListAsync();
+
+        var result = events.Select(e =>
+        {
+            var followedEvent = false;
+            var followedGame = false;
+            var followedGenre = false;
+
+            var score = 0;
+            if (followedEvents.Contains(e))
+            {
+                followedEvent = true;
+                score += 5;
+            }
+
+            score += followedEvents.Contains(e) ? 5 : 0;
+            foreach (var game in e.Games)
+            {
+                if (followedGames.Contains(game))
+                {
+                    followedGame = true;
+                    score += 4;
+                    break;
+                }
+            }
+
+            foreach (var genre in e.GenreWeights)
+            {
+                if (followedGenres.Select(g => g.Id).Contains(genre.GenreId))
+                {
+                    followedGenre = true;
+                    score += 3;
+                    break;
+                }
+            }
+
+            score = RecencyBoost(e);
+            // platform match?
+            return new RecommendationDto
+            {
+                Id = e.Id,
+                Name = e.Name,
+                ContainsFollowedGame = followedGame,
+                Score = score,
+                IsFollowed = followedEvent,
+                ContainsFollowedGenre = followedGenre
+            };
+
+        }).Where(r => r.Score != 0).ToList();
+
+        return result;
+    }
+
+    */
 }

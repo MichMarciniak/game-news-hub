@@ -7,9 +7,8 @@ public class Event
     
     public string Description { get; set; }
                                             
-    // daty w unix time
-    public long StartTime { get; set; }
-    public long? EndTime { get; set; }
+    public DateTimeOffset StartTime { get; set; }
+    public DateTimeOffset? EndTime { get; set; }
 
     public EventSyncStatus Status { get; set; }
 

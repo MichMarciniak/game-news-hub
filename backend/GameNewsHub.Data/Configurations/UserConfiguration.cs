@@ -24,5 +24,9 @@ public class UserConfiguration : IEntityTypeConfiguration<AppUser>
         builder.HasMany(x => x.FollowedGenres)
             .WithMany()
             .UsingEntity("UserGenres");
+
+        builder.HasMany(x => x.FollowedEvents)
+            .WithMany()
+            .UsingEntity("UserEvents");
     }
 }

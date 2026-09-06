@@ -23,13 +23,13 @@ public class EventService
 
         if (startTime != null)
         {
-            var unixStartTime = ((DateTimeOffset)startTime).ToUnixTimeSeconds();
+            var unixStartTime = ((DateTimeOffset)startTime);
             dbQuery = dbQuery.Where(e => e.StartTime >= unixStartTime);
         }
 
         if (endTime != null)
         {
-            var unixEndTime = ((DateTimeOffset)endTime).ToUnixTimeSeconds();
+            var unixEndTime = ((DateTimeOffset)endTime);
             dbQuery = dbQuery.Where(e => e.EndTime <= unixEndTime);
         }
 

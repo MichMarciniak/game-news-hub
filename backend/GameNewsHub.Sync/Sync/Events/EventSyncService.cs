@@ -55,8 +55,8 @@ public class EventSyncService : IEventSyncService
             {
                 IgdbId = e.IgdbId,
                 Name = e.Name,
-                StartTime = e.StartTime,
-                EndTime = e.EndTime,
+                StartTime = DateTimeOffset.FromUnixTimeSeconds(e.StartTime),
+                EndTime = e.EndTime.HasValue ? DateTimeOffset.FromUnixTimeSeconds(e.EndTime.Value) : null,
                 Description = e.Description,
                 Status = EventSyncStatus.Pending
             });
@@ -79,7 +79,7 @@ public class EventSyncService : IEventSyncService
          */
 
         // jak nie ma przez 3 dni od zakończenia, to pewnie nie będzie
-        var timeThreshold = DateTimeOffset.UtcNow.AddDays(-_syncDays).ToUnixTimeSeconds();
+        var timeThreshold = DateTimeOffset.UtcNow.AddDays(-_syncDays);
         var noDataEvents = await _context.Events
             .Where(e => e.Status != EventSyncStatus.Ready)
             .Where(e => e.StartTime > timeThreshold)
@@ -119,7 +119,9 @@ public class EventSyncService : IEventSyncService
 
             e.Name = apiData.Name;
             e.Description = apiData.Description;
-            e.EndTime = apiData.EndTime; //na wypadek żeby jeszcze nie było
+            e.EndTime = apiData.EndTime.HasValue //na wypadek żeby jeszcze nie było
+                ? DateTimeOffset.FromUnixTimeSeconds(apiData.EndTime.Value)
+                : null; 
 
             if (apiData.Games != null && apiData.Games.Any())
             {

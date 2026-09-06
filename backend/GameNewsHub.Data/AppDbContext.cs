@@ -28,6 +28,5 @@ public class AppDbContext : IdentityDbContext<AppUser, IdentityRole<int>, int>
     public DbSet<Game> Games { get; set; }
     public DbSet<Genre> Genres { get; set; }
     public DbSet<Platform> Platforms { get; set; }
-    public DbSet<UserGenreWeight> UserGenreWeights { get; set; }
 
 }

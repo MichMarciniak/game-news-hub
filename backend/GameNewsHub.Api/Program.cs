@@ -14,6 +14,10 @@ const string FrontendCorsPolicy = "FrontendCorsPolicy";
 
 var connectionString = builder.Configuration.GetConnectionString("DefaultConnection");
 
+// load weights from appsettings
+builder.Services.Configure<RecommendationWeights>(
+    builder.Configuration.GetSection("RecommendationWeights"));
+
 //DATABSE + IDENTITY
 builder.Services.AddDbContext<AppDbContext>(options =>
     options.UseNpgsql(connectionString)

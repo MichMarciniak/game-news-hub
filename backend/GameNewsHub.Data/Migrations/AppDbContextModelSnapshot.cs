@@ -103,6 +103,9 @@ namespace Data.Migrations
                     b.Property<string>("SecurityStamp")
                         .HasColumnType("text");
 
+                    b.Property<bool>("ShowFutureRecommendations")
+                        .HasColumnType("boolean");
+
                     b.Property<bool>("TwoFactorEnabled")
                         .HasColumnType("boolean");
 
@@ -134,6 +137,7 @@ namespace Data.Migrations
                             EmailConfirmed = false,
                             LockoutEnabled = false,
                             PhoneNumberConfirmed = false,
+                            ShowFutureRecommendations = true,
                             TwoFactorEnabled = false,
                             UserName = "DevUser"
                         });
@@ -147,15 +151,12 @@ namespace Data.Migrations
 
                     NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
 
-                    b.Property<int?>("AppUserId")
-                        .HasColumnType("integer");
-
                     b.Property<string>("Description")
                         .IsRequired()
                         .HasColumnType("text");
 
-                    b.Property<long?>("EndTime")
-                        .HasColumnType("bigint");
+                    b.Property<DateTimeOffset?>("EndTime")
+                        .HasColumnType("timestamp with time zone");
 
                     b.Property<int>("IgdbId")
                         .HasColumnType("integer");
@@ -164,16 +165,14 @@ namespace Data.Migrations
                         .IsRequired()
                         .HasColumnType("text");
 
-                    b.Property<long>("StartTime")
-                        .HasColumnType("bigint");
+                    b.Property<DateTimeOffset>("StartTime")
+                        .HasColumnType("timestamp with time zone");
 
                     b.Property<string>("Status")
                         .IsRequired()
                         .HasColumnType("text");
 
                     b.HasKey("Id");
-
-                    b.HasIndex("AppUserId");
 
                     b.HasIndex("IgdbId")
                         .IsUnique();
@@ -283,22 +282,6 @@ namespace Data.Migrations
                     b.HasIndex("Name");
 
                     b.ToTable("Platforms");
-                });
-
-            modelBuilder.Entity("GameNewsHub.Data.Entities.UserGenreWeight", b =>
-                {
-                    b.Property<int>("UserId")
-                        .HasColumnType("integer");
-
-                    b.Property<int>("GenreId")
-                        .HasColumnType("integer");
-
-                    b.Property<double>("Weight")
-                        .HasColumnType("double precision");
-
-                    b.HasKey("UserId", "GenreId");
-
-                    b.ToTable("UserGenreWeights");
                 });
 
             modelBuilder.Entity("GamePlatforms", b =>
@@ -448,6 +431,21 @@ namespace Data.Migrations
                     b.ToTable("AspNetUserTokens", (string)null);
                 });
 
+            modelBuilder.Entity("UserEvents", b =>
+                {
+                    b.Property<int>("AppUserId")
+                        .HasColumnType("integer");
+
+                    b.Property<int>("FollowedEventsId")
+                        .HasColumnType("integer");
+
+                    b.HasKey("AppUserId", "FollowedEventsId");
+
+                    b.HasIndex("FollowedEventsId");
+
+                    b.ToTable("UserEvents");
+                });
+
             modelBuilder.Entity("UserGames", b =>
                 {
                     b.Property<int>("AppUserId")
@@ -521,13 +519,6 @@ namespace Data.Migrations
                         .HasForeignKey("GenresId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
-                });
-
-            modelBuilder.Entity("GameNewsHub.Data.Entities.Event", b =>
-                {
-                    b.HasOne("GameNewsHub.Data.Entities.AppUser", null)
-                        .WithMany("FollowedEvents")
-                        .HasForeignKey("AppUserId");
                 });
 
             modelBuilder.Entity("GameNewsHub.Data.Entities.EventGenreWeight", b =>
@@ -621,6 +612,21 @@ namespace Data.Migrations
                         .IsRequired();
                 });
 
+            modelBuilder.Entity("UserEvents", b =>
+                {
+                    b.HasOne("GameNewsHub.Data.Entities.AppUser", null)
+                        .WithMany()
+                        .HasForeignKey("AppUserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("GameNewsHub.Data.Entities.Event", null)
+                        .WithMany()
+                        .HasForeignKey("FollowedEventsId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+                });
+
             modelBuilder.Entity("UserGames", b =>
                 {
                     b.HasOne("GameNewsHub.Data.Entities.AppUser", null)
@@ -664,11 +670,6 @@ namespace Data.Migrations
                         .HasForeignKey("FollowedPlatformsId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
-                });
-
-            modelBuilder.Entity("GameNewsHub.Data.Entities.AppUser", b =>
-                {
-                    b.Navigation("FollowedEvents");
                 });
 
             modelBuilder.Entity("GameNewsHub.Data.Entities.Event", b =>
