@@ -3,6 +3,7 @@ using Data.Entities;
 using GameNewsHub.Data.Entities;
 using GameNewsHub.Sync.Dtos;
 using GameNewsHub.Sync.External;
+using GameNewsHub.Sync.Sync.Platforms;
 using Microsoft.EntityFrameworkCore;
 
 namespace GameNewsHub.Sync.Sync.Games;
@@ -11,13 +12,15 @@ public class GameSyncService : IGameSyncService
 {
     private readonly IIgdbClient _client;
     private readonly IGenreSyncService _genreService;
+    private readonly IPlatformSyncService _platformService;
     private readonly AppDbContext _context;
     private readonly ILogger<GameSyncService> _logger;
 
-    public GameSyncService(IIgdbClient client, IGenreSyncService service, AppDbContext context, ILogger<GameSyncService> logger)
+    public GameSyncService(IIgdbClient client, IGenreSyncService genreService, IPlatformSyncService platformService, AppDbContext context, ILogger<GameSyncService> logger)
     {
         _client = client;
-        _genreService = service;
+        _genreService = genreService;
+        _platformService = platformService;
         _context = context;
         _logger = logger;
     }
@@ -90,6 +93,12 @@ public class GameSyncService : IGameSyncService
             .ToList();
         var genres = await _genreService.GetOrCreateBatchAsync(allGenres);
 
+        var allPlatforms = externalGames
+            .SelectMany(g => g.Platforms ?? Enumerable.Empty<IgdbPlatformResponse>())
+            .Distinct()
+            .ToList();
+        var platforms = await _platformService.GetOrCreateBatchAsync(allPlatforms);
+
         var newGames = externalGames.Select(dto =>
         {
             string rawUrl = dto.Cover?.Url;
@@ -110,7 +119,8 @@ public class GameSyncService : IGameSyncService
                 CoverUrl = formattedCoverUrl,
                 Type = dto.GameType != null ? (GameType)dto.GameType.IgdbId : GameType.MainGame,
                 ParentGameIgdbId = dto.ParentGame,
-                Genres = MapGenres(dto.Genres, genres)
+                Genres = MapGenres(dto.Genres, genres),
+                Platforms = MapPlatforms(dto.Platforms, platforms)
             };
         }).ToList();
         
@@ -130,6 +140,14 @@ public class GameSyncService : IGameSyncService
         
         var ids = dtos.Select(d => d.IgdbId).ToList();
         return genres.Where(g => ids.Contains(g.IgdbId)).ToList();
+    }
+
+    private ICollection<Platform> MapPlatforms(IEnumerable<IgdbPlatformResponse> dtos, IEnumerable<Platform> platforms)
+    {
+        if (dtos == null || !dtos.Any()) return new List<Platform>();
+
+        var ids = dtos.Select(d => d.IgdbId).ToList();
+        return platforms.Where(p => ids.Contains(p.IgdbId)).ToList();
     }
 
     private async Task PullParentGames(List<Game> games, HashSet<int> visited)
@@ -156,5 +174,7 @@ public class GameSyncService : IGameSyncService
 
         await _context.SaveChangesAsync();
     }
+    
+    
 
 }

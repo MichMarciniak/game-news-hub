@@ -1,3 +1,4 @@
+using Data.Entities;
 using GameNewsHub.Data.Entities;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
@@ -28,5 +29,7 @@ public class AppDbContext : IdentityDbContext<AppUser, IdentityRole<int>, int>
     public DbSet<Game> Games { get; set; }
     public DbSet<Genre> Genres { get; set; }
     public DbSet<Platform> Platforms { get; set; }
+    
+    public DbSet<PlatformGroup> PlatformGroups { get; set; }
 
 }

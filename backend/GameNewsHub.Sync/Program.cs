@@ -2,6 +2,7 @@ using backend.Configuration;
 using backend.Data;
 using GameNewsHub.Sync.Sync;
 using GameNewsHub.Sync;
+using GameNewsHub.Sync.Seeder;
 using Microsoft.EntityFrameworkCore;
 
 var builder = Host.CreateApplicationBuilder(args);
@@ -20,4 +21,12 @@ builder.Services.AddIgdbServices(builder.Configuration);
 builder.Services.AddSyncServices();
 
 var host = builder.Build();
+
+using (var scope = host.Services.CreateScope())
+{
+    var context = scope.ServiceProvider.GetRequiredService<AppDbContext>();
+    await context.Database.MigrateAsync();
+    await PlatformGroupSeeder.SeedAsync(context);
+}
+
 host.Run();

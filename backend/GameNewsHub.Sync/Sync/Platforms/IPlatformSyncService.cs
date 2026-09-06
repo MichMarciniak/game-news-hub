@@ -1,3 +1,4 @@
+using Data.Entities;
 using GameNewsHub.Data.Entities;
 using GameNewsHub.Sync.Dtos;
 

@@ -22,6 +22,58 @@ namespace Data.Migrations
 
             NpgsqlModelBuilderExtensions.UseIdentityByDefaultColumns(modelBuilder);
 
+            modelBuilder.Entity("Data.Entities.Platform", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("integer");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
+
+                    b.Property<int>("IgdbId")
+                        .HasColumnType("integer");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasMaxLength(100)
+                        .HasColumnType("character varying(100)");
+
+                    b.Property<int>("PlatformGroupId")
+                        .HasColumnType("integer");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("IgdbId")
+                        .IsUnique();
+
+                    b.HasIndex("Name");
+
+                    b.HasIndex("PlatformGroupId");
+
+                    b.ToTable("Platforms");
+                });
+
+            modelBuilder.Entity("Data.Entities.PlatformGroup", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("integer");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasMaxLength(50)
+                        .HasColumnType("character varying(50)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("Name")
+                        .IsUnique();
+
+                    b.ToTable("PlatformGroups");
+                });
+
             modelBuilder.Entity("GameEvents", b =>
                 {
                     b.Property<int>("EventId")
@@ -262,28 +314,6 @@ namespace Data.Migrations
                     b.ToTable("Genres");
                 });
 
-            modelBuilder.Entity("GameNewsHub.Data.Entities.Platform", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("integer");
-
-                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
-
-                    b.Property<int>("IgdbId")
-                        .HasColumnType("integer");
-
-                    b.Property<string>("Name")
-                        .IsRequired()
-                        .HasColumnType("text");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("Name");
-
-                    b.ToTable("Platforms");
-                });
-
             modelBuilder.Entity("GamePlatforms", b =>
                 {
                     b.Property<int>("GamesId")
@@ -476,19 +506,30 @@ namespace Data.Migrations
                     b.ToTable("UserGenres");
                 });
 
-            modelBuilder.Entity("UserPlatforms", b =>
+            modelBuilder.Entity("UserPlatformGroups", b =>
                 {
                     b.Property<int>("AppUserId")
                         .HasColumnType("integer");
 
-                    b.Property<int>("FollowedPlatformsId")
+                    b.Property<int>("FollowedPlatformGroupsId")
                         .HasColumnType("integer");
 
-                    b.HasKey("AppUserId", "FollowedPlatformsId");
+                    b.HasKey("AppUserId", "FollowedPlatformGroupsId");
 
-                    b.HasIndex("FollowedPlatformsId");
+                    b.HasIndex("FollowedPlatformGroupsId");
 
-                    b.ToTable("UserPlatforms");
+                    b.ToTable("UserPlatformGroups");
+                });
+
+            modelBuilder.Entity("Data.Entities.Platform", b =>
+                {
+                    b.HasOne("Data.Entities.PlatformGroup", "PlatformGroup")
+                        .WithMany("Platforms")
+                        .HasForeignKey("PlatformGroupId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.Navigation("PlatformGroup");
                 });
 
             modelBuilder.Entity("GameEvents", b =>
@@ -554,7 +595,7 @@ namespace Data.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("GameNewsHub.Data.Entities.Platform", null)
+                    b.HasOne("Data.Entities.Platform", null)
                         .WithMany()
                         .HasForeignKey("PlatformsId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -657,7 +698,7 @@ namespace Data.Migrations
                         .IsRequired();
                 });
 
-            modelBuilder.Entity("UserPlatforms", b =>
+            modelBuilder.Entity("UserPlatformGroups", b =>
                 {
                     b.HasOne("GameNewsHub.Data.Entities.AppUser", null)
                         .WithMany()
@@ -665,11 +706,16 @@ namespace Data.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("GameNewsHub.Data.Entities.Platform", null)
+                    b.HasOne("Data.Entities.PlatformGroup", null)
                         .WithMany()
-                        .HasForeignKey("FollowedPlatformsId")
+                        .HasForeignKey("FollowedPlatformGroupsId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
+                });
+
+            modelBuilder.Entity("Data.Entities.PlatformGroup", b =>
+                {
+                    b.Navigation("Platforms");
                 });
 
             modelBuilder.Entity("GameNewsHub.Data.Entities.Event", b =>

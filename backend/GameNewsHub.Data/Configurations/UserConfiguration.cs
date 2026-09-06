@@ -13,9 +13,9 @@ public class UserConfiguration : IEntityTypeConfiguration<AppUser>
         builder.HasIndex(x => x.UserName)
             .IsUnique();
 
-        builder.HasMany(x => x.FollowedPlatforms)
+        builder.HasMany(x => x.FollowedPlatformGroups)
             .WithMany()
-            .UsingEntity("UserPlatforms");
+            .UsingEntity("UserPlatformGroups");
 
         builder.HasMany(x => x.FollowedGames)
             .WithMany()
