@@ -1,3 +1,4 @@
+using backend.Configuration;
 using backend.Data;
 using Data.Entities;
 using ErrorOr;
@@ -31,7 +32,7 @@ public class GameService
 
     public async Task<List<GameListItemDto>> SearchGamesAsync(string? query, int page, int pageSize)
     {
-        IQueryable<Game> dbQuery = _context.Games.Where(g => g.Type == GameType.MainGame);
+        IQueryable<Game> dbQuery = _context.Games.Where(g => GameTypePolicy.MainTypes.Contains(g.Type));
 
         if (!string.IsNullOrWhiteSpace(query))
         {

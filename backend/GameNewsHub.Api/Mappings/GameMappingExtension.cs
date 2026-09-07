@@ -17,7 +17,8 @@ public static class GameMappingExtension
             Genres = game.Genres.Select(g => g.ToDto()).ToList(),
             Addons = game.ChildGames.Select(g => g.ToListItemDto()).ToList(),
             PlatformGroups = platformGroupDtos,
-            ParentGameId = game.ParentGameId
+            ParentGameId = game.ParentGameId,
+            Type = (GameTypeString)game.Type
         };
     }
 

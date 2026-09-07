@@ -1,3 +1,4 @@
+using System.Text.Json.Serialization;
 using backend.Configuration;
 using backend.Data;
 using backend.Extensions;
@@ -35,7 +36,11 @@ builder.Services.AddFeatureServices();
 // OPENAPI
 builder.Services.AddAuthDocumentation();
 
-builder.Services.AddControllers();
+builder.Services.AddControllers()
+    .AddJsonOptions(opt =>
+    {
+        opt.JsonSerializerOptions.Converters.Add(new JsonStringEnumConverter());
+    });
 builder.Services.AddCors(options =>
 {
     options.AddPolicy(FrontendCorsPolicy, policy =>
