@@ -22,6 +22,27 @@ namespace Data.Migrations
 
             NpgsqlModelBuilderExtensions.UseIdentityByDefaultColumns(modelBuilder);
 
+            modelBuilder.Entity("Data.Entities.EventSeries", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("integer");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasMaxLength(100)
+                        .HasColumnType("character varying(100)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("Name")
+                        .IsUnique();
+
+                    b.ToTable("EventSeries");
+                });
+
             modelBuilder.Entity("Data.Entities.Platform", b =>
                 {
                     b.Property<int>("Id")
@@ -210,12 +231,21 @@ namespace Data.Migrations
                     b.Property<DateTimeOffset?>("EndTime")
                         .HasColumnType("timestamp with time zone");
 
+                    b.Property<int?>("EventSeriesId")
+                        .HasColumnType("integer");
+
                     b.Property<int>("IgdbId")
                         .HasColumnType("integer");
 
                     b.Property<string>("Name")
                         .IsRequired()
-                        .HasColumnType("text");
+                        .HasMaxLength(200)
+                        .HasColumnType("character varying(200)");
+
+                    b.Property<string>("NormalizedName")
+                        .IsRequired()
+                        .HasMaxLength(100)
+                        .HasColumnType("character varying(100)");
 
                     b.Property<DateTimeOffset>("StartTime")
                         .HasColumnType("timestamp with time zone");
@@ -225,6 +255,8 @@ namespace Data.Migrations
                         .HasColumnType("text");
 
                     b.HasKey("Id");
+
+                    b.HasIndex("EventSeriesId");
 
                     b.HasIndex("IgdbId")
                         .IsUnique();
@@ -562,6 +594,16 @@ namespace Data.Migrations
                         .IsRequired();
                 });
 
+            modelBuilder.Entity("GameNewsHub.Data.Entities.Event", b =>
+                {
+                    b.HasOne("Data.Entities.EventSeries", "Series")
+                        .WithMany("Events")
+                        .HasForeignKey("EventSeriesId")
+                        .OnDelete(DeleteBehavior.SetNull);
+
+                    b.Navigation("Series");
+                });
+
             modelBuilder.Entity("GameNewsHub.Data.Entities.EventGenreWeight", b =>
                 {
                     b.HasOne("GameNewsHub.Data.Entities.Event", null)
@@ -711,6 +753,11 @@ namespace Data.Migrations
                         .HasForeignKey("FollowedPlatformGroupsId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
+                });
+
+            modelBuilder.Entity("Data.Entities.EventSeries", b =>
+                {
+                    b.Navigation("Events");
                 });
 
             modelBuilder.Entity("Data.Entities.PlatformGroup", b =>

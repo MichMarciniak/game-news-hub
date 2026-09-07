@@ -62,6 +62,13 @@ public class EventService
         return events;
     }
 
+    public async Task<List<NormalizedEventListItemDto>> GetNormalizedEvents(DateTime? startTime, DateTime? endTime)
+    {
+        var events = await GetEvents(startTime, endTime);
+
+        return events.Select(e => e.ToNormalizedListItemDto()).ToList();
+    }
+
     public async Task<ErrorOr<EventDetailDto>> GetEventDetails(int eventId)
     {
         var e = await _context.Events

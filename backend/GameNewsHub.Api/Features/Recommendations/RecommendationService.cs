@@ -20,11 +20,6 @@ public class RecommendationService
     
     public async Task<List<RecommendationDto>> GetRecommendedEventList(int userId)
     {
-        /*
-         * 1. followowane eventy
-         * 2. eventy z followowanymi grami
-         * 3. weight
-         */
 
         var user = await _context.Users
             .Include(u => u.FollowedGames)

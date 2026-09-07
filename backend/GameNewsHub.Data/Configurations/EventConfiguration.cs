@@ -14,6 +14,8 @@ public class EventConfiguration : IEntityTypeConfiguration<Event>
 
         builder.HasIndex(x => x.IgdbId).IsUnique();
 
+        builder.Property(x => x.Name).IsRequired().HasMaxLength(200);
+
         builder.Property(x => x.Description)
             .HasColumnType("text");
 
@@ -26,5 +28,12 @@ public class EventConfiguration : IEntityTypeConfiguration<Event>
 
         builder.Property(e => e.Status)
             .HasConversion<string>();
+
+        builder.Property(x => x.NormalizedName).HasMaxLength(100);
+
+        builder.HasOne(e => e.Series)
+            .WithMany(s => s.Events)
+            .HasForeignKey(e => e.EventSeriesId)
+            .OnDelete(DeleteBehavior.SetNull);
     }
 }

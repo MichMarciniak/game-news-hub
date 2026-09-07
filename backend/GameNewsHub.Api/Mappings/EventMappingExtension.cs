@@ -1,4 +1,5 @@
-﻿using GameNewsHub.Contracts;
+﻿using GameNewsHub.Api.Features.Events;
+using GameNewsHub.Contracts;
 using GameNewsHub.Data.Entities;
 
 namespace GameNewsHub.Api.Mappings;
@@ -13,6 +14,15 @@ public static class EventMappingExtension
             Name = e.Name,
             StartTime = e.StartTime,
             EndTime = e.EndTime
+        };
+    }
+    public static NormalizedEventListItemDto ToNormalizedListItemDto(this EventListItemDto e)
+    {
+        return new NormalizedEventListItemDto 
+        {
+            Id = e.Id,
+            Name = e.Name,
+            NormalizedName = EventNameNormalizer.Normalize(e.Name),
         };
     }
 

@@ -18,3 +18,10 @@ public class EventListItemDto
     public DateTimeOffset StartTime { get; set; }
     public DateTimeOffset? EndTime { get; set; }
 }
+
+public class NormalizedEventListItemDto 
+{
+    public int Id { get; set; }
+    public string Name { get; set; }
+    public string NormalizedName { get; set; }
+}

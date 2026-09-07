@@ -31,5 +31,7 @@ public class AppDbContext : IdentityDbContext<AppUser, IdentityRole<int>, int>
     public DbSet<Platform> Platforms { get; set; }
     
     public DbSet<PlatformGroup> PlatformGroups { get; set; }
+    
+    public DbSet<EventSeries> EventSeries { get; set; }
 
 }

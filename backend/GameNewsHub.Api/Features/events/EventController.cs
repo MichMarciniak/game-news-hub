@@ -26,6 +26,13 @@ public class EventController : ControllerBase
         var result = await _service.GetEvents(startTime, endTime);
         return result;
     }
+    
+    [HttpGet("normalized")]
+    public async Task<ActionResult<List<NormalizedEventListItemDto>>> GetNormalizedEvents(DateTime? startTime, DateTime? endTime)
+    {
+        var result = await _service.GetNormalizedEvents(startTime, endTime);
+        return result;
+    }
 
 
     [HttpGet("{eventId}")]

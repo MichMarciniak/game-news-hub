@@ -1,4 +1,5 @@
 using backend.Data;
+using Data.Entities;
 using GameNewsHub.Data.Entities;
 using GameNewsHub.Sync.Sync.Games;
 using GameNewsHub.Sync.External;
@@ -32,12 +33,6 @@ public class EventSyncService : IEventSyncService
 
     public async Task DiscoverNewEventsAsync()
     {
-        /* Zrób zapytanie do IgdbClient o eventy +-30dni
-         * Przyjmij te eventy w jakimś dto
-         * sprawdź czy nie ma ich już w bazie
-         * jeśli nie ma, to dodaj i ustaw status na Pending 
-         */
-
         var from = DateTimeOffset.UtcNow.AddDays(-_syncDays).ToUnixTimeSeconds();
         var to = DateTimeOffset.UtcNow.AddDays(10).ToUnixTimeSeconds();
         var externalEvents = await _client.GetEventsFromIgdb(from, to);
@@ -49,24 +44,82 @@ public class EventSyncService : IEventSyncService
             .Select(e => e.IgdbId)
             .ToListAsync();
 
-        var newEvents = externalEvents
+        var newExternalEvents = externalEvents
             .Where(e => !existingItd.Contains(e.IgdbId))
-            .Select(e => new Event
+            .ToList();
+        
+        var newEvents = new List<Event>();
+
+        var newSeriesCache = new Dictionary<string, EventSeries>();
+
+        foreach (var e in newExternalEvents)
+        {
+            var evt = new Event
             {
                 IgdbId = e.IgdbId,
                 Name = e.Name,
                 StartTime = DateTimeOffset.FromUnixTimeSeconds(e.StartTime),
                 EndTime = e.EndTime.HasValue ? DateTimeOffset.FromUnixTimeSeconds(e.EndTime.Value) : null,
                 Description = e.Description,
-                Status = EventSyncStatus.Pending
-            });
+                Status = EventSyncStatus.Pending,
+            };
+            evt = await AssignToSeries(evt, newSeriesCache);
+            
+            newEvents.Add(evt);
+        }
 
         if (newEvents.Any())
         {
             _context.Events.AddRange(newEvents);
             await _context.SaveChangesAsync();
-            _logger.LogInformation($"Added {newEvents.Count()} new events");
+            _logger.LogInformation($"Added {newEvents.Count} new events");
         }
+    }
+
+    private async Task<Event> AssignToSeries(Event evt, Dictionary<string, EventSeries> newSeriesCache)
+    {
+        evt.NormalizedName = EventNameNormalizer.Normalize(evt.Name);
+        if (string.IsNullOrWhiteSpace(evt.NormalizedName))
+        {
+            evt.NormalizedName = evt.Name; // fallback
+        }
+
+        var exactSeries = await _context.EventSeries
+            .FirstOrDefaultAsync(s => s.Name == evt.NormalizedName);
+
+        if (exactSeries != null)
+        {
+            evt.EventSeriesId = exactSeries.Id;
+            return evt;
+        }
+
+        var fuzzyMatch = await _context.EventSeries
+            .Select(s => new
+            {
+                s.Id, Score =
+                    EF.Functions.TrigramsSimilarity(s.Name, evt.NormalizedName)
+            })
+            .Where(x => x.Score >= 0.85)
+            .OrderByDescending(x => x.Score)
+            .FirstOrDefaultAsync();
+
+        if (fuzzyMatch != null)
+        {
+            evt.EventSeriesId = fuzzyMatch.Id;
+            return evt;
+        }
+
+        if (newSeriesCache.TryGetValue(evt.NormalizedName, out var cachedSeries))
+        {
+            evt.Series = cachedSeries;
+            return evt;
+        }
+
+        var newSeries = new EventSeries{Name = evt.NormalizedName};
+        newSeriesCache[evt.NormalizedName] = newSeries;
+        evt.Series = newSeries;
+
+        return evt;
     }
 
     public async Task HydrateEventsAsync()
