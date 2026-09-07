@@ -51,7 +51,7 @@ public class PlatformController : ControllerBase
     }
 
     [HttpPatch("reassign")]
-    [Authorize]
+    [Authorize] // role admin?
     public async Task<IActionResult> ReassignPlatformGroup([FromQuery] int platformId, [FromQuery] int groupId)
     {
         var result = await _service.ReassignPlatformGroup(platformId, groupId);

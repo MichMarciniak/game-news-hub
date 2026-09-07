@@ -1,6 +1,4 @@
-using System.Security.Claims;
 using backend.Extensions;
-using GameNewsHub.Api.Dtos;
 using GameNewsHub.Contracts;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -20,7 +18,7 @@ public class RecommendationController : ControllerBase
     }
 
     [HttpGet("events")]
-    public async Task<ActionResult<List<EventRecommendationResponse>>> GetRecommendedEvents()
+    public async Task<ActionResult<List<RecommendationDto>>> GetRecommendedEvents()
     {
         var userId = User.GetUserId();
         

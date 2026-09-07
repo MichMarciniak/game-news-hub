@@ -1,5 +1,4 @@
 using Data.Entities;
-using GameNewsHub.Api.Dtos;
 using GameNewsHub.Contracts;
 using GameNewsHub.Data.Entities;
 

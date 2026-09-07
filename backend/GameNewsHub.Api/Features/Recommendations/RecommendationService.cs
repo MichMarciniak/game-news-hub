@@ -1,6 +1,6 @@
 using backend.Configuration;
 using backend.Data;
-using GameNewsHub.Api.Dtos;
+using GameNewsHub.Contracts;
 using GameNewsHub.Data.Entities;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Options;
@@ -18,7 +18,7 @@ public class RecommendationService
         _weights = options.Value;
     }
     
-    public async Task<List<EventRecommendationResponse>> GetRecommendedEventList(int userId)
+    public async Task<List<RecommendationDto>> GetRecommendedEventList(int userId)
     {
         /*
          * 1. followowane eventy
@@ -33,7 +33,7 @@ public class RecommendationService
             .Include(appUser => appUser.FollowedPlatformGroups)
             .FirstOrDefaultAsync(u => u.Id == userId);
 
-        if (user == null) return new List<EventRecommendationResponse>();
+        if (user == null) return new List<RecommendationDto>();
 
         var userGenreWeights = user.FollowedGames
             .SelectMany(g => g.Genres)
@@ -82,7 +82,7 @@ public class RecommendationService
                 priority += (matchScore * _weights.GenreMatchMultiplier);
                 priority += recencyBoost;
 
-                return new EventRecommendationResponse
+                return new RecommendationDto 
                 {
                     Id = e.Id,
                     Name = e.Name,

@@ -19,21 +19,43 @@ public class EventService
 
     public async Task<List<EventListItemDto>> GetEvents(DateTime? startTime, DateTime? endTime)
     {
-        IQueryable<Event> dbQuery = _context.Events;
-
+        var now = DateTimeOffset.UtcNow;
+        DateTimeOffset start;
         if (startTime != null)
         {
-            var unixStartTime = ((DateTimeOffset)startTime);
-            dbQuery = dbQuery.Where(e => e.StartTime >= unixStartTime);
+            start = ((DateTimeOffset)startTime);
+        }
+        else
+        {
+            start = new DateTimeOffset(
+                now.Year,
+                now.Month,
+                1,
+                0, 0, 0,
+                now.Offset
+            );
         }
 
+        DateTimeOffset end;
         if (endTime != null)
         {
-            var unixEndTime = ((DateTimeOffset)endTime);
-            dbQuery = dbQuery.Where(e => e.EndTime <= unixEndTime);
+            end = ((DateTimeOffset)endTime);
+        }
+        else
+        {
+            var nextMonth = now.AddMonths(1);
+            end = new DateTimeOffset(
+                nextMonth.Year,
+                nextMonth.Month,
+                1,
+                0, 0, 0,
+                nextMonth.Offset
+            );
         }
 
-        var events = await dbQuery
+        var events = await _context.Events 
+            .Where(e => e.StartTime >= start)
+            .Where(e => e.StartTime <= end)
             .Select(e => e.ToListItemDto())
             .ToListAsync();
 

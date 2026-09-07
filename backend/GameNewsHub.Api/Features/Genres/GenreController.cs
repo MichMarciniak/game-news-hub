@@ -1,6 +1,5 @@
 using backend.Data;
 using backend.Extensions;
-using GameNewsHub.Api.Dtos;
 using GameNewsHub.Contracts;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;

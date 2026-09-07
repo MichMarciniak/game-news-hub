@@ -1,5 +1,4 @@
 using backend.Data;
-using GameNewsHub.Api.Dtos;
 using GameNewsHub.Api.Mappings;
 using GameNewsHub.Contracts;
 using GameNewsHub.Data.Entities;

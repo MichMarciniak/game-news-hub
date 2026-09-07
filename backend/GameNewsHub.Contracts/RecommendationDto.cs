@@ -6,6 +6,7 @@ public record RecommendationDto
     public string Name { get; set; }
     public bool IsFollowed { get; set; }
     public bool ContainsFollowedGame { get; set; }
-    public bool ContainsFollowedGenre { get; set; }
-    public double Score { get; set; }
+    public bool ContainsFollowedPlatformGroup { get; set; }
+    public double MatchScore { get; set; }
+    public double FinalPriority { get; set; }
 }
