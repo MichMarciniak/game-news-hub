@@ -30,6 +30,7 @@ public class RecommendationService
             .Include(u => u.FollowedGames)
             .ThenInclude(g => g.Genres)
             .Include(u => u.FollowedEvents)
+            .Include(appUser => appUser.FollowedPlatformGroups)
             .FirstOrDefaultAsync(u => u.Id == userId);
 
         if (user == null) return new List<EventRecommendationResponse>();
@@ -38,23 +39,36 @@ public class RecommendationService
             .SelectMany(g => g.Genres)
             .GroupBy(genre => genre.Id)
             .ToDictionary(g => g.Key, g => (double)g.Count());
-
+        
         var followedGameIds = user.FollowedGames.Select(g => g.Id);
         var followedEventIds = user.FollowedEvents.Select(e => e.Id);
+        var followedPlatformGroupIds = user.FollowedPlatformGroups.Select(g => g.Id);
 
         var now = DateTimeOffset.UtcNow;
 
         var events = await _context.Events
+            .AsSplitQuery()
             .Include(e => e.GenreWeights)
             .Include(e => e.Games)
+                .ThenInclude(g => g.Platforms)
+                    .ThenInclude(p => p.PlatformGroup)
             .Where(e => e.StartTime <= now)
             .Where(e => e.Status == EventSyncStatus.Ready)
             .ToListAsync();
 
         var result = events.Select(e =>
             {
+                var platformGroupIds = e.Games
+                    .SelectMany(g => g.Platforms)
+                    .GroupBy(p => p.PlatformGroup)
+                    .Select(pg => pg.Key.Id)
+                    .ToList();
+                
                 bool isFollowed = followedEventIds.Contains(e.Id);
-                bool containsFollowedGame = e.Games.Any(g => followedGameIds.Contains(g.Id));
+                bool containsFollowedGame = e.Games
+                    .Any(g => followedGameIds.Contains(g.Id));
+                bool containsFollowedPlatformGroup = platformGroupIds
+                    .Any(pg => followedPlatformGroupIds.Contains(pg));
 
                 double matchScore = e.GenreWeights.Sum(gw =>
                     gw.Weight * userGenreWeights.GetValueOrDefault(gw.GenreId, 0));
@@ -64,6 +78,7 @@ public class RecommendationService
                 double priority = 0;
                 if (isFollowed) priority += _weights.FollowedEventBonus;
                 if (containsFollowedGame) priority += _weights.FollowedGameBonus;
+                if (containsFollowedPlatformGroup) priority += _weights.FollowedPlatformBonus;
                 priority += (matchScore * _weights.GenreMatchMultiplier);
                 priority += recencyBoost;
 
@@ -73,11 +88,13 @@ public class RecommendationService
                     Name = e.Name,
                     IsFollowed = isFollowed,
                     ContainsFollowedGame = containsFollowedGame,
+                    ContainsFollowedPlatformGroup = containsFollowedPlatformGroup,
                     MatchScore = Math.Round(matchScore * 100, 2), //procentowo
                     FinalPriority = priority
                 };
             })
             .OrderByDescending(r => r.FinalPriority)
+            .Take(20)
             .ToList();
 
         return result;
