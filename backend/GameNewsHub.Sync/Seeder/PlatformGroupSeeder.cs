@@ -4,7 +4,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace GameNewsHub.Sync.Seeder;
 
-public class PlatformGroupSeeder
+public static class PlatformGroupSeeder
 {
     public static readonly string[] DefaultGroups =
         { "PlayStation", "Xbox", "Nintendo", "PC", "Mobile", "Other" };

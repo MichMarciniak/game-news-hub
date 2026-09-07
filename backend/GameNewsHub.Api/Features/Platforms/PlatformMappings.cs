@@ -1,17 +1,29 @@
 using Data.Entities;
 using GameNewsHub.Api.Dtos;
+using GameNewsHub.Contracts;
 using GameNewsHub.Data.Entities;
 
 namespace GameNewsHub.Api.Features.Platforms;
 
 public static class PlatformMappings
 {
-    public static PlatformResponse ToDto(this Platform platform)
+    public static PlatformDto ToDto(this Platform platform)
     {
-        return new PlatformResponse 
+        return new PlatformDto
         {
             Id = platform.Id,
             Name = platform.Name
         };
     }
+
+    public static PlatformGroupDto ToGroupDto(this PlatformGroup group)
+    {
+        return new PlatformGroupDto
+        {
+            Id = group.Id,
+            Name = group.Name,
+            Platforms = group.Platforms.Select(ToDto).ToList()
+        };
+    }
+
 }

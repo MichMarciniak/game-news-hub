@@ -1,5 +1,6 @@
 ﻿using backend.Data;
 using ErrorOr;
+using GameNewsHub.Api.Features.Platforms;
 using GameNewsHub.Api.Mappings;
 using GameNewsHub.Contracts;
 using Microsoft.EntityFrameworkCore;
@@ -64,6 +65,25 @@ public class UsersService
 
         var events = user.FollowedEvents
             .Select(e => e.ToListItemDto())
+            .ToList();
+
+        return events;
+    }
+
+    public async Task<ErrorOr<List<PlatformGroupDto>>> GetFollowedPlatformGroups(int userId)
+    {
+        var user = await _context.Users
+            .Include(u => u.FollowedPlatformGroups)
+                .ThenInclude(pg => pg.Platforms)
+            .FirstOrDefaultAsync(u => u.Id == userId);
+
+        if (user == null)
+        {
+            return Error.NotFound("User.NotFound", $"User {userId} not found.");
+        }
+
+        var events = user.FollowedPlatformGroups
+            .Select(pg => pg.ToGroupDto())
             .ToList();
 
         return events;

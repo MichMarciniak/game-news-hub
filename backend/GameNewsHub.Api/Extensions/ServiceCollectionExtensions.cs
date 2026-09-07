@@ -39,6 +39,11 @@ public static class ServiceCollectionExtensions
     {
         var key = Encoding.ASCII.GetBytes(config["Jwt:Key"]);
 
+        if (key.Length == 0)
+        {
+            throw new Exception("Jwt:Key is required");
+        }
+
         services.AddAuthentication(opt =>
             {
                 opt.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;

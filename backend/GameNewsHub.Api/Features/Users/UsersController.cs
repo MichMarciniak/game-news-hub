@@ -28,7 +28,7 @@ public class UsersController : ControllerBase
             errors => Problem(errors[0].Description));
     }
     [HttpGet("me/events/followed")]
-    public async Task<ActionResult<List<GameListItemDto>>> GetFollowedEvents()
+    public async Task<ActionResult<List<EventListItemDto>>> GetFollowedEvents()
     {
         var userId = User.GetUserId();
         var result = await _service.GetFollowedEvents(userId);
@@ -37,10 +37,20 @@ public class UsersController : ControllerBase
             errors => Problem(errors[0].Description));
     }
     [HttpGet("me/genres/followed")]
-    public async Task<ActionResult<List<GameListItemDto>>> GetFollowedGenres()
+    public async Task<ActionResult<List<GenreDto>>> GetFollowedGenres()
     {
         var userId = User.GetUserId();
         var result = await _service.GetFollowedGenres(userId);
+        return result.Match(
+            details => Ok(details),
+            errors => Problem(errors[0].Description));
+    }
+
+    [HttpGet("me/platforms/followed")]
+    public async Task<ActionResult<List<PlatformGroupDto>>> GetFollowedPlatformGroups()
+    {
+        var userId = User.GetUserId();
+        var result = await _service.GetFollowedPlatformGroups(userId);
         return result.Match(
             details => Ok(details),
             errors => Problem(errors[0].Description));

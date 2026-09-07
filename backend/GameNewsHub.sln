@@ -7,7 +7,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution 
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GameNewsHub.Api", "GameNewsHub.Api\GameNewsHub.Api.csproj", "{0CA27466-A7D9-4D01-AE64-B185A74F8882}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GameNewsHub.Tests", "GameNewsHub.Tests\GameNewsHub.Tests.csproj", "{287C0240-11D7-41E0-8E65-836AA6B02BAA}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GameNewsHub.Tests.Unit", "GameNewsHub.Tests.Unit\GameNewsHub.Tests.Unit.csproj", "{287C0240-11D7-41E0-8E65-836AA6B02BAA}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GameNewsHub.Data", "GameNewsHub.Data\GameNewsHub.Data.csproj", "{D39F3C8C-FC13-4EC0-820C-2EE711599893}"
 EndProject
@@ -16,6 +16,8 @@ EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GameNewsHub.Contracts", "GameNewsHub.Contracts\GameNewsHub.Contracts.csproj", "{DDAB40CD-53E1-4E63-AB4E-03D5656419CC}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GameNewsHub.Client", "GameNewsHub.Client\GameNewsHub.Client.csproj", "{29AB8EA4-F854-4962-B3F0-E6D06D0516EE}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GameNewsHub.Tests.Integration", "GameNewsHub.Tests.Integration\GameNewsHub.Tests.Integration.csproj", "{968D82B9-D94A-4D7A-8937-2CA7C270F7E4}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -99,6 +101,18 @@ Global
 		{29AB8EA4-F854-4962-B3F0-E6D06D0516EE}.Release|x64.Build.0 = Release|Any CPU
 		{29AB8EA4-F854-4962-B3F0-E6D06D0516EE}.Release|x86.ActiveCfg = Release|Any CPU
 		{29AB8EA4-F854-4962-B3F0-E6D06D0516EE}.Release|x86.Build.0 = Release|Any CPU
+		{968D82B9-D94A-4D7A-8937-2CA7C270F7E4}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{968D82B9-D94A-4D7A-8937-2CA7C270F7E4}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{968D82B9-D94A-4D7A-8937-2CA7C270F7E4}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{968D82B9-D94A-4D7A-8937-2CA7C270F7E4}.Debug|x64.Build.0 = Debug|Any CPU
+		{968D82B9-D94A-4D7A-8937-2CA7C270F7E4}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{968D82B9-D94A-4D7A-8937-2CA7C270F7E4}.Debug|x86.Build.0 = Debug|Any CPU
+		{968D82B9-D94A-4D7A-8937-2CA7C270F7E4}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{968D82B9-D94A-4D7A-8937-2CA7C270F7E4}.Release|Any CPU.Build.0 = Release|Any CPU
+		{968D82B9-D94A-4D7A-8937-2CA7C270F7E4}.Release|x64.ActiveCfg = Release|Any CPU
+		{968D82B9-D94A-4D7A-8937-2CA7C270F7E4}.Release|x64.Build.0 = Release|Any CPU
+		{968D82B9-D94A-4D7A-8937-2CA7C270F7E4}.Release|x86.ActiveCfg = Release|Any CPU
+		{968D82B9-D94A-4D7A-8937-2CA7C270F7E4}.Release|x86.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

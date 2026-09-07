@@ -6,7 +6,7 @@ namespace GameNewsHub.Api.Mappings;
 
 public static class GameMappingExtension
 {
-    public static GameDetailDto ToDetailDto(this Game game)
+    public static GameDetailDto ToDetailDto(this Game game, List<PlatformGroupDto> platformGroupDtos)
     {
         return new GameDetailDto
         {
@@ -16,6 +16,7 @@ public static class GameMappingExtension
             CoverUrl = game.CoverUrl,
             Genres = game.Genres.Select(g => g.ToDto()).ToList(),
             Addons = game.ChildGames.Select(g => g.ToListItemDto()).ToList(),
+            PlatformGroups = platformGroupDtos,
             ParentGameId = game.ParentGameId
         };
     }

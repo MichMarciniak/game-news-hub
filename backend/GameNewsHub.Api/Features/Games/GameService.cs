@@ -1,6 +1,7 @@
 using backend.Data;
 using Data.Entities;
 using ErrorOr;
+using GameNewsHub.Api.Features.Platforms;
 using GameNewsHub.Api.Mappings;
 using GameNewsHub.Contracts;
 using GameNewsHub.Data.Entities;
@@ -51,14 +52,23 @@ public class GameService
     {
         var game = await _context.Games
             .Include(g => g.ChildGames)
+            .Include(g => g.Platforms)
+                .ThenInclude(pg => pg.PlatformGroup)
+            .Include(g => g.Genres)
             .FirstOrDefaultAsync(g => g.Id == gameId);
 
         if (game == null)
         {
             return Error.NotFound("Game.NotFound", $"Game with id {gameId} not found.");
         }
+
+        // ???
+        var platformGroups = game.Platforms
+            .GroupBy(p => p.PlatformGroup)
+            .Select(pg => pg.Key.ToGroupDto())
+            .ToList();
         
-        return game.ToDetailDto();
+        return game.ToDetailDto(platformGroups);
     }
 
     public async Task<ErrorOr<List<GameListItemDto>>> GetGameAddons(int gameId)

@@ -63,6 +63,7 @@ if (builder.Environment.IsDevelopment())
 else
 {
     builder.Services.AddJwtAuthentication(builder.Configuration);
+    builder.Services.AddAuthorization();
 }
 
 
