@@ -27,7 +27,10 @@ public static class EventNameNormalizer
             "[-:_,|+./–—]", //jakies emdashe byly whyyy
             " ");
         cleanName = Regex.Replace(cleanName,
-            "(^|\\s|'|#)\\d*[0-9](\\s|$)", //liczby na początku/końcu oddzielone spacją
+            "(^|'|#)\\d*[0-9]($)", 
+            " ");
+        cleanName = Regex.Replace(cleanName,
+            "\\b\\d+\\b",
             " ");
         cleanName = Regex.Replace(cleanName,
             "\\s{2,}",
