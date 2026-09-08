@@ -9,6 +9,8 @@ public class EventDetailDto
     public DateTimeOffset? EndTime { get; set; }
     
     public List<GameListItemDto>? Games { get; set; }
+
+    public List<EventListNameDto>? RelatedEvents { get; set; }
 }
 
 public class EventListItemDto
@@ -17,6 +19,12 @@ public class EventListItemDto
     public string Name { get; set; }
     public DateTimeOffset StartTime { get; set; }
     public DateTimeOffset? EndTime { get; set; }
+}
+
+public class EventListNameDto
+{
+    public int Id { get; set; }
+    public string Name { get; set; }
 }
 
 public class NormalizedEventListItemDto 

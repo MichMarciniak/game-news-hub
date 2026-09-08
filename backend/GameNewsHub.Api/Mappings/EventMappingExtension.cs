@@ -26,6 +26,15 @@ public static class EventMappingExtension
         };
     }
 
+    public static EventListNameDto ToListNameDto(this Event e)
+    {
+        return new EventListNameDto
+        {
+            Id = e.Id,
+            Name = e.Name
+        };
+    }
+
     public static EventDetailDto ToDetailDto(this Event e)
     {
         return new EventDetailDto
@@ -35,7 +44,11 @@ public static class EventMappingExtension
             Description = e.Description,
             StartTime = e.StartTime,
             EndTime = e.EndTime,
-            Games = e.Games.Select(g => g.ToListItemDto()).ToList()
+            Games = e.Games.Select(g => g.ToListItemDto()).ToList(),
+            RelatedEvents = e.Series?.Events
+                .Where(se => se.Id != e.Id)
+                .Select(se => se.ToListNameDto())
+                .ToList()
         };
     }
 }

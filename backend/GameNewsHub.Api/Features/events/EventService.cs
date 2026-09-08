@@ -72,7 +72,10 @@ public class EventService
     public async Task<ErrorOr<EventDetailDto>> GetEventDetails(int eventId)
     {
         var e = await _context.Events
+            .AsSplitQuery()
             .Include(e => e.Games)
+            .Include(e => e.Series)
+                .ThenInclude(s => s.Events)
             .FirstOrDefaultAsync(e => e.Id == eventId);
             
         if (e == null)
