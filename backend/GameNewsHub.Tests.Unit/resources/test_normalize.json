@@ -1,0 +1,1627 @@
+[
+  {
+    "id": 0,
+    "name": "  Test 123  321 123 32   ",
+    "expected": "Test"
+  },
+  {
+    "id": 59,
+    "name": "Thinky Direct 2025",
+    "expected": "Thinky Direct"
+  },
+  {
+    "id": 113,
+    "name": "Sonic Hacking Spotlight - August 12th, 2025",
+    "expected": "Sonic Hacking Spotlight"
+  },
+  {
+    "id": 91,
+    "name": "Little Nightmares Showcase",
+    "expected": "Little Nightmares Showcase"
+  },
+  {
+    "id": 165,
+    "name": "Simogo 15th Anniversary Special",
+    "expected": "Simogo Anniversary Special"
+  },
+  {
+    "id": 185,
+    "name": "The UploadVR Showcase: Winter 2025",
+    "expected": "The UploadVR Showcase"
+  },
+  {
+    "id": 229,
+    "name": "Clemmy's Best Indie Games Spring Showcase 2026",
+    "expected": "Clemmy's Best Indie Games Showcase"
+  },
+  {
+    "id": 65,
+    "name": "Shacknews E4 Indie Showcase 2025",
+    "expected": "Shacknews E4 Indie Showcase"
+  },
+  {
+    "id": 263,
+    "name": "AG French Direct 2026",
+    "expected": "AG French Direct"
+  },
+  {
+    "id": 1,
+    "name": "Dojo System Showcase 2025",
+    "expected": "Dojo System Showcase"
+  },
+  {
+    "id": 2,
+    "name": "Toge Productions 16th Anniversary Direct",
+    "expected": "Toge Productions Anniversary Direct"
+  },
+  {
+    "id": 3,
+    "name": "Super Smash Bros. Ultimate Modding Direct 1.18.2025",
+    "expected": "Super Smash Bros Ultimate Modding Direct"
+  },
+  {
+    "id": 4,
+    "name": "WSS Direct 2025",
+    "expected": "WSS Direct"
+  },
+  {
+    "id": 5,
+    "name": "Taipei Game Show 2025",
+    "expected": "Taipei Game Show"
+  },
+  {
+    "id": 6,
+    "name": "Xbox Developer_Direct 2025",
+    "expected": "Xbox Developer Direct"
+  },
+  {
+    "id": 7,
+    "name": "UNDEREVENT 2024: Shadows Manifest",
+    "expected": "UNDEREVENT Shadows Manifest"
+  },
+  {
+    "id": 8,
+    "name": "Capcom Spotlight + Monster Hunter Wilds Showcase: February 2025",
+    "expected": "Capcom Spotlight Monster Hunter Wilds Showcase"
+  },
+  {
+    "id": 9,
+    "name": "Whitethorn Winter 2025 Showcase",
+    "expected": "Whitethorn Showcase"
+  },
+  {
+    "id": 10,
+    "name": "State of Play: 2025-2-12",
+    "expected": "State of Play"
+  },
+  {
+    "id": 11,
+    "name": "Black Voices in Gaming: Black History Month Showcase",
+    "expected": "Black Voices in Gaming Black History Month Showcase"
+  },
+  {
+    "id": 12,
+    "name": "Annapurna Interactive Showcase 2025",
+    "expected": "Annapurna Interactive Showcase"
+  },
+  {
+    "id": 13,
+    "name": "ID@Xbox Showcase 2025",
+    "expected": "ID@Xbox Showcase"
+  },
+  {
+    "id": 14,
+    "name": "Pokémon Presents: February 27, 2025",
+    "expected": "Pokémon Presents"
+  },
+  {
+    "id": 15,
+    "name": "Sonic EXPO: Spring Showcase 2025",
+    "expected": "Sonic EXPO Showcase"
+  },
+  {
+    "id": 16,
+    "name": "Dames 4 Games Spring Showcase 2025",
+    "expected": "Dames Games Showcase"
+  },
+  {
+    "id": 17,
+    "name": "Nacon Connect 2025",
+    "expected": "Nacon Connect"
+  },
+  {
+    "id": 18,
+    "name": "Women-Led Games March 2025 Showcase",
+    "expected": "Women Led Games Showcase"
+  },
+  {
+    "id": 19,
+    "name": "VR Games Showcase",
+    "expected": "VR Games Showcase"
+  },
+  {
+    "id": 20,
+    "name": "Humble Games Showcase 2025",
+    "expected": "Humble Games Showcase"
+  },
+  {
+    "id": 21,
+    "name": "Silent Hill Transmission: March 13, 2025",
+    "expected": "Silent Hill Transmission"
+  },
+  {
+    "id": 22,
+    "name": "Nippon Ichi Software UNTITLED// 2025.3.14",
+    "expected": "Nippon Ichi Software UNTITLED"
+  },
+  {
+    "id": 23,
+    "name": "The MIX Spring Showcase 2025",
+    "expected": "The MIX Showcase"
+  },
+  {
+    "id": 24,
+    "name": "Future Games Show: Spring Showcase 2025",
+    "expected": "Future Games Show Showcase"
+  },
+  {
+    "id": 25,
+    "name": "Minecraft LIVE: March 2025",
+    "expected": "Minecraft LIVE"
+  },
+  {
+    "id": 26,
+    "name": "Nuntius Games Showcase 24.3.2025",
+    "expected": "Nuntius Games Showcase"
+  },
+  {
+    "id": 27,
+    "name": "Dreamhaven Showcase",
+    "expected": "Dreamhaven Showcase"
+  },
+  {
+    "id": 28,
+    "name": "Nintendo Direct 3.27.2025",
+    "expected": "Nintendo Direct"
+  },
+  {
+    "id": 29,
+    "name": "SUGOI Showcase 2025",
+    "expected": "SUGOI Showcase"
+  },
+  {
+    "id": 30,
+    "name": "Evercade Showcase - Vol. 3",
+    "expected": "Evercade Showcase"
+  },
+  {
+    "id": 31,
+    "name": "Goat Direct 2025",
+    "expected": "Goat Direct"
+  },
+  {
+    "id": 32,
+    "name": "Nintendo Direct: Nintendo Switch 2 - 4.2.2025",
+    "expected": "Nintendo Direct Nintendo Switch"
+  },
+  {
+    "id": 33,
+    "name": "Nintendo Treehouse Live: Nintendo Switch 2",
+    "expected": "Nintendo Treehouse Live Nintendo Switch"
+  },
+  {
+    "id": 34,
+    "name": "Jackbox Games Direct 2025",
+    "expected": "Jackbox Games Direct"
+  },
+  {
+    "id": 35,
+    "name": "eastasiasoft Spring Showcase 2025",
+    "expected": "eastasiasoft Showcase"
+  },
+  {
+    "id": 36,
+    "name": "The Triple-i Initiative 2025",
+    "expected": "The Triple i Initiative"
+  },
+  {
+    "id": 37,
+    "name": "Inazuma Eleven V HEROES SHOWCASE 2025 Release Date & Final Specs Presentation",
+    "expected": "Inazuma Eleven V HEROES SHOWCASE Release Date & Final Specs Presentation"
+  },
+  {
+    "id": 38,
+    "name": "INDIE Live Expo: 2025.4.13",
+    "expected": "INDIE Live Expo"
+  },
+  {
+    "id": 39,
+    "name": "Mario Kart World Direct: April 17, 2025",
+    "expected": "Mario Kart World Direct"
+  },
+  {
+    "id": 40,
+    "name": "Playdate Update: Season 2",
+    "expected": "Playdate Update Season"
+  },
+  {
+    "id": 41,
+    "name": "Galaxies",
+    "expected": "Galaxies"
+  },
+  {
+    "id": 42,
+    "name": "The Top Hat Studios Showcase",
+    "expected": "The Top Hat Studios Showcase"
+  },
+  {
+    "id": 43,
+    "name": "Playism Game Show 2025.4.25",
+    "expected": "Playism Game Show"
+  },
+  {
+    "id": 44,
+    "name": "FGS Live from Gamescom LATAM",
+    "expected": "FGS Live from Gamescom LATAM"
+  },
+  {
+    "id": 45,
+    "name": "Latin American Games Showcase: Gamescom LATAM",
+    "expected": "Latin American Games Showcase Gamescom LATAM"
+  },
+  {
+    "id": 46,
+    "name": "Gearbox Main Theater Show at PAX East 2025",
+    "expected": "Gearbox Main Theater Show at PAX East"
+  },
+  {
+    "id": 47,
+    "name": "Virtua Fighter Direct 2025 Spring",
+    "expected": "Virtua Fighter Direct"
+  },
+  {
+    "id": 48,
+    "name": "Eevee Expo 4 - May 12, 2025",
+    "expected": "Eevee Expo"
+  },
+  {
+    "id": 49,
+    "name": "Persona 5: The Phantom X Transmission Vol. 2: Release Date Announcement Special",
+    "expected": "Persona The Phantom X Transmission Release Date Announcement Special"
+  },
+  {
+    "id": 50,
+    "name": "Creature Feature",
+    "expected": "Creature Feature"
+  },
+  {
+    "id": 51,
+    "name": "SideQuest Indie Spotlight - Summer 2025",
+    "expected": "SideQuest Indie Spotlight"
+  },
+  {
+    "id": 52,
+    "name": "NetEase Games 520 Online Conference 2025",
+    "expected": "NetEase Games Online Conference"
+  },
+  {
+    "id": 53,
+    "name": "Six One Indie Showcase - May 22nd, 2025",
+    "expected": "Six One Indie Showcase"
+  },
+  {
+    "id": 54,
+    "name": "Warhammer Skulls 2025",
+    "expected": "Warhammer Skulls"
+  },
+  {
+    "id": 55,
+    "name": "World Africa Day of Play Showcase 2025",
+    "expected": "World Africa Day of Play Showcase"
+  },
+  {
+    "id": 56,
+    "name": "OTK Games Expo 2025",
+    "expected": "OTK Games Expo"
+  },
+  {
+    "id": 57,
+    "name": "tinyBuild Connect 2025",
+    "expected": "tinyBuild Connect"
+  },
+  {
+    "id": 58,
+    "name": "AG French Direct 2025",
+    "expected": "AG French Direct"
+  },
+  {
+    "id": 60,
+    "name": "Evercade Showcase - Vol. 4",
+    "expected": "Evercade Showcase"
+  },
+  {
+    "id": 61,
+    "name": "Indie Quest 2025",
+    "expected": "Indie Quest"
+  },
+  {
+    "id": 62,
+    "name": "The Horror Game Awards: Summer Showcase 2025",
+    "expected": "The Horror Game Awards Showcase"
+  },
+  {
+    "id": 63,
+    "name": "Clemmy's Best Indie Games Summer Showcase 2025",
+    "expected": "Clemmy's Best Indie Games Showcase"
+  },
+  {
+    "id": 64,
+    "name": "The MIX Summer Game Showcase 2025",
+    "expected": "The MIX Game Showcase"
+  },
+  {
+    "id": 66,
+    "name": "State of Play: 2025-6-4",
+    "expected": "State of Play"
+  },
+  {
+    "id": 67,
+    "name": "The Unearthed Treasure Room",
+    "expected": "The Unearthed Treasure Room"
+  },
+  {
+    "id": 68,
+    "name": "Access-Ability Summer Showcase 2025",
+    "expected": "Access Ability Showcase"
+  },
+  {
+    "id": 69,
+    "name": "Summer Game Fest 2025",
+    "expected": "Game Fest"
+  },
+  {
+    "id": 70,
+    "name": "Day of the Devs: Summer Game Fest 2025 Edition",
+    "expected": "Day of the Devs Game Fest"
+  },
+  {
+    "id": 71,
+    "name": "Devolver Direct: Ball x Pit - The Kenny Sun Story",
+    "expected": "Devolver Direct Ball x Pit The Kenny Sun Story"
+  },
+  {
+    "id": 72,
+    "name": "IOI Showcase: June 2025",
+    "expected": "IOI Showcase"
+  },
+  {
+    "id": 73,
+    "name": "Wholesome Direct 2025",
+    "expected": "Wholesome Direct"
+  },
+  {
+    "id": 74,
+    "name": "Women-Led Games Showcase: Summer Game Fest 2025 Edition",
+    "expected": "Women Led Games Showcase Game Fest"
+  },
+  {
+    "id": 75,
+    "name": "Latin American Games Showcase: Summer Game Fest 2025 Edition",
+    "expected": "Latin American Games Showcase Game Fest"
+  },
+  {
+    "id": 76,
+    "name": "Southeast Asian Games Showcase: Summer Game Fest 2025",
+    "expected": "Southeast Asian Games Showcase Game Fest"
+  },
+  {
+    "id": 77,
+    "name": "Future Games Show: Summer Showcase 2025",
+    "expected": "Future Games Show Showcase"
+  },
+  {
+    "id": 78,
+    "name": "Green Games Showcase: Summer Game Fest 2025 Edition",
+    "expected": "Green Games Showcase Game Fest"
+  },
+  {
+    "id": 79,
+    "name": "Frosty Games Fest - June 2025",
+    "expected": "Frosty Games Fest"
+  },
+  {
+    "id": 80,
+    "name": "Ñ3 2025",
+    "expected": "Ñ3"
+  },
+  {
+    "id": 81,
+    "name": "Deutsche Indie Showcase: 08.06.25",
+    "expected": "Deutsche Indie Showcase"
+  },
+  {
+    "id": 82,
+    "name": "Xbox Games Showcase 2025",
+    "expected": "Xbox Games Showcase"
+  },
+  {
+    "id": 83,
+    "name": "RPG Direct 2025",
+    "expected": "RPG Direct"
+  },
+  {
+    "id": 84,
+    "name": "The PC Gaming Show 2025",
+    "expected": "The PC Gaming Show"
+  },
+  {
+    "id": 85,
+    "name": "Death Stranding 2: On The Beach - Game Premiere",
+    "expected": "Death Stranding On The Beach Game Premiere"
+  },
+  {
+    "id": 86,
+    "name": "Black Voices in Gaming 6.9.25",
+    "expected": "Black Voices in Gaming"
+  },
+  {
+    "id": 87,
+    "name": "Konami Press Start 6.12.2025",
+    "expected": "Konami Press Start"
+  },
+  {
+    "id": 88,
+    "name": "Games To Get Excited About Fest 2025",
+    "expected": "Games To Get Excited About Fest"
+  },
+  {
+    "id": 89,
+    "name": "Donkey Kong Bananza Direct 6.18.2025",
+    "expected": "Donkey Kong Bananza Direct"
+  },
+  {
+    "id": 90,
+    "name": "Press Gay to Play 2025 Showcase",
+    "expected": "Press Gay to Play Showcase"
+  },
+  {
+    "id": 92,
+    "name": "Eternalverse Showcase 2025",
+    "expected": "Eternalverse Showcase"
+  },
+  {
+    "id": 93,
+    "name": "IndieMania 2025 The Sequel!",
+    "expected": "IndieMania The Sequel!"
+  },
+  {
+    "id": 94,
+    "name": "Capcom Spotlight 6.26.2025",
+    "expected": "Capcom Spotlight"
+  },
+  {
+    "id": 95,
+    "name": "Bandai Namco Summer Showcase 2025",
+    "expected": "Bandai Namco Showcase"
+  },
+  {
+    "id": 96,
+    "name": "Festival Jogatório: 3° Edição",
+    "expected": "Festival Jogatório 3° Edição"
+  },
+  {
+    "id": 97,
+    "name": "State of Play: Ghost of Yōtei",
+    "expected": "State of Play Ghost of Yōtei"
+  },
+  {
+    "id": 98,
+    "name": "Resident Evil: Survival Unit - Online Showcase",
+    "expected": "Resident Evil Survival Unit Online Showcase"
+  },
+  {
+    "id": 99,
+    "name": "The UploadVR Showcase: Summer 2025",
+    "expected": "The UploadVR Showcase"
+  },
+  {
+    "id": 100,
+    "name": "TactiCon 2025 Showcase",
+    "expected": "TactiCon Showcase"
+  },
+  {
+    "id": 101,
+    "name": "Dames 4 Games Slumber Party Showcase",
+    "expected": "Dames Games Slumber Party Showcase"
+  },
+  {
+    "id": 102,
+    "name": "BitSummit The 13th Summer of Yokai",
+    "expected": "BitSummit The of Yokai"
+  },
+  {
+    "id": 103,
+    "name": "The Secret Sauce Showcase 2025",
+    "expected": "The Secret Sauce Showcase"
+  },
+  {
+    "id": 104,
+    "name": "New Super Mario Bros. Modding Direct 2025",
+    "expected": "New Super Mario Bros Modding Direct"
+  },
+  {
+    "id": 105,
+    "name": "Pokémon Presents: July 22, 2025",
+    "expected": "Pokémon Presents"
+  },
+  {
+    "id": 106,
+    "name": "BitSummit MIX Showcase 2025",
+    "expected": "BitSummit MIX Showcase"
+  },
+  {
+    "id": 107,
+    "name": "Free Fangame Festival 2025",
+    "expected": "Free Fangame Festival"
+  },
+  {
+    "id": 108,
+    "name": "Stream for a Cause's IGN Showcase",
+    "expected": "Stream for a Cause's IGN Showcase"
+  },
+  {
+    "id": 109,
+    "name": "Nintendo Direct Partner Showcase 7.31.2025",
+    "expected": "Nintendo Direct Partner Showcase"
+  },
+  {
+    "id": 110,
+    "name": "THQ NORDIC Digital Showcase 2025",
+    "expected": "THQ NORDIC Digital Showcase"
+  },
+  {
+    "id": 111,
+    "name": "Suikoden Live vol.3 2025.8.5",
+    "expected": "Suikoden Live"
+  },
+  {
+    "id": 112,
+    "name": "Indie World Showcase – 07/08/2025",
+    "expected": "Indie World Showcase"
+  },
+  {
+    "id": 114,
+    "name": "VR Games Showcase: August 12, 2025",
+    "expected": "VR Games Showcase"
+  },
+  {
+    "id": 115,
+    "name": "Kirby Air Riders Direct 8.19.2025",
+    "expected": "Kirby Air Riders Direct"
+  },
+  {
+    "id": 116,
+    "name": "Gamescom Opening Night Live 2025",
+    "expected": "Gamescom Opening Night Live"
+  },
+  {
+    "id": 142,
+    "name": "eastasiasoft Fall 2025 Showcase",
+    "expected": "eastasiasoft Showcase"
+  },
+  {
+    "id": 117,
+    "name": "Xbox @ Gamescom 2025",
+    "expected": "Xbox @ Gamescom"
+  },
+  {
+    "id": 118,
+    "name": "Into the Infinite: A Level Infinite Showcase 2025",
+    "expected": "Into the Infinite A Level Infinite Showcase"
+  },
+  {
+    "id": 119,
+    "name": "Future Games Show at gamescom 2025",
+    "expected": "Future Games Show at gamescom"
+  },
+  {
+    "id": 120,
+    "name": "Hollow Knight: Silksong - Special Announcement",
+    "expected": "Hollow Knight Silksong Special Announcement"
+  },
+  {
+    "id": 121,
+    "name": "gamescom awesome indies 2025",
+    "expected": "gamescom awesome indies"
+  },
+  {
+    "id": 122,
+    "name": "FGS Best of gamescom 2025",
+    "expected": "FGS Best of gamescom"
+  },
+  {
+    "id": 123,
+    "name": "Sokpop Direct 2025",
+    "expected": "Sokpop Direct"
+  },
+  {
+    "id": 124,
+    "name": "The MIX Fall Showcase 2025",
+    "expected": "The MIX Showcase"
+  },
+  {
+    "id": 125,
+    "name": "Clemmy's Best Indie Games Fall Showcase 2025",
+    "expected": "Clemmy's Best Indie Games Showcase"
+  },
+  {
+    "id": 126,
+    "name": "State of Play: 007 First Light",
+    "expected": "State of Play First Light"
+  },
+  {
+    "id": 127,
+    "name": "The ANZ Indie Showcase 2025",
+    "expected": "The ANZ Indie Showcase"
+  },
+  {
+    "id": 128,
+    "name": "Monster Taming Direct 09.07.2025",
+    "expected": "Monster Taming Direct"
+  },
+  {
+    "id": 129,
+    "name": "Games Against Living Miserably",
+    "expected": "Games Against Living Miserably"
+  },
+  {
+    "id": 130,
+    "name": "#PlayAcclaim Showcase: September 10th, 2025",
+    "expected": "#PlayAcclaim Showcase"
+  },
+  {
+    "id": 131,
+    "name": "devINITIVE Showcase 2025",
+    "expected": "devINITIVE Showcase"
+  },
+  {
+    "id": 132,
+    "name": "Nintendo Direct 9.12.2025",
+    "expected": "Nintendo Direct"
+  },
+  {
+    "id": 133,
+    "name": "Brutal Indies Unleashed Showcase 2025",
+    "expected": "Brutal Indies Unleashed Showcase"
+  },
+  {
+    "id": 134,
+    "name": "CRITICAL REFLEX TIME",
+    "expected": "CRITICAL REFLEX TIME"
+  },
+  {
+    "id": 135,
+    "name": "PLAYISM GAME SHOW 2025.9.16",
+    "expected": "PLAYISM GAME SHOW"
+  },
+  {
+    "id": 136,
+    "name": "The Game Devs of Color Expo Direct 2025",
+    "expected": "The Game Devs of Color Expo Direct"
+  },
+  {
+    "id": 137,
+    "name": "Six One Indie Showcase - September 18th, 2025",
+    "expected": "Six One Indie Showcase"
+  },
+  {
+    "id": 138,
+    "name": "Convergence Games Showcase 2025",
+    "expected": "Convergence Games Showcase"
+  },
+  {
+    "id": 139,
+    "name": "SAGE 2025",
+    "expected": "SAGE"
+  },
+  {
+    "id": 140,
+    "name": "Nippon Ichi Software UNTITLED// Lite 2025.9.19",
+    "expected": "Nippon Ichi Software UNTITLED Lite"
+  },
+  {
+    "id": 141,
+    "name": "Southeast Asia RPG Maker Showcase 2025",
+    "expected": "Southeast Asia RPG Maker Showcase"
+  },
+  {
+    "id": 195,
+    "name": "Women-Led Games Showcase: The Game Awards Edition 2025",
+    "expected": "Women Led Games Showcase The Game Awards"
+  },
+  {
+    "id": 143,
+    "name": "Beyond the Strand",
+    "expected": "Beyond the Strand"
+  },
+  {
+    "id": 144,
+    "name": "Boomstock 2025 Showcase",
+    "expected": "Boomstock Showcase"
+  },
+  {
+    "id": 145,
+    "name": "Annapurna Interactive Direct From Tokyo 2025",
+    "expected": "Annapurna Interactive Direct From Tokyo"
+  },
+  {
+    "id": 146,
+    "name": "RGG SUMMIT 2025 + RGG DIRECT 2025",
+    "expected": "RGG SUMMIT RGG DIRECT"
+  },
+  {
+    "id": 147,
+    "name": "TGS2025 Capcom Online Program",
+    "expected": "TGS2025 Capcom Online Program"
+  },
+  {
+    "id": 148,
+    "name": "Indie Fan Fest: Fall 2025",
+    "expected": "Indie Fan Fest"
+  },
+  {
+    "id": 149,
+    "name": "State of Play | September 24, 2025",
+    "expected": "State of Play"
+  },
+  {
+    "id": 150,
+    "name": "TGS2025: Annapurna Interactive",
+    "expected": "TGS2025 Annapurna Interactive"
+  },
+  {
+    "id": 151,
+    "name": "Xbox Tokyo Game Show 2025",
+    "expected": "Xbox Tokyo Game Show"
+  },
+  {
+    "id": 152,
+    "name": "TGS2025: LEVEL5 Special Match: Exclusive Gameplay Reveal!",
+    "expected": "TGS2025 LEVEL5 Special Match Exclusive Gameplay Reveal!"
+  },
+  {
+    "id": 153,
+    "name": "Fall in Love Visual Novel Festival Showcase 2025",
+    "expected": "in Love Visual Novel Festival Showcase"
+  },
+  {
+    "id": 154,
+    "name": "TGS 2025: 2K/Take Two Interactive",
+    "expected": "TGS 2K Take Two Interactive"
+  },
+  {
+    "id": 155,
+    "name": "PC Gaming Show Tokyo Direct 2025",
+    "expected": "PC Gaming Show Tokyo Direct"
+  },
+  {
+    "id": 156,
+    "name": "The Horror Game Awards: Halloween Showcase 2025",
+    "expected": "The Horror Game Awards Halloween Showcase"
+  },
+  {
+    "id": 157,
+    "name": "Out of Bounds Indie Showcase 2025",
+    "expected": "Out of Bounds Indie Showcase"
+  },
+  {
+    "id": 158,
+    "name": "No More Robots 8th Anniversary Showcase",
+    "expected": "No More Robots Anniversary Showcase"
+  },
+  {
+    "id": 159,
+    "name": "ZNT Horizon 2025",
+    "expected": "ZNT Horizon"
+  },
+  {
+    "id": 160,
+    "name": "Kirby Air Riders Direct #2",
+    "expected": "Kirby Air Riders Direct"
+  },
+  {
+    "id": 161,
+    "name": "The Indie Horror Showcase 2025",
+    "expected": "The Indie Horror Showcase"
+  },
+  {
+    "id": 162,
+    "name": "Fallout Day 2025",
+    "expected": "Fallout Day"
+  },
+  {
+    "id": 163,
+    "name": "Galaxies Autumn '25",
+    "expected": "Galaxies"
+  },
+  {
+    "id": 164,
+    "name": "Ghouls 4 Games 2025",
+    "expected": "Ghouls Games"
+  },
+  {
+    "id": 166,
+    "name": "ID@Xbox Fall 2025 Showcase",
+    "expected": "ID@Xbox Showcase"
+  },
+  {
+    "id": 167,
+    "name": "Awesome Console: October 28, 2025",
+    "expected": "Awesome Console"
+  },
+  {
+    "id": 168,
+    "name": "LRG3 2025",
+    "expected": "LRG3"
+  },
+  {
+    "id": 247,
+    "name": "ID@Xbox April 2026 Showcase",
+    "expected": "ID@Xbox Showcase"
+  },
+  {
+    "id": 169,
+    "name": "QUByte Connect 2025",
+    "expected": "QUByte Connect"
+  },
+  {
+    "id": 170,
+    "name": "Game Anglia Direct 2025",
+    "expected": "Game Anglia Direct"
+  },
+  {
+    "id": 171,
+    "name": "Chao Direct 2025",
+    "expected": "Chao Direct"
+  },
+  {
+    "id": 172,
+    "name": "Playdate Update #8: 11/06/25",
+    "expected": "Playdate Update"
+  },
+  {
+    "id": 173,
+    "name": "State of Play Japan: November 11, 2025",
+    "expected": "State of Play Japan"
+  },
+  {
+    "id": 174,
+    "name": "VR Games Showcase: November 13th, 2025",
+    "expected": "VR Games Showcase"
+  },
+  {
+    "id": 175,
+    "name": "arcINDIE CURRENT 2025",
+    "expected": "arcINDIE CURRENT"
+  },
+  {
+    "id": 176,
+    "name": "Xbox Partner Preview November 2025",
+    "expected": "Xbox Partner Preview"
+  },
+  {
+    "id": 177,
+    "name": "Winter OTK Games Expo 2025",
+    "expected": "OTK Games Expo"
+  },
+  {
+    "id": 178,
+    "name": "INDIE Live Expo 2025.11.29",
+    "expected": "INDIE Live Expo"
+  },
+  {
+    "id": 179,
+    "name": "Clemmy's Best Indie Games Winter Showcase 2025",
+    "expected": "Clemmy's Best Indie Games Showcase"
+  },
+  {
+    "id": 180,
+    "name": "AWS re:Invent Keynote Racer",
+    "expected": "AWS re Invent Keynote Racer"
+  },
+  {
+    "id": 181,
+    "name": "DOSMan Direct: December 3, 2025",
+    "expected": "DOSMan Direct"
+  },
+  {
+    "id": 182,
+    "name": "Total War 25th Anniversary Showcase",
+    "expected": "Total War Anniversary Showcase"
+  },
+  {
+    "id": 183,
+    "name": "PC Gaming Show: Most Wanted 2025",
+    "expected": "PC Gaming Show Most Wanted"
+  },
+  {
+    "id": 184,
+    "name": "Grasshopper Direct: 5 Minutes feat. ROMEO IS A DEAD MAN",
+    "expected": "Grasshopper Direct Minutes feat ROMEO IS A DEAD MAN"
+  },
+  {
+    "id": 186,
+    "name": "11 bit studios Digital Showcase 2025",
+    "expected": "bit studios Digital Showcase"
+  },
+  {
+    "id": 187,
+    "name": "Choose Wisely Festival Showcase 2025",
+    "expected": "Choose Wisely Festival Showcase"
+  },
+  {
+    "id": 188,
+    "name": "Slitherine Next 2025",
+    "expected": "Slitherine Next"
+  },
+  {
+    "id": 189,
+    "name": "Wholesome Snack 2025",
+    "expected": "Wholesome Snack"
+  },
+  {
+    "id": 190,
+    "name": "Frosty Mini December 2025",
+    "expected": "Frosty Mini"
+  },
+  {
+    "id": 191,
+    "name": "Flow Games Awards 2025",
+    "expected": "Flow Games Awards"
+  },
+  {
+    "id": 192,
+    "name": "Latin American Games Showcase: The Game Awards 2025 Edition",
+    "expected": "Latin American Games Showcase The Game Awards"
+  },
+  {
+    "id": 193,
+    "name": "17th Unity Awards",
+    "expected": "Unity Awards"
+  },
+  {
+    "id": 194,
+    "name": "Day of the Devs: The Game Awards Digital Showcase 2025",
+    "expected": "Day of the Devs The Game Awards Digital Showcase"
+  },
+  {
+    "id": 196,
+    "name": "Monster Hunter Showcase: December 2025",
+    "expected": "Monster Hunter Showcase"
+  },
+  {
+    "id": 197,
+    "name": "Deutsche Indie Showcase 12/2025",
+    "expected": "Deutsche Indie Showcase"
+  },
+  {
+    "id": 198,
+    "name": "The Game Awards 2025",
+    "expected": "The Game Awards"
+  },
+  {
+    "id": 199,
+    "name": "Premiação Sem Prêmios 2025",
+    "expected": "Premiação Sem Prêmios"
+  },
+  {
+    "id": 200,
+    "name": "The Horror Game Awards 2025",
+    "expected": "The Horror Game Awards"
+  },
+  {
+    "id": 201,
+    "name": "2025 Indie Game 15 Second Showcase",
+    "expected": "Indie Game Second Showcase"
+  },
+  {
+    "id": 202,
+    "name": "Suikoden Live vol.5 2025.12.16",
+    "expected": "Suikoden Live"
+  },
+  {
+    "id": 203,
+    "name": "Mundo Gamer Showcase 2025",
+    "expected": "Mundo Gamer Showcase"
+  },
+  {
+    "id": 204,
+    "name": "Southeast Asia Games Onward 2025",
+    "expected": "Southeast Asia Games Onward"
+  },
+  {
+    "id": 205,
+    "name": "New Game+ Showcase 01.08.2026",
+    "expected": "New Game Showcase"
+  },
+  {
+    "id": 206,
+    "name": "Resident Evil Showcase",
+    "expected": "Resident Evil Showcase"
+  },
+  {
+    "id": 207,
+    "name": "Xbox Developer_Direct 2026",
+    "expected": "Xbox Developer Direct"
+  },
+  {
+    "id": 208,
+    "name": "Taipei Game Show 2026",
+    "expected": "Taipei Game Show"
+  },
+  {
+    "id": 209,
+    "name": "Tomodachi Life: Living the Dream Direct 1.29.2026",
+    "expected": "Tomodachi Life Living the Dream Direct"
+  },
+  {
+    "id": 210,
+    "name": "World of Warcraft: State of Azeroth 2026",
+    "expected": "World of Warcraft State of Azeroth"
+  },
+  {
+    "id": 211,
+    "name": "Perp Games Horror Showcase 2026",
+    "expected": "Perp Games Horror Showcase"
+  },
+  {
+    "id": 212,
+    "name": "Overwatch Spotlight 2026",
+    "expected": "Overwatch Spotlight"
+  },
+  {
+    "id": 213,
+    "name": "Nintendo Direct: Partner Showcase 2.5.2026",
+    "expected": "Nintendo Direct Partner Showcase"
+  },
+  {
+    "id": 214,
+    "name": "New Super Mario Bros. Modding Direct 2026",
+    "expected": "New Super Mario Bros Modding Direct"
+  },
+  {
+    "id": 215,
+    "name": "Heartstone Spotlight 2026",
+    "expected": "Heartstone Spotlight"
+  },
+  {
+    "id": 216,
+    "name": "GameSpain Direct: Winter Edition 2026",
+    "expected": "GameSpain Direct"
+  },
+  {
+    "id": 217,
+    "name": "Diablo 30th Anniversary Spotlight",
+    "expected": "Diablo Anniversary Spotlight"
+  },
+  {
+    "id": 218,
+    "name": "Minas Arcade Games Showcase 2026",
+    "expected": "Minas Arcade Games Showcase"
+  },
+  {
+    "id": 219,
+    "name": "State of Play | February 12, 2026",
+    "expected": "State of Play"
+  },
+  {
+    "id": 220,
+    "name": "Indie Fan Fest 2026",
+    "expected": "Indie Fan Fest"
+  },
+  {
+    "id": 221,
+    "name": "Convergence Games Showcase 2026",
+    "expected": "Convergence Games Showcase"
+  },
+  {
+    "id": 222,
+    "name": "Black Voices in Gaming: Black History Month Showcase 2026",
+    "expected": "Black Voices in Gaming Black History Month Showcase"
+  },
+  {
+    "id": 223,
+    "name": "Quebec Games Celebration Showcase 2026",
+    "expected": "Quebec Games Celebration Showcase"
+  },
+  {
+    "id": 224,
+    "name": "Indie Pearls Awards 2025",
+    "expected": "Indie Pearls Awards"
+  },
+  {
+    "id": 225,
+    "name": "MiniMap Indie Game Showcase 2026.02.26",
+    "expected": "MiniMap Indie Game Showcase"
+  },
+  {
+    "id": 226,
+    "name": "Pokémon Presents: February 27, 2026",
+    "expected": "Pokémon Presents"
+  },
+  {
+    "id": 227,
+    "name": "Indie-Credible 2026",
+    "expected": "Indie Credible"
+  },
+  {
+    "id": 228,
+    "name": "Indie World Showcase 3.3.2026",
+    "expected": "Indie World Showcase"
+  },
+  {
+    "id": 230,
+    "name": "Capcom Spotlight: March 2026",
+    "expected": "Capcom Spotlight"
+  },
+  {
+    "id": 231,
+    "name": "Dames 4 Games Spring Showcase 2026",
+    "expected": "Dames Games Showcase"
+  },
+  {
+    "id": 232,
+    "name": "The MIX + Kinda Funny Spring Game Showcase 2026",
+    "expected": "The MIX Kinda Funny Game Showcase"
+  },
+  {
+    "id": 233,
+    "name": "Nippon Ichi Software UNTITLED// 2026.3.11",
+    "expected": "Nippon Ichi Software UNTITLED"
+  },
+  {
+    "id": 234,
+    "name": "Computer Worlds 2026",
+    "expected": "Computer Worlds"
+  },
+  {
+    "id": 235,
+    "name": "Future Games Show: Spring Showcase 2026",
+    "expected": "Future Games Show Showcase"
+  },
+  {
+    "id": 236,
+    "name": "Super Smash Bros. Ultimate Modding Direct 3.14.2026",
+    "expected": "Super Smash Bros Ultimate Modding Direct"
+  },
+  {
+    "id": 237,
+    "name": "Mundo Gamer Showcase 2026: Edition 01",
+    "expected": "Mundo Gamer Showcase"
+  },
+  {
+    "id": 238,
+    "name": "VR Games Showcase Spring 2026",
+    "expected": "VR Games Showcase"
+  },
+  {
+    "id": 239,
+    "name": "Xbox Partner Preview | March 2026",
+    "expected": "Xbox Partner Preview"
+  },
+  {
+    "id": 240,
+    "name": "Goat Direct 2026",
+    "expected": "Goat Direct"
+  },
+  {
+    "id": 241,
+    "name": "The Triple-i Initiative 2026",
+    "expected": "The Triple i Initiative"
+  },
+  {
+    "id": 242,
+    "name": "LEVEL5 VISION 2026 Craftsmanship",
+    "expected": "LEVEL5 VISION Craftsmanship"
+  },
+  {
+    "id": 243,
+    "name": "Nuntius Showcase 2026",
+    "expected": "Nuntius Showcase"
+  },
+  {
+    "id": 244,
+    "name": "GameSpain Direct: Spring 2026",
+    "expected": "GameSpain Direct"
+  },
+  {
+    "id": 245,
+    "name": "Galaxies: Spring '26",
+    "expected": "Galaxies"
+  },
+  {
+    "id": 246,
+    "name": "Top Hat Studios Presents: Spring Showcase 2026",
+    "expected": "Top Hat Studios Presents Showcase"
+  },
+  {
+    "id": 248,
+    "name": "Second Wind Games Showcase - Spring 2026",
+    "expected": "Second Wind Games Showcase"
+  },
+  {
+    "id": 249,
+    "name": "Wishlisted Indie Game Showcase: April 24, 2026",
+    "expected": "Wishlisted Indie Game Showcase"
+  },
+  {
+    "id": 250,
+    "name": "INDIE Live Expo 2026.4.25",
+    "expected": "INDIE Live Expo"
+  },
+  {
+    "id": 251,
+    "name": "InterfaceX26 Showcase",
+    "expected": "InterfaceX26 Showcase"
+  },
+  {
+    "id": 252,
+    "name": "Creature Feature Showcase 2026",
+    "expected": "Creature Feature Showcase"
+  },
+  {
+    "id": 253,
+    "name": "Star Fox Direct 5.6.2026",
+    "expected": "Star Fox Direct"
+  },
+  {
+    "id": 254,
+    "name": "Nacon Connect 2026",
+    "expected": "Nacon Connect"
+  },
+  {
+    "id": 255,
+    "name": "The ANZ Indie Showcase 2026",
+    "expected": "The ANZ Indie Showcase"
+  },
+  {
+    "id": 256,
+    "name": "PLAYISM GAME SHOW 2026.5.10",
+    "expected": "PLAYISM GAME SHOW"
+  },
+  {
+    "id": 257,
+    "name": "Start Your Engine Festival Showcase",
+    "expected": "Start Your Engine Festival Showcase"
+  },
+  {
+    "id": 258,
+    "name": "Yokaze Night 2026.05.14",
+    "expected": "Yokaze Night"
+  },
+  {
+    "id": 259,
+    "name": "Six One Indie Showcase - May 21st, 2026",
+    "expected": "Six One Indie Showcase"
+  },
+  {
+    "id": 260,
+    "name": "Warhammer Skulls 2026",
+    "expected": "Warhammer Skulls"
+  },
+  {
+    "id": 261,
+    "name": "BitSummit PUNCH",
+    "expected": "BitSummit PUNCH"
+  },
+  {
+    "id": 262,
+    "name": "BitSummit Punch Mixtape 2026: In Association with GamesRadar+",
+    "expected": "BitSummit Punch Mixtape In Association with GamesRadar"
+  },
+  {
+    "id": 264,
+    "name": "Luigikid Indie Direct - Glizzy Indie Dev Showcase 2026",
+    "expected": "Luigikid Indie Direct Glizzy Indie Dev Showcase"
+  },
+  {
+    "id": 265,
+    "name": "Thinky Direct 2026",
+    "expected": "Thinky Direct"
+  },
+  {
+    "id": 266,
+    "name": "Cozy Game Awards 2026",
+    "expected": "Cozy Game Awards"
+  },
+  {
+    "id": 267,
+    "name": "shovel direct 2026",
+    "expected": "shovel direct"
+  },
+  {
+    "id": 268,
+    "name": "Insider Gaming May 2026",
+    "expected": "Insider Gaming"
+  },
+  {
+    "id": 269,
+    "name": "Indie Quest 2026",
+    "expected": "Indie Quest"
+  },
+  {
+    "id": 270,
+    "name": "The MIX Summer Game Showcase 2026",
+    "expected": "The MIX Game Showcase"
+  },
+  {
+    "id": 271,
+    "name": "MIDSUMMER NIGHT'S SCREAM: A Horror Game Awards Showcase 2026",
+    "expected": "MIDSUMMER NIGHT'S SCREAM A Horror Game Awards Showcase"
+  },
+  {
+    "id": 272,
+    "name": "Black Voices in Gaming: Summer Game Fest Showcase 2026",
+    "expected": "Black Voices in Gaming Game Fest Showcase"
+  },
+  {
+    "id": 273,
+    "name": "State of Play | June 2, 2026",
+    "expected": "State of Play"
+  },
+  {
+    "id": 274,
+    "name": "Clemmy's Best Indie Games Summer Showcase 2026",
+    "expected": "Clemmy's Best Indie Games Showcase"
+  },
+  {
+    "id": 275,
+    "name": "Shacknews E4 Indie Showcase 2026",
+    "expected": "Shacknews E4 Indie Showcase"
+  },
+  {
+    "id": 276,
+    "name": "Latin American Games Showcase: Summer Game Fest 2026 Edition",
+    "expected": "Latin American Games Showcase Game Fest"
+  },
+  {
+    "id": 277,
+    "name": "Women-Led Games Showcase: Summer Game Fest 2026 Edition",
+    "expected": "Women Led Games Showcase Game Fest"
+  },
+  {
+    "id": 278,
+    "name": "Access-Ability Summer Showcase 2026",
+    "expected": "Access Ability Showcase"
+  },
+  {
+    "id": 279,
+    "name": "Summer Game Fest 2026",
+    "expected": "Game Fest"
+  },
+  {
+    "id": 280,
+    "name": "Day of the Devs: Summer Game Fest Digital Showcase 2026",
+    "expected": "Day of the Devs Game Fest Digital Showcase"
+  },
+  {
+    "id": 281,
+    "name": "Southeast Asian Games Showcase: Summer Game Fest 2026",
+    "expected": "Southeast Asian Games Showcase Game Fest"
+  },
+  {
+    "id": 282,
+    "name": "Wholesome Direct 2026",
+    "expected": "Wholesome Direct"
+  },
+  {
+    "id": 283,
+    "name": "Story-Rich Showcase 2026",
+    "expected": "Story Rich Showcase"
+  },
+  {
+    "id": 284,
+    "name": "Green Games Showcase: Summer Game Fest 2026 Edition",
+    "expected": "Green Games Showcase Game Fest"
+  },
+  {
+    "id": 285,
+    "name": "Future Games Show: Summer Showcase 2026",
+    "expected": "Future Games Show Showcase"
+  },
+  {
+    "id": 286,
+    "name": "Gayming Pride Parade: Summer Game Fest 2026 Edition",
+    "expected": "Gayming Pride Parade Game Fest"
+  },
+  {
+    "id": 287,
+    "name": "Frosty Games Fest: Summer Game Fest 2026 Edition",
+    "expected": "Frosty Games Fest Game Fest"
+  },
+  {
+    "id": 288,
+    "name": "The v3Expo Gaming Showcase 2026",
+    "expected": "The v3Expo Gaming Showcase"
+  },
+  {
+    "id": 289,
+    "name": "Ñ3 2026",
+    "expected": "Ñ3"
+  },
+  {
+    "id": 290,
+    "name": "Xbox Games Showcase 2026",
+    "expected": "Xbox Games Showcase"
+  },
+  {
+    "id": 291,
+    "name": "PC Gaming Show Summer 2026",
+    "expected": "PC Gaming Show"
+  },
+  {
+    "id": 292,
+    "name": "Deutsche Indie Showcase: Summer Game Fest 2026 Edition",
+    "expected": "Deutsche Indie Showcase Game Fest"
+  },
+  {
+    "id": 293,
+    "name": "India Games Showcase 2026",
+    "expected": "India Games Showcase"
+  },
+  {
+    "id": 294,
+    "name": "Nintendo Direct 2026.06.09 + Nintendo Treehouse Live: July 2026",
+    "expected": "Nintendo Direct Nintendo Treehouse Live"
+  },
+  {
+    "id": 295,
+    "name": "The UploadVR Showcase Summer 2026",
+    "expected": "The UploadVR Showcase"
+  },
+  {
+    "id": 296,
+    "name": "Mundo Gamer Showcase 2026 – June 20, 2026",
+    "expected": "Mundo Gamer Showcase"
+  },
+  {
+    "id": 297,
+    "name": "Arc System Works Showcase - 2026.6.24",
+    "expected": "Arc System Works Showcase"
+  },
+  {
+    "id": 298,
+    "name": "Capcom Spotlight June 2026",
+    "expected": "Capcom Spotlight"
+  },
+  {
+    "id": 299,
+    "name": "Arc System Works Showcase - 2025.6.27",
+    "expected": "Arc System Works Showcase"
+  },
+  {
+    "id": 300,
+    "name": "The Indie Premier Game Showcase 2026",
+    "expected": "The Indie Premier Game Showcase"
+  },
+  {
+    "id": 301,
+    "name": "Convergence Games Showcase July 2026",
+    "expected": "Convergence Games Showcase"
+  },
+  {
+    "id": 302,
+    "name": "The Secret Sauce Showcase 2026",
+    "expected": "The Secret Sauce Showcase"
+  },
+  {
+    "id": 303,
+    "name": "IndieMania 3",
+    "expected": "IndieMania"
+  },
+  {
+    "id": 304,
+    "name": "For One Night Only 2026",
+    "expected": "For One Night Only"
+  },
+  {
+    "id": 305,
+    "name": "Six One Indie Demo Days 2026",
+    "expected": "Six One Indie Demo Days"
+  },
+  {
+    "id": 306,
+    "name": "East Asia Indie Games Celebration 2026",
+    "expected": "East Asia Indie Games Celebration"
+  },
+  {
+    "id": 307,
+    "name": "Short Games Showcase 2026",
+    "expected": "Short Games Showcase"
+  },
+  {
+    "id": 308,
+    "name": "THQ Nordic Digital Showcase 2026",
+    "expected": "THQ Nordic Digital Showcase"
+  },
+  {
+    "id": 309,
+    "name": "Kinetic Publishing Showcase - August 2026",
+    "expected": "Kinetic Publishing Showcase"
+  },
+  {
+    "id": 310,
+    "name": "VR Games Showcase August 2026",
+    "expected": "VR Games Showcase"
+  },
+  {
+    "id": 311,
+    "name": "Daedalic Days - Late at Night",
+    "expected": "Daedalic Days Late at Night"
+  },
+  {
+    "id": 312,
+    "name": "Ukrainian Games Festival 2026",
+    "expected": "Ukrainian Games Festival"
+  },
+  {
+    "id": 313,
+    "name": "Trailer Tuesday Show: Summer 2026",
+    "expected": "Trailer Tuesday Show"
+  },
+  {
+    "id": 314,
+    "name": "GamingUp Showcase 2026",
+    "expected": "GamingUp Showcase"
+  },
+  {
+    "id": 315,
+    "name": "Pixel Arcadia: The Future of Retro",
+    "expected": "Pixel Arcadia The Future of Retro"
+  },
+  {
+    "id": 316,
+    "name": "Gamescom Opening Night Live 2026",
+    "expected": "Gamescom Opening Night Live"
+  },
+  {
+    "id": 317,
+    "name": "Xbox @ Gamescom 2026",
+    "expected": "Xbox @ Gamescom"
+  },
+  {
+    "id": 318,
+    "name": "Future Games Show at gamescom 2026",
+    "expected": "Future Games Show at gamescom"
+  },
+  {
+    "id": 319,
+    "name": "Gamescom Awesome Indies Show 2026",
+    "expected": "Gamescom Awesome Indies Show"
+  },
+  {
+    "id": 320,
+    "name": "Clemmy's Best Indie Games Fall Showcase 2026",
+    "expected": "Clemmy's Best Indie Games Showcase"
+  },
+  {
+    "id": 321,
+    "name": "State of Play: 2026-9-3",
+    "expected": "State of Play"
+  },
+  {
+    "id": 322,
+    "name": "Konami Press Start: September 3, 2026",
+    "expected": "Konami Press Start"
+  },
+  {
+    "id": 323,
+    "name": "The FPS Games Show",
+    "expected": "The FPS Games Show"
+  },
+  {
+    "id": 324,
+    "name": "SAGE 2026",
+    "expected": "SAGE"
+  }
+]

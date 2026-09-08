@@ -77,6 +77,7 @@ public class RecommendationScoringTests : DatabaseTestBase
             IgdbId = 1,
             Name = "Test event",
             Description = "Test event description",
+            NormalizedName = "Test event",
             StartTime = DateTimeOffset.UtcNow.AddDays(-31),
             Games = new[] { game },
             Status = EventSyncStatus.Ready
@@ -88,6 +89,7 @@ public class RecommendationScoringTests : DatabaseTestBase
             IgdbId = 2,
             Name = "Empty event",
             Description = "Empty event description",
+            NormalizedName = "Empty event",
             StartTime = DateTimeOffset.UtcNow.AddDays(-31),
             Status = EventSyncStatus.NoData
         };
