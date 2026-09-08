@@ -15,13 +15,22 @@ public static class PlatformMappings
         };
     }
 
-    public static PlatformGroupDto ToGroupDto(this PlatformGroup group)
+    public static PlatformGroupDto ToDtoWithPlatforms(this PlatformGroup group)
     {
         return new PlatformGroupDto
         {
             Id = group.Id,
             Name = group.Name,
             Platforms = group.Platforms.Select(ToDto).ToList()
+        };
+    }
+
+    public static PlatformGroupDto ToDto(this PlatformGroup group)
+    {
+        return new PlatformGroupDto
+        {
+            Id = group.Id,
+            Name = group.Name,
         };
     }
 

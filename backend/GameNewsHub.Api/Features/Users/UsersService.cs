@@ -83,9 +83,24 @@ public class UsersService
         }
 
         var events = user.FollowedPlatformGroups
-            .Select(pg => pg.ToGroupDto())
+            .Select(pg => pg.ToDtoWithPlatforms())
             .ToList();
 
         return events;
+    }
+
+    public async Task<ErrorOr<ProfileDto>> GetFullProfile(int userId)
+    {
+        var user = await _context.Users
+            .Include(u => u.FollowedEvents)
+            .Include(u => u.FollowedGames)
+            .Include(u => u.FollowedGenres)
+            .Include(u => u.FollowedPlatformGroups)
+            .FirstOrDefaultAsync(u => u.Id == userId);
+
+        if (user == null)
+            return Error.NotFound("User.NotFound", $"User {userId} not found");
+
+        return user.ToDto();
     }
 }

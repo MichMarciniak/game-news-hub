@@ -66,7 +66,7 @@ public class GameService
         // ???
         var platformGroups = game.Platforms
             .GroupBy(p => p.PlatformGroup)
-            .Select(pg => pg.Key.ToGroupDto())
+            .Select(pg => pg.Key.ToDtoWithPlatforms())
             .ToList();
         
         return game.ToDetailDto(platformGroups);

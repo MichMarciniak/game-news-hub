@@ -20,7 +20,7 @@ public class PlatformService
     {
         var groups = await _context.PlatformGroups
             .Include(pg => pg.Platforms)
-            .Select(pg => pg.ToGroupDto())
+            .Select(pg => pg.ToDtoWithPlatforms())
             .ToListAsync();
 
         return groups;

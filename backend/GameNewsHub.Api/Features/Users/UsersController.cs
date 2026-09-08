@@ -55,4 +55,14 @@ public class UsersController : ControllerBase
             details => Ok(details),
             errors => Problem(errors[0].Description));
     }
+
+    [HttpGet("me/profile")]
+    public async Task<ActionResult<ProfileDto>> GetProfile()
+    {
+        var userId = User.GetUserId();
+        var result = await _service.GetFullProfile(userId);
+        return result.Match(
+            details => Ok(details),
+            errors => Problem(errors[0].Description));
+    }
 }
