@@ -20,8 +20,8 @@ public class Event
     public ICollection<EventGenreWeight> GenreWeights { get; set; } = new List<EventGenreWeight>();
 
     public string NormalizedName { get; set; }
-    public int? EventSeriesId { get; set; }
-    public EventSeries? Series { get; set; }
+    public int EventSeriesId { get; set; }
+    public EventSeries Series { get; set; }
     
     // moze bedzie potrzebne pozniej
     // public boolean is_user_added {get; set;}

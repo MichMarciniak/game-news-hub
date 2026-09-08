@@ -84,20 +84,23 @@ public class EventSyncService : IEventSyncService
             evt.NormalizedName = evt.Name; // fallback
         }
 
-        var exactSeries = await _context.EventSeries
-            .FirstOrDefaultAsync(s => s.Name == evt.NormalizedName);
+        var exactMatch = await _context.Events
+            .Where(e => e.EventSeriesId != null && e.NormalizedName == evt.NormalizedName)
+            .Select(e => e.EventSeriesId)
+            .FirstOrDefaultAsync();
 
-        if (exactSeries != null)
+        if (exactMatch != null)
         {
-            evt.EventSeriesId = exactSeries.Id;
+            evt.EventSeriesId = exactMatch;
             return evt;
         }
 
-        var fuzzyMatch = await _context.EventSeries
-            .Select(s => new
+        var fuzzyMatch = await _context.Events
+            .Where(e => e.EventSeriesId != null)
+            .Select(e => new
             {
-                s.Id, Score =
-                    EF.Functions.TrigramsSimilarity(s.Name, evt.NormalizedName)
+                e.EventSeriesId,
+                Score = EF.Functions.TrigramsSimilarity(e.NormalizedName, evt.NormalizedName)
             })
             .Where(x => x.Score >= 0.85)
             .OrderByDescending(x => x.Score)
@@ -105,7 +108,7 @@ public class EventSyncService : IEventSyncService
 
         if (fuzzyMatch != null)
         {
-            evt.EventSeriesId = fuzzyMatch.Id;
+            evt.EventSeriesId = fuzzyMatch.EventSeriesId;
             return evt;
         }
 
@@ -115,7 +118,7 @@ public class EventSyncService : IEventSyncService
             return evt;
         }
 
-        var newSeries = new EventSeries{Name = evt.NormalizedName};
+        var newSeries = new EventSeries();
         newSeriesCache[evt.NormalizedName] = newSeries;
         evt.Series = newSeries;
 

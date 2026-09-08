@@ -7,9 +7,7 @@ public class EventDetailDto
     public string? Description { get; set; }
     public DateTimeOffset StartTime { get; set; }
     public DateTimeOffset? EndTime { get; set; }
-    
     public List<GameListItemDto>? Games { get; set; }
-
     public List<EventListNameDto>? RelatedEvents { get; set; }
 }
 

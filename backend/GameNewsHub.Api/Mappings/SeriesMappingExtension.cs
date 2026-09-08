@@ -10,7 +10,6 @@ public static class SeriesMappingExtension
         return new SeriesDto
         {
             Id = series.Id,
-            Name = series.Name,
         };
     }
 }

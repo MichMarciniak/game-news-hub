@@ -14,6 +14,8 @@ public class EventConfiguration : IEntityTypeConfiguration<Event>
 
         builder.HasIndex(x => x.IgdbId).IsUnique();
 
+        builder.HasIndex(x => x.EventSeriesId);
+
         builder.Property(x => x.Name).IsRequired().HasMaxLength(200);
 
         builder.Property(x => x.Description)

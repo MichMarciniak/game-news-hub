@@ -30,15 +30,7 @@ namespace Data.Migrations
 
                     NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
 
-                    b.Property<string>("Name")
-                        .IsRequired()
-                        .HasMaxLength(100)
-                        .HasColumnType("character varying(100)");
-
                     b.HasKey("Id");
-
-                    b.HasIndex("Name")
-                        .IsUnique();
 
                     b.ToTable("EventSeries");
                 });
@@ -231,7 +223,7 @@ namespace Data.Migrations
                     b.Property<DateTimeOffset?>("EndTime")
                         .HasColumnType("timestamp with time zone");
 
-                    b.Property<int?>("EventSeriesId")
+                    b.Property<int>("EventSeriesId")
                         .HasColumnType("integer");
 
                     b.Property<int>("IgdbId")
@@ -599,7 +591,8 @@ namespace Data.Migrations
                     b.HasOne("Data.Entities.EventSeries", "Series")
                         .WithMany("Events")
                         .HasForeignKey("EventSeriesId")
-                        .OnDelete(DeleteBehavior.SetNull);
+                        .OnDelete(DeleteBehavior.SetNull)
+                        .IsRequired();
 
                     b.Navigation("Series");
                 });
