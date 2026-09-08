@@ -66,4 +66,16 @@ public class EventController : ControllerBase
             success => Ok(),
             errors => Problem(errors[0].Description));
     }
+    
+    
+    [HttpPatch("reassign/series")]
+    [Authorize] //admin
+    public async Task<IActionResult> ReassignSeries([FromQuery] int eventId, [FromQuery] int seriesId)
+    {
+        var result = await _service.ReassignEventToSeries(eventId, seriesId);
+        return result.Match<IActionResult>(
+            success => Ok(),
+            errors => Problem(errors[0].Description));
+    }
+
 }

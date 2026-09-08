@@ -85,4 +85,26 @@ public class EventService
 
         return e.ToDetailDto();
     }
+
+    public async Task<ErrorOr<Success>> ReassignEventToSeries(int eventId, int seriesId)
+    {
+        var evt = await _context.Events
+            .Include(e => e.Series)
+            .FirstOrDefaultAsync(e => e.Id == eventId);
+
+        if (evt == null)
+            return Error.NotFound("Event.NotFound", $"Event {eventId} not found");
+
+        var series = await _context.EventSeries
+            .FirstOrDefaultAsync(s => s.Id == seriesId);
+
+        if (series == null)
+            return Error.NotFound("EventSeries.NotFound", $"EventSeries {seriesId} not found");
+
+        evt.Series = series;
+        await _context.SaveChangesAsync();
+
+        return new ErrorOr<Success>();
+    }
+
 }
