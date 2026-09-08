@@ -45,6 +45,13 @@ public class EventController : ControllerBase
         );
     }
 
+    [HttpGet("search")]
+    public async Task<ActionResult<EventListNameDto>> SearchEvents(string query, int page = 1, int pageSize = 25)
+    {
+        var events = await _service.SearchEvents(query, page, pageSize);
+        return Ok(events);
+    }
+
     [HttpPost("{eventId}/follow")]
     [Authorize]
     public async Task<IActionResult> FollowEvent(int eventId)

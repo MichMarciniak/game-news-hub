@@ -107,4 +107,23 @@ public class EventService
         return new ErrorOr<Success>();
     }
 
+    public async Task<List<EventListNameDto>> SearchEvents(string? query, int page, int pageSize)
+    {
+        IQueryable<Event> dbQuery = _context.Events;
+
+        if (!string.IsNullOrWhiteSpace(query))
+        {
+            dbQuery = dbQuery.Where(g => g.Name.ToLower().Trim().Contains(query.ToLower()));
+        }
+
+        var events = await dbQuery
+            .OrderBy(e => e.Name)
+            .Select(e => e.ToListNameDto())
+            .Skip((page - 1) * pageSize)
+            .Take(pageSize)
+            .ToListAsync();
+
+        return events;
+    }
+
 }
