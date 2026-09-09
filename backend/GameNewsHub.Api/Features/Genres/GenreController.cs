@@ -1,5 +1,6 @@
 using backend.Data;
 using backend.Extensions;
+using GameNewsHub.Api.Features.Shared;
 using GameNewsHub.Contracts;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -32,9 +33,9 @@ public class GenreController : ControllerBase
     {
         var userId = User.GetUserId();
         var result = await _followService.Follow(userId, genreId);
-        return result.Match<IActionResult>(
+        return result.MatchFirst<IActionResult>(
             success => Ok(),
-            error => Problem(error[0].Description));
+            err => this.ProblemErr(err));
     }
     
     [HttpDelete("{genreId}/follow")]
@@ -43,8 +44,8 @@ public class GenreController : ControllerBase
     {
         var userId = User.GetUserId();
         var result = await _followService.Unfollow(userId, genreId);
-        return result.Match<IActionResult>(
+        return result.MatchFirst<IActionResult>(
             success => NoContent(),
-            error => Problem(error[0].Description));
+            err => this.ProblemErr(err));
     }
 }

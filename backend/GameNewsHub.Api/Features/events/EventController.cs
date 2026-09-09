@@ -1,5 +1,6 @@
 ﻿using backend.Extensions;
 using ErrorOr;
+using GameNewsHub.Api.Features.Shared;
 using GameNewsHub.Contracts;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http.HttpResults;
@@ -39,10 +40,9 @@ public class EventController : ControllerBase
     public async Task<ActionResult<EventListItemDto>> GetEvent(int eventId)
     {
         var result = await _service.GetEventDetails(eventId);
-        return result.Match(
+        return result.MatchFirst(
             detail => Ok(detail),
-            errors => Problem(errors[0].Description)
-        );
+            err => this.ProblemErr(err));
     }
 
     [HttpGet("search")]
@@ -58,9 +58,9 @@ public class EventController : ControllerBase
     {
         var userId = User.GetUserId();
         var result = await _followService.Follow(userId, eventId);
-        return result.Match<IActionResult>(
+        return result.MatchFirst<IActionResult>(
             success => Ok(),
-            errors => Problem(errors[0].Description));
+            err => this.ProblemErr(err));
     }
     
     [HttpDelete("{eventId}/follow")]
@@ -69,9 +69,9 @@ public class EventController : ControllerBase
     {
         var userId = User.GetUserId();
         var result = await _followService.Unfollow(userId, eventId);
-        return result.Match<IActionResult>(
+        return result.MatchFirst<IActionResult>(
             success => Ok(),
-            errors => Problem(errors[0].Description));
+            err => this.ProblemErr(err));
     }
     
     
@@ -80,9 +80,9 @@ public class EventController : ControllerBase
     public async Task<IActionResult> ReassignSeries([FromQuery] int eventId, [FromQuery] int seriesId)
     {
         var result = await _service.ReassignEventToSeries(eventId, seriesId);
-        return result.Match<IActionResult>(
+        return result.MatchFirst<IActionResult>(
             success => Ok(),
-            errors => Problem(errors[0].Description));
+            err => this.ProblemErr(err));
     }
 
 }

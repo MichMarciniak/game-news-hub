@@ -1,5 +1,6 @@
 ﻿using backend.Extensions;
 using ErrorOr;
+using GameNewsHub.Api.Features.Shared;
 using GameNewsHub.Contracts;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -23,27 +24,27 @@ public class UsersController : ControllerBase
     {
         var userId = User.GetUserId();
         var result = await _service.GetFollowedGames(userId);
-        return result.Match(
+        return result.MatchFirst(
             details => Ok(details),
-            errors => Problem(errors[0].Description));
+            err => this.ProblemErr(err));
     }
     [HttpGet("me/events/followed")]
     public async Task<ActionResult<List<EventListItemDto>>> GetFollowedEvents()
     {
         var userId = User.GetUserId();
         var result = await _service.GetFollowedEvents(userId);
-        return result.Match(
+        return result.MatchFirst(
             details => Ok(details),
-            errors => Problem(errors[0].Description));
+            err => this.ProblemErr(err));
     }
     [HttpGet("me/genres/followed")]
     public async Task<ActionResult<List<GenreDto>>> GetFollowedGenres()
     {
         var userId = User.GetUserId();
         var result = await _service.GetFollowedGenres(userId);
-        return result.Match(
+        return result.MatchFirst(
             details => Ok(details),
-            errors => Problem(errors[0].Description));
+            err => this.ProblemErr(err));
     }
 
     [HttpGet("me/platforms/followed")]
@@ -51,9 +52,9 @@ public class UsersController : ControllerBase
     {
         var userId = User.GetUserId();
         var result = await _service.GetFollowedPlatformGroups(userId);
-        return result.Match(
+        return result.MatchFirst(
             details => Ok(details),
-            errors => Problem(errors[0].Description));
+            err => this.ProblemErr(err));
     }
 
     [HttpGet("me/profile")]
@@ -61,8 +62,8 @@ public class UsersController : ControllerBase
     {
         var userId = User.GetUserId();
         var result = await _service.GetFullProfile(userId);
-        return result.Match(
+        return result.MatchFirst(
             details => Ok(details),
-            errors => Problem(errors[0].Description));
+            err => this.ProblemErr(err));
     }
 }

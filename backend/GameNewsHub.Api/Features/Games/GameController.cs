@@ -1,5 +1,6 @@
 using backend.Extensions;
 using ErrorOr;
+using GameNewsHub.Api.Features.Shared;
 using GameNewsHub.Contracts;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http.HttpResults;
@@ -39,18 +40,18 @@ public class GameController : ControllerBase
     public async Task<ActionResult<GameDetailDto>> GetGameDetails(int gameId)
     {
         var result = await _service.GetGameDetailsAsync(gameId);
-        return result.Match(
+        return result.MatchFirst(
             details => Ok(details),
-            errors => Problem(errors[0].Description ));
+            err => this.ProblemErr(err));
     }
 
     [HttpGet("{gameId}/addons")]
     public async Task<ActionResult<GameDetailDto>> GetGameAddons(int gameId)
     {
         var result = await _service.GetGameAddons(gameId);
-        return result.Match(
+        return result.MatchFirst(
             details => Ok(details),
-            errors => Problem(errors[0].Description));
+            err => this.ProblemErr(err));
     }
 
     [HttpPost("{gameId}/follow")]
@@ -58,9 +59,9 @@ public class GameController : ControllerBase
     {
         int userId = User.GetUserId();
         var result = await _followService.Follow(userId, gameId);
-        return result.Match<IActionResult>(
+        return result.MatchFirst<IActionResult>(
             success => Ok(),
-            errors => Problem(errors[0].Description));
+            err => this.ProblemErr(err));
     }
 
     [HttpDelete("{gameId}/follow")]
@@ -68,9 +69,9 @@ public class GameController : ControllerBase
     {
         int userId = User.GetUserId();
         var result = await _followService.Unfollow(userId, gameId);
-        return result.Match<IActionResult>(
+        return result.MatchFirst<IActionResult>(
             success => NoContent(),
-            errors => Problem(errors[0].Description));
+            err => this.ProblemErr(err));
     }
 
 }

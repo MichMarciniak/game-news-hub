@@ -1,5 +1,6 @@
 using System.Net;
 using backend.Extensions;
+using GameNewsHub.Api.Features.Shared;
 using GameNewsHub.Contracts;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -33,9 +34,9 @@ public class PlatformController : ControllerBase
         var userId = User.GetUserId();
         var result = await _service.FollowPlatformGroup(userId, groupId);
 
-        return result.Match<IActionResult>(
+        return result.MatchFirst<IActionResult>(
             success => Ok(),
-            errors => Problem(errors[0].Description));
+            err => this.ProblemErr(err));
     }
 
     [HttpDelete("groups/{groupId}/follow")]
@@ -45,9 +46,9 @@ public class PlatformController : ControllerBase
         var userId = User.GetUserId();
         var result = await _service.FollowPlatformGroup(userId, groupId);
 
-        return result.Match<IActionResult>(
+        return result.MatchFirst<IActionResult>(
             success => Ok(),
-            errors => Problem(errors[0].Description));
+            err => this.ProblemErr(err));
     }
 
     [HttpPatch("reassign")]
@@ -56,9 +57,9 @@ public class PlatformController : ControllerBase
     {
         var result = await _service.ReassignPlatformGroup(platformId, groupId);
         
-        return result.Match<IActionResult>(
+        return result.MatchFirst<IActionResult>(
             success => Ok(),
-            errors => Problem(errors[0].Description));
+            err => this.ProblemErr(err));
     }
 
 
