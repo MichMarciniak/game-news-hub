@@ -1,7 +1,9 @@
+using System.Security.Claims;
 using System.Text;
 using backend.Configuration;
 using GameNewsHub.Api.Features.Genres;
 using GameNewsHub.Api.Features.Games;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi;
@@ -31,17 +33,35 @@ public static class AuthExtension
 
                 return Task.CompletedTask;
             });
+
+            options.AddOperationTransformer((operation, context, cancelToken) =>
+            {
+                var requiresAuthorization = context.Description.ActionDescriptor.EndpointMetadata
+                    .OfType<IAuthorizeData>()
+                    .Any();
+
+                if (requiresAuthorization)
+                {
+                    operation.Security ??= [];
+                    operation.Security.Add(new OpenApiSecurityRequirement
+                    {
+                        [new OpenApiSecuritySchemeReference("Bearer", context.Document)] = []
+                    });
+                }
+
+                return Task.CompletedTask;
+            });
         });
         return services;
     }
 
-    public static IServiceCollection AddJwtAuthentication(this IServiceCollection services, IConfiguration config)
+    public static IServiceCollection AddJwtAuthentication(this IServiceCollection services, JwtTokenOptions options)
     {
-        var key = Encoding.ASCII.GetBytes(config["Jwt:Key"]);
+        var key = Encoding.ASCII.GetBytes(options.SigningKey);
 
         if (key.Length == 0)
         {
-            throw new Exception("Jwt:Key is required");
+            throw new Exception("Token:SigningKey is required");
         }
 
         services.AddAuthentication(opt =>
@@ -55,9 +75,25 @@ public static class AuthExtension
                 {
                     ValidateIssuerSigningKey = true,
                     IssuerSigningKey = new SymmetricSecurityKey(key),
-                    ValidateIssuer = false,
-                    ValidateAudience = false,
-                    ClockSkew = TimeSpan.Zero
+                    ValidateIssuer = true,
+                    ValidateAudience = true,
+                    ValidIssuer = options.Issuer,
+                    ValidAudience = options.Audience,
+                    ClockSkew = TimeSpan.FromSeconds(30)
+                };
+
+                opt.Events = new JwtBearerEvents
+                {
+                    OnTokenValidated = context =>
+                    {
+                        var tokenType = context.Principal?.FindFirstValue("token_type");
+                        if (tokenType != "access")
+                        {
+                            context.Fail("Invalid token type");
+                        }
+
+                        return Task.CompletedTask;
+                    }
                 };
             });
 

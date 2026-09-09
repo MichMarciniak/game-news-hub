@@ -1,11 +1,14 @@
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
-using System.Text;
+using backend.Configuration;
+using backend.Extensions;
+using GameNewsHub.Api.Features.Shared;
 using GameNewsHub.Contracts;
 using GameNewsHub.Data.Entities;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.IdentityModel.Tokens;
+using Microsoft.Extensions.Options;
 
 namespace GameNewsHub.Api.Features.Auth;
 
@@ -13,55 +16,98 @@ namespace GameNewsHub.Api.Features.Auth;
 public class AuthController : ControllerBase
 {
     private readonly UserManager<AppUser> _userManager;
+    private readonly SignInManager<AppUser> _signInManager;
     private readonly IConfiguration _configuration;
+    private readonly AuthService _service;
+    private readonly JwtTokenOptions _tokenOptions;
 
-    public AuthController(UserManager<AppUser> userManager, IConfiguration configuration)
+    public AuthController(AuthService service, UserManager<AppUser> userManager, SignInManager<AppUser> signInManager, IConfiguration configuration,  IOptions<JwtTokenOptions> tokenOptions)
     {
+        _service = service;
         _userManager = userManager;
+        _signInManager = signInManager;
         _configuration = configuration;
+        _tokenOptions = tokenOptions.Value;
     }
 
     [HttpPost("register")]
-    public async Task<IActionResult> Register(LoginDto request)
+    public async Task<IActionResult> Register(RegisterDto request)
     {
-        var user = new AppUser { UserName = request.Username };
-        var result = await _userManager.CreateAsync(user, request.Password);
+        var result = await _service.Register(request);
+        return result.Match<IActionResult>(
+            ok => Ok(),
+            error => BadRequest(error));
 
-        if (result.Succeeded) return Ok("Register successful");
-        return BadRequest(result.Errors);
     }
 
+    // TODO
+    // login przechodzi jak jest refresh token
+    // i złe hasło się podaje
+    // ale po kilku próbach wywala 401
     [HttpPost("login")]
     public async Task<IActionResult> Login(LoginDto request)
     {
-        var user = await _userManager.FindByNameAsync(request.Username);
-        if (user == null || !await _userManager.CheckPasswordAsync(user, request.Password)) return Unauthorized();
-        
-        var tokenHandler = new JwtSecurityTokenHandler();
-        var key = Encoding.ASCII.GetBytes(_configuration["Jwt:Key"]!);
-
-        var tokenDescriptor = new SecurityTokenDescriptor
-        {
-            Subject = new ClaimsIdentity(new[]
+        var result = await _service.Login(request);
+        return result.Match(
+            tokenResult =>
             {
-                new Claim(ClaimTypes.Name, user.UserName!),
-                new Claim(ClaimTypes.NameIdentifier, user.Id.ToString())
-            }),
-            Expires = DateTime.UtcNow.AddDays(7),
-            SigningCredentials = new SigningCredentials(
-                new SymmetricSecurityKey(key),
-                SecurityAlgorithms.HmacSha256Signature
-            )
-        };
-
-        var token = tokenHandler.CreateToken(tokenDescriptor);
-            
-        return Ok(new
-        {
-            Token = tokenHandler.WriteToken(token)
-        });
+                Response.Cookies.Append("refreshToken", tokenResult.RefreshToken, new CookieOptions
+                {
+                    HttpOnly = true,
+                    Secure = true,
+                    SameSite = SameSiteMode.Lax, //TODO change to strict
+                    Expires = DateTimeOffset.UtcNow.Add(_tokenOptions.RefreshTokenLifetime)
+                });
+                return Ok(new LoginResponse{AccessToken = tokenResult.AccessToken});
+            },
+            errors => this.ProblemErr(errors)
+        );
 
     }
 
+    [HttpPost("refresh")]
+    public async Task<IActionResult> Refresh()
+    {
+        var refreshToken = Request.Cookies["refreshToken"];
+        if (string.IsNullOrEmpty(refreshToken))
+        {
+            return Unauthorized();
+        }
+
+        var result = await _service.RefreshToken(refreshToken);
+
+        return result.MatchFirst(
+            tokenResult =>
+            {
+                Response.Cookies.Append("refreshToken", tokenResult.RefreshToken, new CookieOptions
+                {
+                    HttpOnly = true,
+                    Secure = true,
+                    SameSite = SameSiteMode.Lax, //TODO change to strict
+                    Expires = DateTimeOffset.UtcNow.Add(_tokenOptions.RefreshTokenLifetime)
+                });
+                return Ok(new LoginResponse{AccessToken = tokenResult.AccessToken});
+            },
+            errors => this.ProblemErr(errors)
+        );
+    }
+
+    [HttpPost("logout")]
+    [Authorize]
+    public IActionResult Logout()
+    {
+        Response.Cookies.Delete("refreshToken");
+        return NoContent();
+    }
+
+    [HttpPost("logout-all")]
+    [Authorize]
+    public async Task<IActionResult> LogoutAll()
+    {
+        var userId = User.GetUserId();
+        await _service.LogoutFull(userId);
+        Response.Cookies.Delete("refreshToken");
+        return NoContent();
+    }
 
 }

@@ -1,3 +1,4 @@
+using GameNewsHub.Api.Features.Auth;
 using GameNewsHub.Api.Features.Events;
 using GameNewsHub.Api.Features.Games;
 using GameNewsHub.Api.Features.Genres;
@@ -17,6 +18,7 @@ public static class FeaturesRegistration
         services.AddUsersServices();
         services.AddEventServices();
         services.AddPlatformServices();
+        services.AddAuthServices();
         return services;
     }
 }

@@ -4,6 +4,7 @@ namespace backend.Configuration;
 
 public class IdentityConfig
 {
+    //TODO zmienić przez prod albo wyrzucić
     public static void ConfigIdentity(IdentityOptions options)
     {
         options.Password.RequireDigit = false;
@@ -12,7 +13,7 @@ public class IdentityConfig
         options.Password.RequireUppercase = false;
         options.Password.RequiredLength = 2;
 
-        options.User.RequireUniqueEmail = false;
+        options.User.RequireUniqueEmail = true;
         options.SignIn.RequireConfirmedEmail = false;
         options.SignIn.RequireConfirmedPhoneNumber = false;
         

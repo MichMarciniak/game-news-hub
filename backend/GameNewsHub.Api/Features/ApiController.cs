@@ -26,6 +26,21 @@ public abstract class ApiController : ControllerBase
             _ => StatusCodes.Status500InternalServerError
         };
 
-        return Problem(statusCode: statusCode, title: firstError.Description);
+        var problemDetails = new ProblemDetails
+        {
+            Status = statusCode,
+            Title = firstError.Description,
+            Type = firstError.Code
+        };
+
+        if (firstError.Metadata != null)
+        {
+            foreach (var (key, value) in firstError.Metadata)
+            {
+                problemDetails.Extensions[key] = value;
+            }
+        }
+
+        return new ObjectResult(problemDetails) { StatusCode = statusCode };
     }
 }

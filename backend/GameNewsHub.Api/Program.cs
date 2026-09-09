@@ -1,8 +1,10 @@
+using System.IdentityModel.Tokens.Jwt;
 using System.Text.Json.Serialization;
 using backend.Configuration;
 using backend.Data;
 using backend.Extensions;
 using GameNewsHub.Api.Features;
+using GameNewsHub.Api.Seeder;
 using GameNewsHub.Data.Entities;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authorization;
@@ -15,20 +17,34 @@ const string FrontendCorsPolicy = "FrontendCorsPolicy";
 
 var connectionString = builder.Configuration.GetConnectionString("DefaultConnection");
 
-// load weights from appsettings
+// OPTIONS from appsettings and secrets
 builder.Services.Configure<RecommendationWeights>(
     builder.Configuration.GetSection(RecommendationWeights.SectionName));
+
+builder.Services.Configure<JwtTokenOptions>(
+    builder.Configuration.GetSection(JwtTokenOptions.SectionName));
+
+var devAuth = builder.Configuration.GetSection("DevAuth").Get<bool>();
 
 //DATABSE + IDENTITY
 builder.Services.AddDbContext<AppDbContext>(options =>
     options.UseNpgsql(connectionString)
 );
+builder.Services.AddIdentityCore<AppUser>()
+    .AddRoles<IdentityRole<int>>()
+    .AddEntityFrameworkStores<AppDbContext>()
+    .AddDefaultTokenProviders()
+    .AddSignInManager();
 
-builder.Services.AddIdentity<AppUser, IdentityRole<int>>()
-    .AddEntityFrameworkStores<AppDbContext>();
+builder.Services.AddHttpContextAccessor();
 
+// bo .net jest tak piękny że nawet przy wczytywaniu tokenów
+// zamiast "sub" jest jakiś schema...
+JwtSecurityTokenHandler.DefaultInboundClaimTypeMap.Clear();
+
+
+// options narazie dla dev
 builder.Services.Configure<IdentityOptions>(IdentityConfig.ConfigIdentity);
-
 
 // CONFIG + SERVICES
 builder.Services.AddFeatureServices();
@@ -53,7 +69,7 @@ builder.Services.AddCors(options =>
 });
 
 // AUTHENTICATION - Dev mode or normal
-if (builder.Environment.IsDevelopment())
+if (devAuth)
 {
     builder.Services.AddAuthentication("DevScheme")
         .AddScheme<AuthenticationSchemeOptions, AuthDevHandler>("DevScheme", null);
@@ -67,7 +83,8 @@ if (builder.Environment.IsDevelopment())
 }
 else
 {
-    builder.Services.AddJwtAuthentication(builder.Configuration);
+    var tokenOptions = builder.Configuration.GetSection(JwtTokenOptions.SectionName).Get<JwtTokenOptions>();
+    builder.Services.AddJwtAuthentication(tokenOptions);
     builder.Services.AddAuthorization();
 }
 
@@ -78,7 +95,10 @@ var app = builder.Build();
 using (var scope = app.Services.CreateScope())
 {
     var db = scope.ServiceProvider.GetRequiredService<AppDbContext>();
-    //db.Database.Migrate();
+    await db.Database.MigrateAsync();
+    
+    var roleManager = scope.ServiceProvider.GetRequiredService<RoleManager<IdentityRole<int>>>();
+    await RoleSeeder.SeedAsync(roleManager);
 
 }
 
