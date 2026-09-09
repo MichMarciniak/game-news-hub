@@ -8,7 +8,7 @@ public static class IgdbServiceExtension
     
     public static IServiceCollection AddIgdbServices(this IServiceCollection services, IConfiguration config)
     {
-        var igdbOptions = config.GetSection("Api").Get<ApiConfig>();
+        var igdbOptions = config.GetSection("Api").Get<ApiOptions>();
 
         services.AddSingleton<IgdbAuthService>();
         

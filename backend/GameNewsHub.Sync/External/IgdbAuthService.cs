@@ -6,7 +6,7 @@ namespace GameNewsHub.Sync.External;
 
 public class IgdbAuthService
 {
-    private readonly ApiConfig _config;
+    private readonly ApiOptions _options;
     private readonly HttpClient _httpClient;
     private readonly SemaphoreSlim _semaphore = new SemaphoreSlim(1, 1);
     private readonly ILogger<IgdbAuthService> _logger;
@@ -14,9 +14,9 @@ public class IgdbAuthService
     private volatile string? _cachedToken;
     private DateTime _expiresAt;
 
-    public IgdbAuthService(IOptions<ApiConfig> config, HttpClient client, ILogger<IgdbAuthService> logger)
+    public IgdbAuthService(IOptions<ApiOptions> config, HttpClient client, ILogger<IgdbAuthService> logger)
     {
-        _config = config.Value;
+        _options = config.Value;
         _httpClient = client;
         _logger = logger;
     }
@@ -38,10 +38,10 @@ public class IgdbAuthService
                 return _cachedToken;
             }
 
-            var response = await _httpClient.PostAsync(_config.TokenUrl, new FormUrlEncodedContent(new[]
+            var response = await _httpClient.PostAsync(_options.TokenUrl, new FormUrlEncodedContent(new[]
             {
-                new KeyValuePair<string, string>("client_id", _config.ClientId),
-                new KeyValuePair<string, string>("client_secret", _config.ClientSecret),
+                new KeyValuePair<string, string>("client_id", _options.ClientId),
+                new KeyValuePair<string, string>("client_secret", _options.ClientSecret),
                 new KeyValuePair<string, string>("grant_type", "client_credentials")
             }));
 

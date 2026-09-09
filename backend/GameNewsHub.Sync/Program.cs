@@ -14,8 +14,8 @@ builder.Services.AddDbContext<AppDbContext>(options =>
     options.UseNpgsql(connectionString)
 );
 
-builder.Services.Configure<ApiConfig>(
-    builder.Configuration.GetSection("Api"));
+builder.Services.Configure<ApiOptions>(
+    builder.Configuration.GetSection(ApiOptions.SectionName));
 
 builder.Services.AddIgdbServices(builder.Configuration);
 builder.Services.AddSyncServices();

@@ -17,7 +17,7 @@ var connectionString = builder.Configuration.GetConnectionString("DefaultConnect
 
 // load weights from appsettings
 builder.Services.Configure<RecommendationWeights>(
-    builder.Configuration.GetSection("RecommendationWeights"));
+    builder.Configuration.GetSection(RecommendationWeights.SectionName));
 
 //DATABSE + IDENTITY
 builder.Services.AddDbContext<AppDbContext>(options =>
