@@ -9,4 +9,5 @@ public record RecommendationDto
     public bool ContainsFollowedPlatformGroup { get; set; }
     public double MatchScore { get; set; }
     public double FinalPriority { get; set; }
+    public bool IsPredicted { get; set; }
 }

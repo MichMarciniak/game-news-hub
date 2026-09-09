@@ -1,6 +1,7 @@
 ﻿using System.Reflection.Metadata.Ecma335;
 using backend.Data;
 using ErrorOr;
+using GameNewsHub.Api.Features.Shared;
 using GameNewsHub.Api.Mappings;
 using GameNewsHub.Contracts;
 using GameNewsHub.Data.Entities;
@@ -27,13 +28,7 @@ public class EventService
         }
         else
         {
-            start = new DateTimeOffset(
-                now.Year,
-                now.Month,
-                1,
-                0, 0, 0,
-                now.Offset
-            );
+            start = DateCalculator.GetMonthStart(now);
         }
 
         DateTimeOffset end;
@@ -43,14 +38,7 @@ public class EventService
         }
         else
         {
-            var nextMonth = now.AddMonths(1);
-            end = new DateTimeOffset(
-                nextMonth.Year,
-                nextMonth.Month,
-                1,
-                0, 0, 0,
-                nextMonth.Offset
-            );
+            end = DateCalculator.GetMonthEnd(now);
         }
 
         var events = await _context.Events 
