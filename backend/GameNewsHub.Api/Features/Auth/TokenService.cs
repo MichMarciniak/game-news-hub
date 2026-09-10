@@ -2,6 +2,7 @@
 using System.Security.Claims;
 using System.Text;
 using backend.Configuration;
+using GameNewsHub.Api.Constants;
 using GameNewsHub.Data.Entities;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.Options;
@@ -31,16 +32,23 @@ public class TokenService
             new Claim(JwtRegisteredClaimNames.Email, user.Email),
             new Claim("token_type", "access"),
         };
-        claims.AddRange(roles.Select(role => new Claim(ClaimTypes.Role, role)));
+        //jwt registered claim names doesn't have roles i think
+        // and default claim names fron .net are toooo long
+        claims.AddRange(roles.Select(role => new Claim("roles", role)));
         
         var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_jwtTokenOptions.SigningKey));
         var creds = new SigningCredentials(key, SecurityAlgorithms.HmacSha256);
 
+        // jak admin to ttl mniejszy
+        var expires = roles.Contains(Roles.Admin)
+            ? DateTime.UtcNow.Add(_jwtTokenOptions.AdminAccessTokenLifetime)
+            : DateTime.UtcNow.Add(_jwtTokenOptions.AccessTokenLifetime);
+        
         var token = new JwtSecurityToken(
             issuer: _jwtTokenOptions.Issuer,
             audience: _jwtTokenOptions.Audience,
             claims: claims,
-            expires: DateTime.UtcNow.Add(_jwtTokenOptions.AccessTokenLifetime),
+            expires: expires,
             signingCredentials: creds
         );
 

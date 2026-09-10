@@ -7,6 +7,7 @@ public class JwtTokenOptions
     public string Audience { get; set; }
     public string Issuer { get; set; }
     public TimeSpan AccessTokenLifetime { get; set; }
+    public TimeSpan AdminAccessTokenLifetime { get; set; }
     public TimeSpan RefreshTokenLifetime { get; set; }
 
 }

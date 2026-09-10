@@ -90,7 +90,7 @@ if (devAuth)
 else
 {
     var tokenOptions = builder.Configuration.GetSection(JwtTokenOptions.SectionName).Get<JwtTokenOptions>();
-    builder.Services.AddJwtAuthentication(tokenOptions);
+    builder.Services.AddJwtAuthentication(tokenOptions!);
     builder.Services.AddAuthorization();
 }
 
