@@ -1,14 +1,15 @@
-﻿using Microsoft.AspNetCore.Identity;
+﻿using GameNewsHub.Api.Constants;
+using Microsoft.AspNetCore.Identity;
 
 namespace GameNewsHub.Api.Seeder;
 
 public static class RoleSeeder
 {
-    public static readonly string[] Roles = new[] { "Admin", "User" };
+    public static readonly ICollection<string> _roles = Roles.GetArray(); 
 
     public static async Task SeedAsync(RoleManager<IdentityRole<int>> roleManager)
     {
-        foreach (var role in Roles)
+        foreach (var role in _roles)
         {
             if (!await roleManager.RoleExistsAsync(role))
             {

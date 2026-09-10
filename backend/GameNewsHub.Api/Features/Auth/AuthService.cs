@@ -3,6 +3,7 @@ using System.Net;
 using System.Security.Claims;
 using backend.Configuration;
 using ErrorOr;
+using GameNewsHub.Api.Constants;
 using GameNewsHub.Contracts;
 using GameNewsHub.Data.Entities;
 using Microsoft.AspNetCore.Identity;
@@ -19,8 +20,9 @@ public class AuthService
     private readonly FrontendOptions _frontendOptions;
     private readonly TokenService _tokenService;
     private readonly EmailTemplateService _templateService;
+    private readonly RoleManager<IdentityRole<int>> _roleManager;
 
-    public AuthService(UserManager<AppUser> userManager, SignInManager<AppUser> signInManager, IEmailSender emailSender, TokenService tokenService, IOptions<FrontendOptions> frontendOptions, EmailTemplateService templateService)
+    public AuthService(UserManager<AppUser> userManager, SignInManager<AppUser> signInManager, IEmailSender emailSender, TokenService tokenService, IOptions<FrontendOptions> frontendOptions, EmailTemplateService templateService, RoleManager<IdentityRole<int>> roleManager)
     {
         _userManager = userManager;
         _signInManager = signInManager;
@@ -28,6 +30,7 @@ public class AuthService
         _tokenService = tokenService;
         _frontendOptions = frontendOptions.Value;
         _templateService = templateService;
+        _roleManager = roleManager;
     }
 
     // tworzy usera
@@ -38,8 +41,9 @@ public class AuthService
         {
             Email = registerDto.Email,
             UserName = registerDto.Username,
-            CreatedAt = DateTimeOffset.UtcNow
+            CreatedAt = DateTimeOffset.UtcNow,
         };
+        
         var result = await _userManager.CreateAsync(user, registerDto.Password);
 
         if (!result.Succeeded)
@@ -48,6 +52,8 @@ public class AuthService
                 .Select(e => Error.Validation(code: e.Code, description: e.Description))
                 .ToList();
         }
+        
+        await AssignRoleAsync(user, Roles.User);
 
         await SendConfirmationEmail(user);
         
@@ -211,6 +217,19 @@ public class AuthService
         );
         
     }
-    
+
+    private async Task AssignRoleAsync(AppUser user, string role)
+    {
+        if (!await _roleManager.RoleExistsAsync(role))
+        {
+            await _roleManager.CreateAsync(new IdentityRole<int>(role));
+        }
+
+        if (!await _userManager.IsInRoleAsync(user, role))
+        {
+            await _userManager.AddToRoleAsync(user, role);
+        }
+        
+    }
     
 }
