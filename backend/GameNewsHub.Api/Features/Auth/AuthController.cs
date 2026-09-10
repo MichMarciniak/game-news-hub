@@ -2,6 +2,7 @@ using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using backend.Configuration;
 using backend.Extensions;
+using ErrorOr;
 using GameNewsHub.Api.Features.Shared;
 using GameNewsHub.Contracts;
 using GameNewsHub.Data.Entities;
@@ -110,4 +111,21 @@ public class AuthController : ControllerBase
         return NoContent();
     }
 
+    [HttpPost("confirm-email")]
+    public async Task<IActionResult> ConfirmEmail(EmailConfirmDto request)
+    {
+        var result = await _service.ConfirmEmail(request.UserId, request.Token);
+        return result.Match<IActionResult>(
+            ok => NoContent(),
+            error => this.ProblemErr(error));
+    }
+
+    [HttpPost("resend-email")]
+    public async Task<IActionResult> ResendConfirmation(EmailResendDto request)
+    {
+        var result = await _service.ResendConfirmation(request.Email);
+        return result.Match<IActionResult>(
+            ok => NoContent(),
+            error => this.ProblemErr(error));
+    }
 }

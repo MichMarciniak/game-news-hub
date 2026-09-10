@@ -3,6 +3,10 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace GameNewsHub.Api.Features.Shared;
 
+// TODO trzymaj się jakiegoś standardu
+// bo raz jest problem.errors....
+// a inny raz jest problem.details
+// i we frontendzie nie wiadomo co wykorzystać
 public static class ControllerBaseExtension
 {
     public static ObjectResult ProblemErr(this ControllerBase controller, List<Error> errors)

@@ -11,10 +11,12 @@ namespace GameNewsHub.Api.Features.Auth;
 public class EmailSender : IEmailSender
 {
     private readonly SmtpOptions _options;
+    private readonly EmailTemplateService _templateService;
 
-    public EmailSender(IOptions<SmtpOptions> options)
+    public EmailSender(IOptions<SmtpOptions> options, EmailTemplateService templateService)
     {
         _options = options.Value;
+        _templateService = templateService;
     }
     
     public async Task SendEmailAsync(string email, string subject, string htmlMessage)

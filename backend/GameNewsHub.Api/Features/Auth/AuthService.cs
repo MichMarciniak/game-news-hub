@@ -18,14 +18,16 @@ public class AuthService
     private readonly IEmailSender _emailSender;
     private readonly FrontendOptions _frontendOptions;
     private readonly TokenService _tokenService;
+    private readonly EmailTemplateService _templateService;
 
-    public AuthService(UserManager<AppUser> userManager, SignInManager<AppUser> signInManager, IEmailSender emailSender, TokenService tokenService, IOptions<FrontendOptions> frontendOptions)
+    public AuthService(UserManager<AppUser> userManager, SignInManager<AppUser> signInManager, IEmailSender emailSender, TokenService tokenService, IOptions<FrontendOptions> frontendOptions, EmailTemplateService templateService)
     {
         _userManager = userManager;
         _signInManager = signInManager;
         _emailSender = emailSender;
         _tokenService = tokenService;
         _frontendOptions = frontendOptions.Value;
+        _templateService = templateService;
     }
 
     // tworzy usera
@@ -36,6 +38,7 @@ public class AuthService
         {
             Email = registerDto.Email,
             UserName = registerDto.Username,
+            CreatedAt = DateTimeOffset.UtcNow
         };
         var result = await _userManager.CreateAsync(user, registerDto.Password);
 
@@ -109,6 +112,7 @@ public class AuthService
     // jeśli token i userId sie zgadzaja
     public async Task<ErrorOr<Success>> ConfirmEmail(int userId, string token)
     {
+        var decodedToken = WebUtility.UrlDecode(token);
         var user = await _userManager.FindByIdAsync(userId.ToString());
         if (user == null)
         {
@@ -123,7 +127,7 @@ public class AuthService
         IdentityResult result;
         try
         {
-            result = await _userManager.ConfirmEmailAsync(user, token);
+            result = await _userManager.ConfirmEmailAsync(user, decodedToken);
         }
         catch (FormatException)
         {
@@ -194,10 +198,16 @@ public class AuthService
         
         var confirmUrl = $"{_frontendOptions.Url}/confirm-email?userId={user.Id}&token={encodedToken}";
 
+        var html = await _templateService.RenderAsync(EmailTemplates.ConfirmEmail, new
+        {
+            Username = user.UserName,
+            ConfirmUrl = confirmUrl
+        });
+
         // powinien juz być email w userze
         await _emailSender.SendEmailAsync(user.Email,
             "Confirm your email",
-            $"<p>Click to confirm <a href={confirmUrl}>{confirmUrl}</a> </p>"
+            html
         );
         
     }

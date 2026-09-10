@@ -10,7 +10,6 @@ public static class AuthRegistration
     {
         services.AddScoped<AuthService>();
         services.AddScoped<TokenService>();
-        services.AddScoped<IEmailSender, EmailSender>();
 
         return services;
     }

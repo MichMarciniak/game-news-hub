@@ -19,6 +19,7 @@ public static class FeaturesRegistration
         services.AddEventServices();
         services.AddPlatformServices();
         services.AddAuthServices();
+        services.AddEmailServices();
         return services;
     }
 }

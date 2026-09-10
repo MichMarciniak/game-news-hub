@@ -8,7 +8,6 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace GameNewsHub.Api.Features.Games;
 
-[Authorize]
 [ApiController]
 [Route("[controller]")]
 public class GameController : ControllerBase 
@@ -55,6 +54,7 @@ public class GameController : ControllerBase
     }
 
     [HttpPost("{gameId}/follow")]
+    [Authorize]
     public async Task<IActionResult> FollowGame(int gameId)
     {
         int userId = User.GetUserId();
@@ -65,6 +65,7 @@ public class GameController : ControllerBase
     }
 
     [HttpDelete("{gameId}/follow")]
+    [Authorize]
     public async Task<IActionResult> UnfollowGame(int gameId)
     {
         int userId = User.GetUserId();
