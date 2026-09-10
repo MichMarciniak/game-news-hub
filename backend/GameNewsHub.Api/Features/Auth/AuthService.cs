@@ -78,7 +78,7 @@ public class AuthService
             );
         }
         
-        if (signInResult.IsNotAllowed)
+        if (!signInResult.Succeeded)
         {
             return Error.Unauthorized(code: "Auth.InvalidCredentials", description: "Invalid email or password");
         }

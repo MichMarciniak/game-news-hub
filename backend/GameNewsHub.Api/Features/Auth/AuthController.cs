@@ -41,10 +41,6 @@ public class AuthController : ControllerBase
 
     }
 
-    // TODO
-    // login przechodzi jak jest refresh token
-    // i złe hasło się podaje
-    // ale po kilku próbach wywala 401
     [HttpPost("login")]
     public async Task<IActionResult> Login(LoginDto request)
     {
