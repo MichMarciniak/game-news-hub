@@ -197,6 +197,69 @@ public class AuthService
         return Result.Success;
     }
 
+    public async Task<ErrorOr<Success>> RequestPasswordReset(string email)
+    {
+        var user = await _userManager.FindByEmailAsync(email);
+        if (user == null || !user.EmailConfirmed)
+        {
+            return Result.Success;
+        }
+
+        await SendPasswordResetEmail(user);
+
+        return Result.Success;
+    }
+
+    public async Task<ErrorOr<Success>> ResetPassword(int userId, string token, string newPassword)
+    {
+        var decodedToken = WebUtility.UrlDecode(token);
+        var user = await _userManager.FindByIdAsync(userId.ToString());
+        if (user == null)
+        {
+            return Error.Validation(code: "Token.Invalid", description: "Invalid or expired token");
+        }
+
+        IdentityResult result;
+        try
+        {
+            result = await _userManager.ResetPasswordAsync(user, decodedToken, newPassword);
+        }
+        catch (FormatException)
+        {
+            return Error.Validation(code: "Token.Invalid", description: "Invalid or expired token");
+        }
+
+        if (!result.Succeeded)
+        {
+            return result.Errors
+                .Select(e => Error.Validation(code: e.Code, description: e.Description))
+                .ToList();
+        }
+
+        // unieważnia refresh token
+        await _userManager.UpdateSecurityStampAsync(user);
+
+        return Result.Success;
+    }
+
+    private async Task SendPasswordResetEmail(AppUser user)
+    {
+        var token = await _userManager.GeneratePasswordResetTokenAsync(user);
+        var encodedToken =  WebUtility.UrlEncode(token);
+        
+        var url = $"{_frontendOptions.Url}/reset-password?userId={user.Id}&token={encodedToken}";
+        var html = await _templateService.RenderAsync(EmailTemplates.ResetPassword, new
+        {
+            ResetUrl = url
+        });
+
+        await _emailSender.SendEmailAsync(user.Email,
+            "Reset password",
+            html
+        );
+
+    }
+
     private async Task SendConfirmationEmail(AppUser user)
     {
         var token = await _userManager.GenerateEmailConfirmationTokenAsync(user);

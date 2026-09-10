@@ -26,7 +26,14 @@ public class EmailConfirmDto
     [Required] public string Token { get; set; }
 }
 
-public class EmailResendDto
+public class EmailDto
 {
     [Required] public string Email { get; set; }
+}
+
+public class ResetPasswordDto
+{
+    [Required] public int UserId { get; set; }
+    [Required] public string Token { get; set; }
+    [Required] public string Password { get; set; }
 }

@@ -9,6 +9,7 @@ using GameNewsHub.Data.Entities;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.WebUtilities;
 using Microsoft.Extensions.Options;
 
 namespace GameNewsHub.Api.Features.Auth;
@@ -117,9 +118,27 @@ public class AuthController : ControllerBase
     }
 
     [HttpPost("resend-email")]
-    public async Task<IActionResult> ResendConfirmation(EmailResendDto request)
+    public async Task<IActionResult> ResendConfirmation(EmailDto request)
     {
         var result = await _service.ResendConfirmation(request.Email);
+        return result.Match<IActionResult>(
+            ok => NoContent(),
+            error => this.ProblemErr(error));
+    }
+
+    [HttpPost("request-password-reset")]
+    public async Task<IActionResult> RequestPasswordReset(EmailDto request)
+    {
+        var result = await _service.RequestPasswordReset(request.Email);
+        return result.Match<IActionResult>(
+            ok => NoContent(),
+            error => this.ProblemErr(error));
+    }
+
+    [HttpPost("reset-password")]
+    public async Task<IActionResult> ResetPassword(ResetPasswordDto request)
+    {
+        var result = await _service.ResetPassword(request.UserId, request.Token, request.Password);
         return result.Match<IActionResult>(
             ok => NoContent(),
             error => this.ProblemErr(error));
