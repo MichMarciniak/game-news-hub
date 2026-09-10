@@ -242,6 +242,34 @@ public class AuthService
         return Result.Success;
     }
 
+    public async Task<ErrorOr<Success>> ChangePassword(int userId, string oldPassword, string newPassword)
+    {
+        var user = await _userManager.FindByIdAsync(userId.ToString());
+        if (user == null)
+        {
+            return Error.NotFound(code: "User.NotFound", description: "User does not exist");
+        }
+        
+        var result = await _userManager.ChangePasswordAsync(user, oldPassword, newPassword);
+        if (!result.Succeeded)
+        {
+            return result.Errors
+                .Select(e => Error.Validation(code: e.Code, description: e.Description))
+                .ToList();
+        }
+
+        await _userManager.UpdateSecurityStampAsync(user);
+        await SendPasswordChangedNotificationEmail(user);
+        
+        return Result.Success;
+    }
+
+    private async Task SendPasswordChangedNotificationEmail(AppUser user)
+    {
+        var html = await _templateService.RenderAsync(EmailTemplates.PasswordChanged, new object());
+        await _emailSender.SendEmailAsync(user.Email, "Password Changed", html);
+    }
+
     private async Task SendPasswordResetEmail(AppUser user)
     {
         var token = await _userManager.GeneratePasswordResetTokenAsync(user);

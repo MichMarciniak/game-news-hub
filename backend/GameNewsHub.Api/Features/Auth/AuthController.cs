@@ -143,4 +143,15 @@ public class AuthController : ControllerBase
             ok => NoContent(),
             error => this.ProblemErr(error));
     }
+
+    [HttpPost("change-password")]
+    [Authorize]
+    public async Task<IActionResult> ChangePassword(ChangePasswordDto request)
+    {
+        var userId = User.GetUserId();
+        var result = await _service.ChangePassword(userId, request.OldPassword, request.NewPassword);
+        return result.Match<IActionResult>(
+            ok => NoContent(),
+            error => this.ProblemErr(error));
+    }
 }
