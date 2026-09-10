@@ -12,5 +12,19 @@ services:
     volumes:
       - pgdata:/var/lib/postgresql/data
 
+  mailpit:
+    image: axllent/mailpit:v1.31.1
+    container_name: mailpit
+    restart: unless-stopped
+    ports:
+      - "8025:8025" #interfejs gui
+      - "10250:1025" # serwer smtp kurna windows zabiera 1025 więc idzie z 10250
+    environment:
+      MP_MAX_MESSAGES: 500
+      MP_DATABASE: /data/mailpit.db
+    volumes:
+      - mailpit_data:/data
+
 volumes:
   pgdata:
+  mailpit_data:

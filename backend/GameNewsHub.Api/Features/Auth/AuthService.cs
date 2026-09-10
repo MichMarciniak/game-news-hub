@@ -1,11 +1,13 @@
 ﻿using System.IdentityModel.Tokens.Jwt;
 using System.Net;
 using System.Security.Claims;
+using backend.Configuration;
 using ErrorOr;
 using GameNewsHub.Contracts;
 using GameNewsHub.Data.Entities;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.UI.Services;
+using Microsoft.Extensions.Options;
 
 namespace GameNewsHub.Api.Features.Auth;
 
@@ -14,15 +16,16 @@ public class AuthService
     private readonly UserManager<AppUser> _userManager;
     private readonly SignInManager<AppUser> _signInManager;
     private readonly IEmailSender _emailSender;
-    private readonly string _frontendBaseUrl = "test"; //TODO zmień na wczytywany
+    private readonly FrontendOptions _frontendOptions;
     private readonly TokenService _tokenService;
 
-    public AuthService(UserManager<AppUser> userManager, SignInManager<AppUser> signInManager, IEmailSender emailSender, TokenService tokenService)
+    public AuthService(UserManager<AppUser> userManager, SignInManager<AppUser> signInManager, IEmailSender emailSender, TokenService tokenService, IOptions<FrontendOptions> frontendOptions)
     {
         _userManager = userManager;
         _signInManager = signInManager;
         _emailSender = emailSender;
         _tokenService = tokenService;
+        _frontendOptions = frontendOptions.Value;
     }
 
     // tworzy usera
@@ -43,15 +46,8 @@ public class AuthService
                 .ToList();
         }
 
-        var token = await _userManager.GenerateEmailConfirmationTokenAsync(user);
-        var encodedToken = WebUtility.UrlEncode(token);
+        await SendConfirmationEmail(user);
         
-        var confirmUrl = $"{_frontendBaseUrl}/confirm-email?userId={user.Id}&token={encodedToken}";
-
-        await _emailSender.SendEmailAsync(registerDto.Email,
-            "Confirm your email",
-            $"LINK\t: {confirmUrl}"
-        );
         return new ErrorOr<Success>();
     }
 
@@ -175,6 +171,8 @@ public class AuthService
 
         return new TokenResult { AccessToken = newAccessToken, RefreshToken = newRefreshToken };
     }
+    
+    
     public async Task<ErrorOr<Success>> ResendConfirmation(string email)
     {
         var user = await _userManager.FindByEmailAsync(email);
@@ -184,14 +182,24 @@ public class AuthService
             return Result.Success;
         }
 
-        var token = await _userManager.GenerateEmailConfirmationTokenAsync(user);
-        var encodedToken = WebUtility.UrlEncode(token);
-        var confirmUrl = $"{_frontendBaseUrl}/confirm-email?userId={user.Id}&token={encodedToken}";
-
-        await _emailSender.SendEmailAsync(user.Email!, "Confirm your email",
-            $"LINK\t: {confirmUrl}");
+        await SendConfirmationEmail(user);
 
         return Result.Success;
+    }
+
+    private async Task SendConfirmationEmail(AppUser user)
+    {
+        var token = await _userManager.GenerateEmailConfirmationTokenAsync(user);
+        var encodedToken = WebUtility.UrlEncode(token);
+        
+        var confirmUrl = $"{_frontendOptions.Url}/confirm-email?userId={user.Id}&token={encodedToken}";
+
+        // powinien juz być email w userze
+        await _emailSender.SendEmailAsync(user.Email,
+            "Confirm your email",
+            $"<p>Click to confirm <a href={confirmUrl}>{confirmUrl}</a> </p>"
+        );
+        
     }
     
     

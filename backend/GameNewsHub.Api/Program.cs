@@ -24,6 +24,12 @@ builder.Services.Configure<RecommendationWeights>(
 builder.Services.Configure<JwtTokenOptions>(
     builder.Configuration.GetSection(JwtTokenOptions.SectionName));
 
+builder.Services.Configure<SmtpOptions>(
+    builder.Configuration.GetSection(SmtpOptions.Section));
+
+builder.Services.Configure<FrontendOptions>(
+    builder.Configuration.GetSection(FrontendOptions.SectionName));
+
 var devAuth = builder.Configuration.GetSection("DevAuth").Get<bool>();
 
 //DATABSE + IDENTITY
