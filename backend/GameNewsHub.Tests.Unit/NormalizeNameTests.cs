@@ -1,4 +1,5 @@
 ﻿using System.Text.Json;
+using System.Text.Json.Serialization;
 using FluentAssertions;
 using GameNewsHub.Sync.Sync.Events;
 
@@ -33,7 +34,10 @@ public class NormalizeNameTests
 
 public class NormalizationTestCase
 {
+    [JsonPropertyName("id")]
     public int Id { get; set; }
+    [JsonPropertyName("name")]
     public string Name { get; set; } = string.Empty;
+    [JsonPropertyName("expected")]
     public string Expected { get; set; } = string.Empty;
 }
