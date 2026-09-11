@@ -2,7 +2,7 @@ using GameNewsHub.Data.Entities;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
-namespace backend.Data.Configurations;
+namespace GameNewsHub.Data.Configurations;
 
 public class UserConfiguration : IEntityTypeConfiguration<AppUser>
 {
@@ -20,7 +20,7 @@ public class UserConfiguration : IEntityTypeConfiguration<AppUser>
         builder.HasMany(x => x.FollowedGames)
             .WithMany()
             .UsingEntity("UserGames");
-        
+
         builder.HasMany(x => x.FollowedGenres)
             .WithMany()
             .UsingEntity("UserGenres");

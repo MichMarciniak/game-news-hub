@@ -1,8 +1,8 @@
-﻿using backend.Data;
-using ErrorOr;
+﻿using ErrorOr;
 using GameNewsHub.Api.Features.Platforms;
 using GameNewsHub.Api.Mappings;
 using GameNewsHub.Contracts;
+using GameNewsHub.Data;
 using Microsoft.EntityFrameworkCore;
 
 namespace GameNewsHub.Api.Features.Users;
@@ -22,15 +22,12 @@ public class UsersService
             .Include(u => u.FollowedGames)
             .FirstOrDefaultAsync(u => u.Id == userId);
 
-        if (user == null)
-        {
-            return Error.NotFound("User.NotFound", $"User {userId} not found.");
-        }
+        if (user == null) return Error.NotFound("User.NotFound", $"User {userId} not found.");
 
         var games = user.FollowedGames
             .Select(g => g.ToListItemDto())
             .ToList();
-        
+
         return games;
     }
 
@@ -40,10 +37,7 @@ public class UsersService
             .Include(u => u.FollowedGenres)
             .FirstOrDefaultAsync(u => u.Id == userId);
 
-        if (user == null)
-        {
-            return Error.NotFound("User.NotFound", $"User {userId} not found.");
-        }
+        if (user == null) return Error.NotFound("User.NotFound", $"User {userId} not found.");
 
         var genres = user.FollowedGenres
             .Select(g => g.ToDto())
@@ -58,10 +52,7 @@ public class UsersService
             .Include(u => u.FollowedEvents)
             .FirstOrDefaultAsync(u => u.Id == userId);
 
-        if (user == null)
-        {
-            return Error.NotFound("User.NotFound", $"User {userId} not found.");
-        }
+        if (user == null) return Error.NotFound("User.NotFound", $"User {userId} not found.");
 
         var events = user.FollowedEvents
             .Select(e => e.ToListItemDto())
@@ -74,13 +65,10 @@ public class UsersService
     {
         var user = await _context.Users
             .Include(u => u.FollowedPlatformGroups)
-                .ThenInclude(pg => pg.Platforms)
+            .ThenInclude(pg => pg.Platforms)
             .FirstOrDefaultAsync(u => u.Id == userId);
 
-        if (user == null)
-        {
-            return Error.NotFound("User.NotFound", $"User {userId} not found.");
-        }
+        if (user == null) return Error.NotFound("User.NotFound", $"User {userId} not found.");
 
         var events = user.FollowedPlatformGroups
             .Select(pg => pg.ToDtoWithPlatforms())

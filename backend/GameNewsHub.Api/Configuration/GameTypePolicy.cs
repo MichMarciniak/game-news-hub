@@ -1,6 +1,6 @@
-﻿using Data.Entities;
+﻿using GameNewsHub.Data.Entities;
 
-namespace backend.Configuration;
+namespace GameNewsHub.Api.Configuration;
 
 public static class GameTypePolicy
 {

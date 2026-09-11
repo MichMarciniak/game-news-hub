@@ -1,6 +1,6 @@
-﻿using backend.Data;
-using ErrorOr;
+﻿using ErrorOr;
 using GameNewsHub.Api.Features.Shared;
+using GameNewsHub.Data;
 using GameNewsHub.Data.Entities;
 using Microsoft.EntityFrameworkCore;
 
@@ -16,23 +16,17 @@ public class FollowGameService : IFollowService<Game>
         _context = context;
         _logger = logger;
     }
-    
+
     public async Task<ErrorOr<Success>> Follow(int userId, int entityId)
     {
         var user = await _context.Users
             .Include(u => u.FollowedGames)
             .FirstOrDefaultAsync(u => u.Id == userId);
-        
-        if (user == null)
-        {
-            return Error.NotFound("User.NotFound", $"User with id {userId} does not exist");
-        }
-        
-        var game =  await _context.Games.FindAsync(entityId);
-        if (game == null)
-        {
-            return Error.NotFound("Game.NotFound", $"Game with id {entityId} does not exist");
-        }
+
+        if (user == null) return Error.NotFound("User.NotFound", $"User with id {userId} does not exist");
+
+        var game = await _context.Games.FindAsync(entityId);
+        if (game == null) return Error.NotFound("Game.NotFound", $"Game with id {entityId} does not exist");
 
         if (!user.FollowedGames.Contains(game))
         {
@@ -48,17 +42,11 @@ public class FollowGameService : IFollowService<Game>
         var user = await _context.Users
             .Include(u => u.FollowedGames)
             .FirstOrDefaultAsync(u => u.Id == userId);
-        
-        if (user == null)
-        {
-            return Error.NotFound("User.NotFound", $"User with id {userId} does not exist");
-        }
-        
-        var game =  await _context.Games.FindAsync(entityId);
-        if (game == null)
-        {
-            return Error.NotFound("Game.NotFound", $"Game with id {entityId} does not exist");
-        }
+
+        if (user == null) return Error.NotFound("User.NotFound", $"User with id {userId} does not exist");
+
+        var game = await _context.Games.FindAsync(entityId);
+        if (game == null) return Error.NotFound("Game.NotFound", $"Game with id {entityId} does not exist");
 
         if (user.FollowedGames.Contains(game))
         {

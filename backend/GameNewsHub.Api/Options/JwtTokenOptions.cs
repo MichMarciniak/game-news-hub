@@ -1,4 +1,4 @@
-﻿namespace backend.Configuration;
+﻿namespace GameNewsHub.Api.Options;
 
 public class JwtTokenOptions
 {
@@ -9,5 +9,4 @@ public class JwtTokenOptions
     public TimeSpan AccessTokenLifetime { get; set; }
     public TimeSpan AdminAccessTokenLifetime { get; set; }
     public TimeSpan RefreshTokenLifetime { get; set; }
-
 }

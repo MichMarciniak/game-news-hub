@@ -1,7 +1,6 @@
-﻿using Microsoft.AspNetCore.Identity;
-using Microsoft.AspNetCore.Identity.UI.Services;
+﻿using Microsoft.AspNetCore.Identity.UI.Services;
 
-namespace GameNewsHub.Api.Features.Auth;
+namespace GameNewsHub.Api.Features.Shared.Email;
 
 public class ConsoleEmailSender : IEmailSender
 {
@@ -11,7 +10,7 @@ public class ConsoleEmailSender : IEmailSender
     {
         _logger = logger;
     }
-    
+
     public Task SendEmailAsync(string email, string subject, string htmlMessage)
     {
         _logger.LogInformation($"EMAIL: {email}\nSUBJECT: {subject}\nMESSAGE: {htmlMessage}");

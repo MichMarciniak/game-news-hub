@@ -1,8 +1,8 @@
-using backend.Configuration;
-using backend.Data;
-using GameNewsHub.Sync.Sync;
+using GameNewsHub.Data;
 using GameNewsHub.Sync;
+using GameNewsHub.Sync.Options;
 using GameNewsHub.Sync.Seeder;
+using GameNewsHub.Sync.Sync;
 using Microsoft.EntityFrameworkCore;
 
 var builder = Host.CreateApplicationBuilder(args);

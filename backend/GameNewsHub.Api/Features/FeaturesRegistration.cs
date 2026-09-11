@@ -4,6 +4,7 @@ using GameNewsHub.Api.Features.Games;
 using GameNewsHub.Api.Features.Genres;
 using GameNewsHub.Api.Features.Platforms;
 using GameNewsHub.Api.Features.Recommendations;
+using GameNewsHub.Api.Features.Shared.Email;
 using GameNewsHub.Api.Features.Users;
 
 namespace GameNewsHub.Api.Features;

@@ -1,8 +1,8 @@
-using backend.Data;
-using Data.Entities;
+using GameNewsHub.Data;
 using GameNewsHub.Data.Entities;
 using GameNewsHub.Sync.Dtos;
 using GameNewsHub.Sync.External;
+using GameNewsHub.Sync.Sync.Genres;
 using GameNewsHub.Sync.Sync.Platforms;
 using Microsoft.EntityFrameworkCore;
 
@@ -11,12 +11,13 @@ namespace GameNewsHub.Sync.Sync.Games;
 public class GameSyncService : IGameSyncService
 {
     private readonly IIgdbClient _client;
-    private readonly IGenreSyncService _genreService;
-    private readonly IPlatformSyncService _platformService;
     private readonly AppDbContext _context;
+    private readonly IGenreSyncService _genreService;
     private readonly ILogger<GameSyncService> _logger;
+    private readonly IPlatformSyncService _platformService;
 
-    public GameSyncService(IIgdbClient client, IGenreSyncService genreService, IPlatformSyncService platformService, AppDbContext context, ILogger<GameSyncService> logger)
+    public GameSyncService(IIgdbClient client, IGenreSyncService genreService, IPlatformSyncService platformService,
+        AppDbContext context, ILogger<GameSyncService> logger)
     {
         _client = client;
         _genreService = genreService;
@@ -42,13 +43,11 @@ public class GameSyncService : IGameSyncService
             };
 
             if (dto.Genres != null)
-            {
                 foreach (var gDto in dto.Genres)
                 {
                     var genre = await _genreService.GetOrCreateAsync(gDto.IgdbId, gDto.Name);
                     game.Genres.Add(genre);
                 }
-            }
 
             _context.Games.Add(game);
         }
@@ -70,7 +69,7 @@ public class GameSyncService : IGameSyncService
 
         var idsToProcess = gameIds.Where(id => visited.Add(id)).ToList();
         if (!idsToProcess.Any()) return new List<Game>();
-        
+
         var existingGames = await _context.Games
             .Include(g => g.Genres)
             .Where(g => idsToProcess.Contains(g.IgdbId))
@@ -79,11 +78,8 @@ public class GameSyncService : IGameSyncService
         var existingIds = existingGames.Select(g => g.IgdbId).ToList();
         var missingIds = idsToProcess.Except(existingIds).ToList();
 
-        if (!missingIds.Any())
-        {
-            return existingGames;
-        }
-        
+        if (!missingIds.Any()) return existingGames;
+
         // pobierz brakujące dane z igdb api
         var externalGames = await _client.UpdateMissingGames(missingIds);
 
@@ -101,7 +97,7 @@ public class GameSyncService : IGameSyncService
 
         var newGames = externalGames.Select(dto =>
         {
-            string rawUrl = dto.Cover?.Url;
+            var rawUrl = dto.Cover?.Url;
             string formattedCoverUrl = null;
             if (!string.IsNullOrEmpty(rawUrl))
             {
@@ -110,7 +106,7 @@ public class GameSyncService : IGameSyncService
                     ? $"https:{bigCoverUrl}"
                     : bigCoverUrl;
             }
-            
+
             return new Game
             {
                 IgdbId = dto.IgdbId,
@@ -123,7 +119,7 @@ public class GameSyncService : IGameSyncService
                 Platforms = MapPlatforms(dto.Platforms, platforms)
             };
         }).ToList();
-        
+
         _context.Games.AddRange(newGames);
         await _context.SaveChangesAsync();
 
@@ -137,7 +133,7 @@ public class GameSyncService : IGameSyncService
     private ICollection<Genre> MapGenres(IEnumerable<IgdbGenreResponse> dtos, IEnumerable<Genre> genres)
     {
         if (dtos == null || !dtos.Any()) return new List<Genre>();
-        
+
         var ids = dtos.Select(d => d.IgdbId).ToList();
         return genres.Where(g => ids.Contains(g.IgdbId)).ToList();
     }
@@ -166,15 +162,10 @@ public class GameSyncService : IGameSyncService
         {
             var parent = parentGames.FirstOrDefault(p => p.IgdbId == g.ParentGameIgdbId.Value);
             if (parent != null)
-            {
                 // bezpieczniej niż po Id
                 g.ParentGame = parent;
-            }
         }
 
         await _context.SaveChangesAsync();
     }
-    
-    
-
 }

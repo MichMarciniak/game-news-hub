@@ -1,14 +1,11 @@
-using System.Net.Http.Json;
-using backend.Configuration;
 using GameNewsHub.Sync.Dtos;
-using Microsoft.Extensions.Options;
 
 namespace GameNewsHub.Sync.External;
 
-public class StandardIgdbClient : BaseIgdbClient, IIgdbClient 
+public class StandardIgdbClient : BaseIgdbClient, IIgdbClient
 {
-
-    public StandardIgdbClient(HttpClient httpClient, IgdbAuthService authService, ILogger<BaseIgdbClient> logger) : base(httpClient, authService, logger)
+    public StandardIgdbClient(HttpClient httpClient, IgdbAuthService authService, ILogger<BaseIgdbClient> logger) :
+        base(httpClient, authService, logger)
     {
     }
 
@@ -23,7 +20,7 @@ public class StandardIgdbClient : BaseIgdbClient, IIgdbClient
 
     public override async Task<List<IgdbEventResponse>> GetEventsFromIgdb(long from, long to)
     {
-        var query = $"fields name, start_time, end_time, description, games.id; " + 
+        var query = $"fields name, start_time, end_time, description, games.id; " +
                     $"where start_time >= {from} & start_time <= {to};" +
                     $"sort start_time asc;";
         var url = "events";

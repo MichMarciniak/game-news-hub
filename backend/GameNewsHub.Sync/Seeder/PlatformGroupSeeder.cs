@@ -1,5 +1,5 @@
-﻿using backend.Data;
-using Data.Entities;
+﻿using GameNewsHub.Data;
+using GameNewsHub.Data.Entities;
 using Microsoft.EntityFrameworkCore;
 
 namespace GameNewsHub.Sync.Seeder;
@@ -19,6 +19,5 @@ public static class PlatformGroupSeeder
             context.PlatformGroups.AddRange(missing.Select(name => new PlatformGroup { Name = name }));
             await context.SaveChangesAsync();
         }
-        
     }
 }

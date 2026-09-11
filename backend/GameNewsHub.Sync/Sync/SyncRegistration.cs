@@ -1,5 +1,6 @@
 using GameNewsHub.Sync.Sync.Events;
 using GameNewsHub.Sync.Sync.Games;
+using GameNewsHub.Sync.Sync.Genres;
 using GameNewsHub.Sync.Sync.Platforms;
 using GameNewsHub.Sync.Sync.Workers;
 
@@ -10,7 +11,7 @@ public static class SyncRegistration
     public static IServiceCollection AddSyncServices(this IServiceCollection services)
     {
         services.AddScoped<IEventWeightCalculator, EventWeightCalculator>();
-        
+
         services.AddScoped<IEventSyncService, EventSyncService>();
         services.AddScoped<IGameSyncService, GameSyncService>();
         services.AddScoped<IGenreSyncService, GenreSyncService>();

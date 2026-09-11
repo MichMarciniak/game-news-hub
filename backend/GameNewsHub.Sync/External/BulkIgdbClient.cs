@@ -4,7 +4,8 @@ namespace GameNewsHub.Sync.External;
 
 public class BulkIgdbClient : BaseIgdbClient, IIgdbClient
 {
-    public BulkIgdbClient(HttpClient httpClient, IgdbAuthService authService, ILogger<BaseIgdbClient> logger) : base(httpClient, authService, logger)
+    public BulkIgdbClient(HttpClient httpClient, IgdbAuthService authService, ILogger<BaseIgdbClient> logger) : base(
+        httpClient, authService, logger)
     {
     }
 
@@ -16,7 +17,7 @@ public class BulkIgdbClient : BaseIgdbClient, IIgdbClient
 
     public override async Task<List<IgdbEventResponse>> GetEventsFromIgdb(long from, long to)
     {
-        var query = $"fields name, start_time, end_time, description, games.id; " + 
+        var query = $"fields name, start_time, end_time, description, games.id; " +
                     $"where start_time >= {from} & start_time <= {to};" +
                     $"sort start_time asc; limit 500;";
         var url = "events";

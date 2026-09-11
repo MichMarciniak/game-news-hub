@@ -1,14 +1,12 @@
-using backend.Data;
 using ErrorOr;
 using GameNewsHub.Contracts;
-using GameNewsHub.Data.Entities;
+using GameNewsHub.Data;
 using Microsoft.EntityFrameworkCore;
 
 namespace GameNewsHub.Api.Features.Platforms;
 
 public class PlatformService
 {
-
     private readonly AppDbContext _context;
 
     public PlatformService(AppDbContext context)
@@ -30,13 +28,15 @@ public class PlatformService
     {
         var platform = await _context.Platforms.FindAsync(platformId);
 
-        if (platform == null) return Error.NotFound("Platform.NotFound",
-            $"Platform {platformId} not found.");
+        if (platform == null)
+            return Error.NotFound("Platform.NotFound",
+                $"Platform {platformId} not found.");
 
         var newGroup = await _context.PlatformGroups.FindAsync(groupId);
-        
-        if (newGroup == null) return Error.NotFound("PlatformGroup.NotFound", 
-            $"Platform group {groupId} not found.");
+
+        if (newGroup == null)
+            return Error.NotFound("PlatformGroup.NotFound",
+                $"Platform group {groupId} not found.");
 
         platform.PlatformGroup = newGroup;
 
@@ -51,24 +51,23 @@ public class PlatformService
             .Include(u => u.FollowedPlatformGroups)
             .FirstOrDefaultAsync(u => u.Id == userId);
 
-        if (user == null) return Error.NotFound("User.NotFound", 
-            $"User {userId} not found");
+        if (user == null)
+            return Error.NotFound("User.NotFound",
+                $"User {userId} not found");
 
         var group = await _context.PlatformGroups
             .FindAsync(groupId);
 
-        if (group == null) return Error.NotFound("PlatformGroup.NotFound",
-            $"Platform group {groupId} not found");
+        if (group == null)
+            return Error.NotFound("PlatformGroup.NotFound",
+                $"Platform group {groupId} not found");
 
-        if (user.FollowedPlatformGroups.Contains(group))
-        {
-            return new ErrorOr<Success>();
-        }
-        
+        if (user.FollowedPlatformGroups.Contains(group)) return new ErrorOr<Success>();
+
         user.FollowedPlatformGroups.Add(group);
 
         await _context.SaveChangesAsync();
-        
+
         return new ErrorOr<Success>();
     }
 
@@ -78,27 +77,23 @@ public class PlatformService
             .Include(u => u.FollowedPlatformGroups)
             .FirstOrDefaultAsync(u => u.Id == userId);
 
-        if (user == null) return Error.NotFound("User.NotFound", 
-            $"User {userId} not found");
+        if (user == null)
+            return Error.NotFound("User.NotFound",
+                $"User {userId} not found");
 
         var group = await _context.PlatformGroups
             .FindAsync(groupId);
 
-        if (group == null) return Error.NotFound("PlatformGroup.NotFound",
-            $"Platform group {groupId} not found");
+        if (group == null)
+            return Error.NotFound("PlatformGroup.NotFound",
+                $"Platform group {groupId} not found");
 
-        if (!user.FollowedPlatformGroups.Contains(group))
-        {
-            return new ErrorOr<Success>();
-        }
-        
+        if (!user.FollowedPlatformGroups.Contains(group)) return new ErrorOr<Success>();
+
         user.FollowedPlatformGroups.Remove(group);
 
         await _context.SaveChangesAsync();
-        
+
         return new ErrorOr<Success>();
     }
-
-    
-
 }

@@ -1,4 +1,3 @@
-using Data.Entities;
 using GameNewsHub.Contracts;
 using GameNewsHub.Data.Entities;
 
@@ -30,8 +29,7 @@ public static class PlatformMappings
         return new PlatformGroupDto
         {
             Id = group.Id,
-            Name = group.Name,
+            Name = group.Name
         };
     }
-
 }

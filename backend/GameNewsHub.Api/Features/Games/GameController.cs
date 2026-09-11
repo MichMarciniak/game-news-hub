@@ -1,19 +1,17 @@
-using backend.Extensions;
-using ErrorOr;
+using GameNewsHub.Api.Extensions;
 using GameNewsHub.Api.Features.Shared;
 using GameNewsHub.Contracts;
 using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Mvc;
 
 namespace GameNewsHub.Api.Features.Games;
 
 [ApiController]
 [Route("[controller]")]
-public class GameController : ControllerBase 
+public class GameController : ControllerBase
 {
-    private readonly GameService _service;
     private readonly FollowGameService _followService;
+    private readonly GameService _service;
 
     public GameController(GameService service, FollowGameService followGameService)
     {
@@ -34,7 +32,7 @@ public class GameController : ControllerBase
         var games = await _service.SearchGamesAsync(query, page, pageSize);
         return Ok(games);
     }
-    
+
     [HttpGet("{gameId}")]
     public async Task<ActionResult<GameDetailDto>> GetGameDetails(int gameId)
     {
@@ -57,7 +55,7 @@ public class GameController : ControllerBase
     [Authorize]
     public async Task<IActionResult> FollowGame(int gameId)
     {
-        int userId = User.GetUserId();
+        var userId = User.GetUserId();
         var result = await _followService.Follow(userId, gameId);
         return result.MatchFirst<IActionResult>(
             success => Ok(),
@@ -68,11 +66,10 @@ public class GameController : ControllerBase
     [Authorize]
     public async Task<IActionResult> UnfollowGame(int gameId)
     {
-        int userId = User.GetUserId();
+        var userId = User.GetUserId();
         var result = await _followService.Unfollow(userId, gameId);
         return result.MatchFirst<IActionResult>(
             success => NoContent(),
             err => this.ProblemErr(err));
     }
-
 }

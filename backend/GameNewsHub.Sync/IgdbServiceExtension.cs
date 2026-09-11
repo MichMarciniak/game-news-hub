@@ -1,17 +1,16 @@
-﻿using backend.Configuration;
-using GameNewsHub.Sync.External;
+﻿using GameNewsHub.Sync.External;
+using GameNewsHub.Sync.Options;
 
 namespace GameNewsHub.Sync;
 
 public static class IgdbServiceExtension
 {
-    
     public static IServiceCollection AddIgdbServices(this IServiceCollection services, IConfiguration config)
     {
         var igdbOptions = config.GetSection("Api").Get<ApiOptions>();
 
         services.AddSingleton<IgdbAuthService>();
-        
+
         services.AddHttpClient("IgdbClientConfig", client =>
         {
             client.BaseAddress = new Uri(igdbOptions.BaseUrl);
@@ -24,7 +23,7 @@ public static class IgdbServiceExtension
                 sp.GetRequiredService<IgdbAuthService>(),
                 sp.GetRequiredService<ILogger<StandardIgdbClient>>()
             ));
-        
+
         services.AddKeyedTransient<IIgdbClient, BulkIgdbClient>("Bulk", (sp, _) =>
             new BulkIgdbClient(
                 sp.GetRequiredService<IHttpClientFactory>().CreateClient("IgdbClientConfig"),

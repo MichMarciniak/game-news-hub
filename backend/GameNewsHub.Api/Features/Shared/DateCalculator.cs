@@ -16,5 +16,4 @@ public static class DateCalculator
     {
         return (GetMonthStart(now), GetMonthEnd(now));
     }
-
 }

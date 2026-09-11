@@ -1,15 +1,11 @@
-using System.IdentityModel.Tokens.Jwt;
-using System.Security.Claims;
-using backend.Configuration;
-using backend.Extensions;
-using ErrorOr;
+using GameNewsHub.Api.Extensions;
 using GameNewsHub.Api.Features.Shared;
+using GameNewsHub.Api.Options;
 using GameNewsHub.Contracts;
 using GameNewsHub.Data.Entities;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.WebUtilities;
 using Microsoft.Extensions.Options;
 
 namespace GameNewsHub.Api.Features.Auth;
@@ -17,13 +13,14 @@ namespace GameNewsHub.Api.Features.Auth;
 [ApiController]
 public class AuthController : ControllerBase
 {
-    private readonly UserManager<AppUser> _userManager;
-    private readonly SignInManager<AppUser> _signInManager;
     private readonly IConfiguration _configuration;
     private readonly AuthService _service;
+    private readonly SignInManager<AppUser> _signInManager;
     private readonly JwtTokenOptions _tokenOptions;
+    private readonly UserManager<AppUser> _userManager;
 
-    public AuthController(AuthService service, UserManager<AppUser> userManager, SignInManager<AppUser> signInManager, IConfiguration configuration,  IOptions<JwtTokenOptions> tokenOptions)
+    public AuthController(AuthService service, UserManager<AppUser> userManager, SignInManager<AppUser> signInManager,
+        IConfiguration configuration, IOptions<JwtTokenOptions> tokenOptions)
     {
         _service = service;
         _userManager = userManager;
@@ -39,7 +36,6 @@ public class AuthController : ControllerBase
         return result.Match<IActionResult>(
             ok => Ok(),
             error => BadRequest(error));
-
     }
 
     [HttpPost("login")]
@@ -56,21 +52,17 @@ public class AuthController : ControllerBase
                     SameSite = SameSiteMode.Lax, //TODO change to strict
                     Expires = DateTimeOffset.UtcNow.Add(_tokenOptions.RefreshTokenLifetime)
                 });
-                return Ok(new LoginResponse{AccessToken = tokenResult.AccessToken});
+                return Ok(new LoginResponse { AccessToken = tokenResult.AccessToken });
             },
             errors => this.ProblemErr(errors)
         );
-
     }
 
     [HttpPost("refresh")]
     public async Task<IActionResult> Refresh()
     {
         var refreshToken = Request.Cookies["refreshToken"];
-        if (string.IsNullOrEmpty(refreshToken))
-        {
-            return Unauthorized();
-        }
+        if (string.IsNullOrEmpty(refreshToken)) return Unauthorized();
 
         var result = await _service.RefreshToken(refreshToken);
 
@@ -84,7 +76,7 @@ public class AuthController : ControllerBase
                     SameSite = SameSiteMode.Lax, //TODO change to strict
                     Expires = DateTimeOffset.UtcNow.Add(_tokenOptions.RefreshTokenLifetime)
                 });
-                return Ok(new LoginResponse{AccessToken = tokenResult.AccessToken});
+                return Ok(new LoginResponse { AccessToken = tokenResult.AccessToken });
             },
             errors => this.ProblemErr(errors)
         );

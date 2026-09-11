@@ -1,9 +1,7 @@
-﻿using backend.Extensions;
-using ErrorOr;
+﻿using GameNewsHub.Api.Extensions;
 using GameNewsHub.Api.Features.Shared;
 using GameNewsHub.Contracts;
 using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Mvc;
 
 namespace GameNewsHub.Api.Features.Events;
@@ -12,10 +10,10 @@ namespace GameNewsHub.Api.Features.Events;
 [Route("[controller]")]
 public class EventController : ControllerBase
 {
-    private readonly EventService _service;
     private readonly FollowEventService _followService;
-    
-    public  EventController(EventService service, FollowEventService followService)
+    private readonly EventService _service;
+
+    public EventController(EventService service, FollowEventService followService)
     {
         _service = service;
         _followService = followService;
@@ -27,9 +25,10 @@ public class EventController : ControllerBase
         var result = await _service.GetEvents(startTime, endTime);
         return result;
     }
-    
+
     [HttpGet("normalized")]
-    public async Task<ActionResult<List<NormalizedEventListItemDto>>> GetNormalizedEvents(DateTime? startTime, DateTime? endTime)
+    public async Task<ActionResult<List<NormalizedEventListItemDto>>> GetNormalizedEvents(DateTime? startTime,
+        DateTime? endTime)
     {
         var result = await _service.GetNormalizedEvents(startTime, endTime);
         return result;
@@ -62,7 +61,7 @@ public class EventController : ControllerBase
             success => Ok(),
             err => this.ProblemErr(err));
     }
-    
+
     [HttpDelete("{eventId}/follow")]
     [Authorize]
     public async Task<IActionResult> UnfollowEvent(int eventId)
@@ -73,8 +72,8 @@ public class EventController : ControllerBase
             success => Ok(),
             err => this.ProblemErr(err));
     }
-    
-    
+
+
     [HttpPatch("reassign/series")]
     [Authorize] //admin
     public async Task<IActionResult> ReassignSeries([FromQuery] int eventId, [FromQuery] int seriesId)
@@ -84,5 +83,4 @@ public class EventController : ControllerBase
             success => Ok(),
             err => this.ProblemErr(err));
     }
-
 }

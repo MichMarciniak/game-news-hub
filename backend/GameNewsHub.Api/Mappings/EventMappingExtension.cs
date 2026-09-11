@@ -16,13 +16,14 @@ public static class EventMappingExtension
             EndTime = e.EndTime
         };
     }
+
     public static NormalizedEventListItemDto ToNormalizedListItemDto(this EventListItemDto e)
     {
-        return new NormalizedEventListItemDto 
+        return new NormalizedEventListItemDto
         {
             Id = e.Id,
             Name = e.Name,
-            NormalizedName = EventNameNormalizer.Normalize(e.Name),
+            NormalizedName = EventNameNormalizer.Normalize(e.Name)
         };
     }
 

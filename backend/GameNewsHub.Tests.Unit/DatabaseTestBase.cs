@@ -1,15 +1,15 @@
-﻿using backend.Data;
+﻿using GameNewsHub.Data;
 
-namespace GameNewsHub.Tests;
+namespace GameNewsHub.Tests.Unit;
 
 public class DatabaseTestBase : IDisposable
 {
-    public AppDbContext Context { get; }
-
     public DatabaseTestBase()
     {
         Context = TestDbContextFactory.Create();
     }
+
+    public AppDbContext Context { get; }
 
     public void Dispose()
     {

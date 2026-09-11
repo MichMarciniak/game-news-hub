@@ -1,8 +1,8 @@
-﻿using backend.Data;
+﻿using GameNewsHub.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Diagnostics;
 
-namespace GameNewsHub.Tests;
+namespace GameNewsHub.Tests.Unit;
 
 public static class TestDbContextFactory
 {

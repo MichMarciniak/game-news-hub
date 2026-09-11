@@ -1,6 +1,6 @@
 using Microsoft.AspNetCore.Identity;
 
-namespace backend.Configuration;
+namespace GameNewsHub.Api.Configuration;
 
 public class IdentityConfig
 {
@@ -16,6 +16,5 @@ public class IdentityConfig
         options.User.RequireUniqueEmail = true;
         options.SignIn.RequireConfirmedEmail = false;
         options.SignIn.RequireConfirmedPhoneNumber = false;
-        
     }
 }

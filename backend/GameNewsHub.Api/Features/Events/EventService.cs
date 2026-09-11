@@ -1,9 +1,8 @@
-﻿using System.Reflection.Metadata.Ecma335;
-using backend.Data;
-using ErrorOr;
+﻿using ErrorOr;
 using GameNewsHub.Api.Features.Shared;
 using GameNewsHub.Api.Mappings;
 using GameNewsHub.Contracts;
+using GameNewsHub.Data;
 using GameNewsHub.Data.Entities;
 using Microsoft.EntityFrameworkCore;
 
@@ -23,25 +22,17 @@ public class EventService
         var now = DateTimeOffset.UtcNow;
         DateTimeOffset start;
         if (startTime != null)
-        {
-            start = ((DateTimeOffset)startTime);
-        }
+            start = (DateTimeOffset)startTime;
         else
-        {
             start = DateCalculator.GetMonthStart(now);
-        }
 
         DateTimeOffset end;
         if (endTime != null)
-        {
-            end = ((DateTimeOffset)endTime);
-        }
+            end = (DateTimeOffset)endTime;
         else
-        {
             end = DateCalculator.GetMonthEnd(now);
-        }
 
-        var events = await _context.Events 
+        var events = await _context.Events
             .Where(e => e.StartTime >= start)
             .Where(e => e.StartTime <= end)
             .Select(e => e.ToListItemDto())
@@ -63,13 +54,10 @@ public class EventService
             .AsSplitQuery()
             .Include(e => e.Games)
             .Include(e => e.Series)
-                .ThenInclude(s => s.Events)
+            .ThenInclude(s => s.Events)
             .FirstOrDefaultAsync(e => e.Id == eventId);
-            
-        if (e == null)
-        {
-            return Error.NotFound("Event.NotFound", $"Event {eventId} not found");
-        }
+
+        if (e == null) return Error.NotFound("Event.NotFound", $"Event {eventId} not found");
 
         return e.ToDetailDto();
     }
@@ -100,9 +88,7 @@ public class EventService
         IQueryable<Event> dbQuery = _context.Events;
 
         if (!string.IsNullOrWhiteSpace(query))
-        {
             dbQuery = dbQuery.Where(g => g.Name.ToLower().Trim().Contains(query.ToLower()));
-        }
 
         var events = await dbQuery
             .OrderBy(e => e.Name)
@@ -113,5 +99,4 @@ public class EventService
 
         return events;
     }
-
 }

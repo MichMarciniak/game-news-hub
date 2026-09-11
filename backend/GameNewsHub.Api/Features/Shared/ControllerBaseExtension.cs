@@ -11,11 +11,7 @@ public static class ControllerBaseExtension
 {
     public static ObjectResult ProblemErr(this ControllerBase controller, List<Error> errors)
     {
-        
-        if (errors.Count == 0)
-        {
-            return controller.Problem();
-        }
+        if (errors.Count == 0) return controller.Problem();
 
         var firstError = errors[0];
 
@@ -37,19 +33,14 @@ public static class ControllerBaseExtension
         };
 
         if (firstError.Metadata != null)
-        {
             foreach (var (key, value) in firstError.Metadata)
-            {
                 problemDetails.Extensions[key] = value;
-            }
-        }
 
         return new ObjectResult(problemDetails) { StatusCode = statusCode };
     }
 
     public static ObjectResult ProblemErr(this ControllerBase controller, Error error)
     {
-
         var statusCode = error.Type switch
         {
             ErrorType.NotFound => StatusCodes.Status404NotFound,
@@ -65,5 +56,4 @@ public static class ControllerBaseExtension
             title: error.Code,
             detail: error.Description);
     }
-
 }

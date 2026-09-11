@@ -4,22 +4,22 @@ namespace GameNewsHub.Sync.Sync.Workers;
 
 public class EventDiscoveryWorker : BackgroundService
 {
+    private static readonly SemaphoreSlim _semaphore = new(1, 1);
+    private readonly TimeSpan _checkInterval = TimeSpan.FromDays(1);
 
     private readonly ILogger<EventDiscoveryWorker> _logger;
     private readonly IServiceProvider _serviceProvider;
-    private readonly TimeSpan _checkInterval = TimeSpan.FromDays(1);
-    private static readonly SemaphoreSlim _semaphore = new SemaphoreSlim(1, 1);
 
     public EventDiscoveryWorker(ILogger<EventDiscoveryWorker> logger, IServiceProvider serviceProvider)
     {
         _logger = logger;
         _serviceProvider = serviceProvider;
     }
-    
+
     protected override async Task ExecuteAsync(CancellationToken stoppingToken)
     {
         await Task.Delay(1000);
-        
+
         _logger.LogInformation("EventDiscoveryWorker is starting.");
         while (!stoppingToken.IsCancellationRequested)
         {
@@ -33,7 +33,6 @@ public class EventDiscoveryWorker : BackgroundService
                     var service = scope.ServiceProvider.GetRequiredService<IEventSyncService>();
 
                     await service.DiscoverNewEventsAsync();
-
                 }
 
                 _logger.LogInformation("Discovery completed.");
@@ -46,9 +45,10 @@ public class EventDiscoveryWorker : BackgroundService
             {
                 _semaphore.Release();
             }
+
             await Task.Delay(_checkInterval, stoppingToken);
         }
-        _logger.LogInformation("EventDiscoveryWorker is stopping.");
 
+        _logger.LogInformation("EventDiscoveryWorker is stopping.");
     }
 }

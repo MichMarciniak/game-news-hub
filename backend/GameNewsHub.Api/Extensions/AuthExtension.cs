@@ -1,14 +1,12 @@
 using System.Security.Claims;
 using System.Text;
-using backend.Configuration;
-using GameNewsHub.Api.Features.Genres;
-using GameNewsHub.Api.Features.Games;
-using Microsoft.AspNetCore.Authorization;
+using GameNewsHub.Api.Options;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi;
 
-namespace backend.Extensions;
+namespace GameNewsHub.Api.Extensions;
 
 public static class AuthExtension
 {
@@ -20,13 +18,13 @@ public static class AuthExtension
             {
                 document.Components ??= new OpenApiComponents();
                 document.Components.SecuritySchemes ??= new Dictionary<string, IOpenApiSecurityScheme>();
-        
+
                 var scheme = new OpenApiSecurityScheme
                 {
                     Type = SecuritySchemeType.Http,
                     Scheme = "bearer",
                     BearerFormat = "JWT",
-                    In = ParameterLocation.Header,
+                    In = ParameterLocation.Header
                 };
 
                 document.Components.SecuritySchemes.Add("Bearer", scheme);
@@ -59,10 +57,7 @@ public static class AuthExtension
     {
         var key = Encoding.ASCII.GetBytes(options.SigningKey);
 
-        if (key.Length == 0)
-        {
-            throw new Exception("Token:SigningKey is required");
-        }
+        if (key.Length == 0) throw new Exception("Token:SigningKey is required");
 
         services.AddAuthentication(opt =>
             {
@@ -87,10 +82,7 @@ public static class AuthExtension
                     OnTokenValidated = context =>
                     {
                         var tokenType = context.Principal?.FindFirstValue("token_type");
-                        if (tokenType != "access")
-                        {
-                            context.Fail("Invalid token type");
-                        }
+                        if (tokenType != "access") context.Fail("Invalid token type");
 
                         return Task.CompletedTask;
                     }
@@ -99,5 +91,4 @@ public static class AuthExtension
 
         return services;
     }
-
 }

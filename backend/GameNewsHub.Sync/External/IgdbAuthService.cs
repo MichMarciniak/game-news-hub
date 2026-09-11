@@ -1,15 +1,15 @@
 using System.Net.Http.Json;
-using backend.Configuration;
+using GameNewsHub.Sync.Options;
 using Microsoft.Extensions.Options;
 
 namespace GameNewsHub.Sync.External;
 
 public class IgdbAuthService
 {
-    private readonly ApiOptions _options;
     private readonly HttpClient _httpClient;
-    private readonly SemaphoreSlim _semaphore = new SemaphoreSlim(1, 1);
     private readonly ILogger<IgdbAuthService> _logger;
+    private readonly ApiOptions _options;
+    private readonly SemaphoreSlim _semaphore = new(1, 1);
 
     private volatile string? _cachedToken;
     private DateTime _expiresAt;
@@ -20,23 +20,17 @@ public class IgdbAuthService
         _httpClient = client;
         _logger = logger;
     }
-    
+
     //get token
     public async Task<string> GetAccessTokenAsync()
     {
-        if (!string.IsNullOrEmpty(_cachedToken) && DateTime.UtcNow < _expiresAt)
-        {
-            return _cachedToken;
-        }
+        if (!string.IsNullOrEmpty(_cachedToken) && DateTime.UtcNow < _expiresAt) return _cachedToken;
 
         await _semaphore.WaitAsync();
         try
         {
             // check again
-            if (!string.IsNullOrEmpty(_cachedToken) && DateTime.UtcNow < _expiresAt)
-            {
-                return _cachedToken;
-            }
+            if (!string.IsNullOrEmpty(_cachedToken) && DateTime.UtcNow < _expiresAt) return _cachedToken;
 
             var response = await _httpClient.PostAsync(_options.TokenUrl, new FormUrlEncodedContent(new[]
             {
@@ -53,9 +47,9 @@ public class IgdbAuthService
 
             _cachedToken = data.AccessToken;
             _expiresAt = DateTime.UtcNow.AddSeconds(data.ExpiresIn - 60);
-            
+
             _logger.LogInformation("Refreshed Twitch access token.");
-            
+
             // TODO delete this later, for now it's fine
             _logger.LogInformation(data.AccessToken);
             _logger.LogInformation(_cachedToken);

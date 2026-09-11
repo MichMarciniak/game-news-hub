@@ -1,5 +1,4 @@
-﻿using backend.Extensions;
-using ErrorOr;
+﻿using GameNewsHub.Api.Extensions;
 using GameNewsHub.Api.Features.Shared;
 using GameNewsHub.Contracts;
 using Microsoft.AspNetCore.Authorization;
@@ -13,7 +12,7 @@ namespace GameNewsHub.Api.Features.Users;
 public class UsersController : ControllerBase
 {
     private readonly UsersService _service;
-    
+
     public UsersController(UsersService service)
     {
         _service = service;
@@ -28,6 +27,7 @@ public class UsersController : ControllerBase
             details => Ok(details),
             err => this.ProblemErr(err));
     }
+
     [HttpGet("me/events/followed")]
     public async Task<ActionResult<List<EventListItemDto>>> GetFollowedEvents()
     {
@@ -37,6 +37,7 @@ public class UsersController : ControllerBase
             details => Ok(details),
             err => this.ProblemErr(err));
     }
+
     [HttpGet("me/genres/followed")]
     public async Task<ActionResult<List<GenreDto>>> GetFollowedGenres()
     {

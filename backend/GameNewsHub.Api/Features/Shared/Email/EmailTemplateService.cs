@@ -1,11 +1,11 @@
-﻿using backend.Configuration;
+﻿using GameNewsHub.Api.Options;
 using Microsoft.Extensions.Options;
+using Scriban;
 
-namespace GameNewsHub.Api.Features.Auth;
+namespace GameNewsHub.Api.Features.Shared.Email;
 
 public class EmailTemplateService
 {
-
     private readonly EmailTemplateOptions _options;
 
 
@@ -18,8 +18,7 @@ public class EmailTemplateService
     {
         var path = Path.Combine(AppContext.BaseDirectory, _options.BasePath, templatePath);
         var raw = await File.ReadAllTextAsync(path);
-        var template = Scriban.Template.Parse(raw);
+        var template = Template.Parse(raw);
         return await template.RenderAsync(model);
     }
-
 }

@@ -2,11 +2,10 @@
 using FluentAssertions;
 using GameNewsHub.Sync.Sync.Events;
 
-namespace GameNewsHub.Tests;
+namespace GameNewsHub.Tests.Unit;
 
-public class NormalizeNameTests 
+public class NormalizeNameTests
 {
-
     public static IEnumerable<object[]> TestCases()
     {
         var path = Path.Combine(
@@ -18,15 +17,9 @@ public class NormalizeNameTests
 
         var cases = JsonSerializer.Deserialize<List<NormalizationTestCase>>(json);
 
-        if (cases == null)
-        {
-            throw new Exception("Empty test cases");
-        }
+        if (cases == null) throw new Exception("Empty test cases");
 
-        foreach (var testCase in cases)
-        {
-            yield return [testCase];
-        }
+        foreach (var testCase in cases) yield return [testCase];
     }
 
     [Theory]
@@ -36,7 +29,6 @@ public class NormalizeNameTests
         var result = EventNameNormalizer.Normalize(testCase.Name);
         result.Should().Be(testCase.Expected);
     }
-
 }
 
 public class NormalizationTestCase

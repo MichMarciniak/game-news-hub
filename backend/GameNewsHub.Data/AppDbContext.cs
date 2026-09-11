@@ -1,14 +1,24 @@
-using Data.Entities;
 using GameNewsHub.Data.Entities;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 
-namespace backend.Data;
+namespace GameNewsHub.Data;
 
 public class AppDbContext : IdentityDbContext<AppUser, IdentityRole<int>, int>
 {
-    public AppDbContext(DbContextOptions<AppDbContext> options) : base(options) { }
+    public AppDbContext(DbContextOptions<AppDbContext> options) : base(options)
+    {
+    }
+
+    public DbSet<Event> Events { get; set; }
+    public DbSet<Game> Games { get; set; }
+    public DbSet<Genre> Genres { get; set; }
+    public DbSet<Platform> Platforms { get; set; }
+
+    public DbSet<PlatformGroup> PlatformGroups { get; set; }
+
+    public DbSet<EventSeries> EventSeries { get; set; }
 
     protected override void OnModelCreating(ModelBuilder builder)
     {
@@ -24,14 +34,4 @@ public class AppDbContext : IdentityDbContext<AppUser, IdentityRole<int>, int>
             ConcurrencyStamp = "39949666-4c4c-4740-9e6e-210170a4a621"
         });
     }
-
-    public DbSet<Event> Events { get; set; }
-    public DbSet<Game> Games { get; set; }
-    public DbSet<Genre> Genres { get; set; }
-    public DbSet<Platform> Platforms { get; set; }
-    
-    public DbSet<PlatformGroup> PlatformGroups { get; set; }
-    
-    public DbSet<EventSeries> EventSeries { get; set; }
-
 }

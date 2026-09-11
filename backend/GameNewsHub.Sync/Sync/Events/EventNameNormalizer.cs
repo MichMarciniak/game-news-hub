@@ -4,7 +4,6 @@ namespace GameNewsHub.Sync.Sync.Events;
 
 public static class EventNameNormalizer
 {
-
     public static string Normalize(string name)
     {
         var cleanName = name;
@@ -15,7 +14,7 @@ public static class EventNameNormalizer
             "\\d{1,2}th|1st|2nd|3rd",
             " ");
         cleanName = Regex.Replace(cleanName,
-            "\\b(January|February|March|April|May|June|July|August|September|October|November|December)\\b", 
+            "\\b(January|February|March|April|May|June|July|August|September|October|November|December)\\b",
             " ", RegexOptions.IgnoreCase);
         cleanName = Regex.Replace(cleanName,
             "\\b(Winter|Spring|Summer|Fall|Autumn|Edition)\\b",
@@ -27,7 +26,7 @@ public static class EventNameNormalizer
             "[-:_,|+./–—]", //jakies emdashe byly whyyy
             " ");
         cleanName = Regex.Replace(cleanName,
-            "(^|'|#)\\d*[0-9]($)", 
+            "(^|'|#)\\d*[0-9]($)",
             " ");
         cleanName = Regex.Replace(cleanName,
             "\\b\\d+\\b",
@@ -38,7 +37,7 @@ public static class EventNameNormalizer
         cleanName = Regex.Replace(cleanName,
             "(^\\s+)|(\\s+$)",
             "");
-        
+
         return cleanName;
     }
 }

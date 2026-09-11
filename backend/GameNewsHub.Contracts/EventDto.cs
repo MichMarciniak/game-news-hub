@@ -25,7 +25,7 @@ public class EventListNameDto
     public string Name { get; set; }
 }
 
-public class NormalizedEventListItemDto 
+public class NormalizedEventListItemDto
 {
     public int Id { get; set; }
     public string Name { get; set; }

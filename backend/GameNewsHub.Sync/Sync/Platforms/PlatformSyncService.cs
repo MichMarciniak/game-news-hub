@@ -1,5 +1,4 @@
-using backend.Data;
-using Data.Entities;
+using GameNewsHub.Data;
 using GameNewsHub.Data.Entities;
 using GameNewsHub.Sync.Dtos;
 using Microsoft.EntityFrameworkCore;
@@ -17,10 +16,7 @@ public class PlatformSyncService : IPlatformSyncService
 
     public async Task<ICollection<Platform>> GetOrCreateBatchAsync(IEnumerable<IgdbPlatformResponse> platformDtos)
     {
-        if (platformDtos == null || !platformDtos.Any())
-        {
-            return new List<Platform>();
-        }
+        if (platformDtos == null || !platformDtos.Any()) return new List<Platform>();
 
         var ids = platformDtos.Select(p => p.IgdbId).ToList();
 
@@ -53,8 +49,8 @@ public class PlatformSyncService : IPlatformSyncService
     private PlatformGroup GuessGroup(string name, List<PlatformGroup> groups)
     {
         var n = name.ToLowerInvariant();
-        
-        string? targetGroupName = n switch
+
+        var targetGroupName = n switch
         {
             _ when n.Contains("playstation") || n.Contains("ps vista") => "PlayStation",
             _ when n.Contains("xbox") => "Xbox",
@@ -72,6 +68,6 @@ public class PlatformSyncService : IPlatformSyncService
         var group = groups.FirstOrDefault(g => g.Name == fallbackGroupName)
                     ?? groups.First(g => g.Name == "Other");
 
-        return group; 
+        return group;
     }
 }

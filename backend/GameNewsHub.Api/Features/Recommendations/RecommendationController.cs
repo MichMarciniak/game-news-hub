@@ -1,4 +1,4 @@
-using backend.Extensions;
+using GameNewsHub.Api.Extensions;
 using GameNewsHub.Contracts;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -18,10 +18,11 @@ public class RecommendationController : ControllerBase
     }
 
     [HttpGet("events")]
-    public async Task<ActionResult<List<RecommendationDto>>> GetRecommendedEvents([FromQuery] DateTime? from = null,[FromQuery] DateTime? to = null)
+    public async Task<ActionResult<List<RecommendationDto>>> GetRecommendedEvents([FromQuery] DateTime? from = null,
+        [FromQuery] DateTime? to = null)
     {
         var userId = User.GetUserId();
-        
+
         var result = await _service.GetRecommendedEventList(userId, from, to);
         return Ok(result);
     }
@@ -38,6 +39,5 @@ public class RecommendationController : ControllerBase
             errors => Problem(errors[0].Description)
         );
     }
-    */   
-    
+    */
 }

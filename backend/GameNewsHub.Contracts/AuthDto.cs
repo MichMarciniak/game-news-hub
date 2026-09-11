@@ -9,13 +9,13 @@ public record RegisterDto
     [Required] public string Password { get; set; }
 }
 
-public record LoginDto 
+public record LoginDto
 {
     [Required] public string Email { get; set; }
     [Required] public string Password { get; set; }
 }
 
-public class LoginResponse 
+public class LoginResponse
 {
     public string AccessToken { get; set; }
 }

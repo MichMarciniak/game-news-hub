@@ -1,4 +1,4 @@
-﻿using backend.Configuration;
+﻿using GameNewsHub.Api.Options;
 using GameNewsHub.Contracts;
 
 namespace GameNewsHub.Api.Features.Recommendations;
@@ -29,16 +29,15 @@ public static class RecommendationCalculator
         RecommendationWeights weights,
         DateTimeOffset now)
     {
-
-        bool isFollowed = context.FollowedEventIds.Contains(evt.EventId);
-        bool containsFollowedGame = evt.GameIds.Any(id => context.FollowedGameIds.Contains(id));
-        bool containsFollowedPlatformGroup =
+        var isFollowed = context.FollowedEventIds.Contains(evt.EventId);
+        var containsFollowedGame = evt.GameIds.Any(id => context.FollowedGameIds.Contains(id));
+        var containsFollowedPlatformGroup =
             evt.PlatformGroupIds.Any(id => context.FollowedPlatformGroupIds.Contains(id));
 
-        double matchScore = evt.GenreWeights.Sum(gw =>
+        var matchScore = evt.GenreWeights.Sum(gw =>
             gw.Weight * context.UserGenreWeights.GetValueOrDefault(gw.GenreId, 0));
 
-        double recencyBoost = GetRecencyBoost(evt.StartTime, now);
+        var recencyBoost = GetRecencyBoost(evt.StartTime, now);
 
         double priority = 0;
         if (isFollowed) priority += weights.FollowedEventBonus;
@@ -58,7 +57,7 @@ public static class RecommendationCalculator
             FinalPriority = priority
         };
     }
-    
+
     private static double GetRecencyBoost(DateTimeOffset startTime, DateTimeOffset now)
     {
         var daysUntil = (startTime - now).TotalDays;

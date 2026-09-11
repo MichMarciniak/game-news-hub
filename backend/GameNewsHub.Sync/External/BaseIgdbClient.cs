@@ -5,8 +5,8 @@ namespace GameNewsHub.Sync.External;
 
 public abstract class BaseIgdbClient : IIgdbClient
 {
-    protected readonly HttpClient HttpClient;
     protected readonly IgdbAuthService AuthService;
+    protected readonly HttpClient HttpClient;
     protected readonly ILogger<BaseIgdbClient> Logger;
 
     protected BaseIgdbClient(HttpClient httpClient, IgdbAuthService authService, ILogger<BaseIgdbClient> logger)
@@ -15,6 +15,34 @@ public abstract class BaseIgdbClient : IIgdbClient
         AuthService = authService;
         Logger = logger;
     }
+
+    public async Task<List<IgdbGameResponse>> UpdateMissingGames(IEnumerable<int>? gameIds)
+    {
+        if (gameIds == null || !gameIds.Any()) return new List<IgdbGameResponse>();
+        var allGames = new List<IgdbGameResponse>();
+
+        var chunkSize = 150;
+        var chunks = gameIds.Chunk(chunkSize);
+
+        foreach (var chunk in chunks)
+        {
+            var ids = string.Join(',', chunk);
+            var query =
+                $"fields name, summary, cover.url, genres.name, platforms.name, category, parent_game, game_type.type; " +
+                $"where id = ({ids}); limit {chunkSize};";
+
+            var url = "games";
+
+            var result = await SendRequestAsync<IgdbGameResponse>(query, url);
+            allGames.AddRange(result);
+        }
+
+        return allGames;
+    }
+
+    public abstract Task<List<IgdbGameResponse>> GetGamesFromIgdb(int limit = 5);
+    public abstract Task<List<IgdbEventResponse>> GetEventsFromIgdb(long from, long to);
+    public abstract Task<List<IgdbEventResponse>> UpdateEventsFromIgdb(IEnumerable<int> eventIds);
 
     protected async Task<HttpRequestMessage> PrepareHttpRequest(string query, string url)
     {
@@ -43,31 +71,4 @@ public abstract class BaseIgdbClient : IIgdbClient
 
         return await response.Content.ReadFromJsonAsync<List<T>>() ?? new List<T>();
     }
-
-    public async Task<List<IgdbGameResponse>> UpdateMissingGames(IEnumerable<int>? gameIds)
-    {
-        if (gameIds == null || !gameIds.Any()) return new List<IgdbGameResponse>();
-        var allGames = new List<IgdbGameResponse>();
-        
-        int chunkSize = 150;
-        var chunks = gameIds.Chunk(chunkSize);
-
-        foreach (var chunk in chunks)
-        {
-            var ids = string.Join(',', chunk);
-            var query = $"fields name, summary, cover.url, genres.name, platforms.name, category, parent_game, game_type.type; " +
-                        $"where id = ({ids}); limit {chunkSize};";
-
-            var url = "games";
-
-            var result = await SendRequestAsync<IgdbGameResponse>(query, url);
-            allGames.AddRange(result);
-        }
-
-        return allGames;
-    }
-
-    public abstract Task<List<IgdbGameResponse>> GetGamesFromIgdb(int limit = 5);
-    public abstract Task<List<IgdbEventResponse>> GetEventsFromIgdb(long from, long to);
-    public abstract Task<List<IgdbEventResponse>> UpdateEventsFromIgdb(IEnumerable<int> eventIds);
 }

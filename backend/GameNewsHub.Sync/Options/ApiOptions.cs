@@ -1,4 +1,4 @@
-namespace backend.Configuration;
+namespace GameNewsHub.Sync.Options;
 
 public class ApiOptions
 {

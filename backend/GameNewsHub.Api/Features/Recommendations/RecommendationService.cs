@@ -1,7 +1,7 @@
-using backend.Configuration;
-using backend.Data;
 using GameNewsHub.Api.Features.Shared;
+using GameNewsHub.Api.Options;
 using GameNewsHub.Contracts;
+using GameNewsHub.Data;
 using GameNewsHub.Data.Entities;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Options;
@@ -55,18 +55,18 @@ public class RecommendationService
             .SelectMany(g => g.Genres)
             .GroupBy(genre => genre.Id)
             .ToDictionary(g => g.Key, g => (double)g.Count());
-        
+
         return new RecommendationContext(
-            FollowedGameIds: user.FollowedGames.Select(g => g.Id).ToHashSet(),
+            user.FollowedGames.Select(g => g.Id).ToHashSet(),
             FollowedEventIds: user.FollowedEvents.Select(e => e.Id).ToHashSet(),
             FollowedPlatformGroupIds: user.FollowedPlatformGroups.Select(g => g.Id).ToHashSet(),
             UserGenreWeights: userGenreWeights
         );
     }
-    
-    public async Task<List<RecommendationDto>> GetRecommendedEventList(int userId, DateTime? from = null, DateTime? to = null)
-    {
 
+    public async Task<List<RecommendationDto>> GetRecommendedEventList(int userId, DateTime? from = null,
+        DateTime? to = null)
+    {
         var user = await LoadUserWithFollows(userId);
         if (user == null) return new List<RecommendationDto>();
 
@@ -79,8 +79,8 @@ public class RecommendationService
             .AsSplitQuery()
             .Include(e => e.GenreWeights)
             .Include(e => e.Games)
-                .ThenInclude(g => g.Platforms)
-                    .ThenInclude(p => p.PlatformGroup)
+            .ThenInclude(g => g.Platforms)
+            .ThenInclude(p => p.PlatformGroup)
             .Where(e => e.StartTime >= rangeFrom && e.StartTime <= rangeTo)
             .Where(e => statuses.Contains(e.Status))
             .ToListAsync();
@@ -108,25 +108,25 @@ public class RecommendationService
         var result = events
             .Select(e =>
             {
-                bool isPredicted = e.Status != EventSyncStatus.Ready;
+                var isPredicted = e.Status != EventSyncStatus.Ready;
 
                 var genreWeights = isPredicted
-                    ? (predictedWeightsBySeriesId.TryGetValue(e.EventSeriesId, out var w))
+                    ? predictedWeightsBySeriesId.TryGetValue(e.EventSeriesId, out var w)
                         ? w
                         : new List<EventGenreWeight>()
                     : e.GenreWeights;
 
                 var input = new EventScoringInput(
-                    EventId: e.Id,
-                    Name: e.Name,
-                    StartTime: e.StartTime,
-                    GameIds: e.Games.Select(g => g.Id).ToList(),
-                    PlatformGroupIds: e.Games
+                    e.Id,
+                    e.Name,
+                    e.StartTime,
+                    e.Games.Select(g => g.Id).ToList(),
+                    e.Games
                         .SelectMany(g => g.Platforms)
                         .Select(p => p.PlatformGroupId)
                         .Distinct()
                         .ToList(),
-                    GenreWeights: genreWeights
+                    genreWeights
                         .Select(gw => new EventGenreWeightInput(gw.GenreId, gw.Weight))
                         .ToList()
                 );
@@ -136,8 +136,7 @@ public class RecommendationService
             })
             .OrderByDescending(r => r.FinalPriority)
             .ToList();
-            
+
         return result;
     }
-
 }

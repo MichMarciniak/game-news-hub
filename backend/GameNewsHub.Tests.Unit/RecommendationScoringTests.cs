@@ -1,21 +1,19 @@
-﻿using backend.Configuration;
-using backend.Data;
-using Data.Entities;
-using FluentAssertions;
+﻿using FluentAssertions;
 using GameNewsHub.Api.Features.Recommendations;
+using GameNewsHub.Api.Options;
+using GameNewsHub.Data;
 using GameNewsHub.Data.Entities;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Options;
-using NSubstitute;
 using Xunit.Abstractions;
 
-namespace GameNewsHub.Tests;
+namespace GameNewsHub.Tests.Unit;
 
 public class RecommendationScoringTests : DatabaseTestBase
 {
-    private readonly ITestOutputHelper _testOutputHelper;
-    private readonly RecommendationService _rs;
     private readonly AppDbContext _context;
+    private readonly RecommendationService _rs;
+    private readonly ITestOutputHelper _testOutputHelper;
 
     public RecommendationScoringTests(ITestOutputHelper testOutputHelper)
     {
@@ -23,7 +21,6 @@ public class RecommendationScoringTests : DatabaseTestBase
         _context = Context;
         _rs = new RecommendationService(Context, GetWeights());
         SeedTestData();
-        
     }
 
     private IOptions<RecommendationWeights> GetWeights()
@@ -35,10 +32,10 @@ public class RecommendationScoringTests : DatabaseTestBase
             FollowedPlatformBonus = 3,
             GenreMatchMultiplier = 10
         };
-        IOptions<RecommendationWeights> opt = Options.Create(weights);
+        var opt = Options.Create(weights);
         return opt;
     }
-    
+
     private void SeedTestData()
     {
         var pg = new PlatformGroup
@@ -68,7 +65,7 @@ public class RecommendationScoringTests : DatabaseTestBase
             Title = "Test game",
             Summary = "Test game summary",
             Genres = new[] { genre },
-            Platforms = new[] { platform },
+            Platforms = new[] { platform }
         };
 
         var evt = new Event
@@ -96,14 +93,13 @@ public class RecommendationScoringTests : DatabaseTestBase
 
         var user = new AppUser
         {
-            Id = 2,
+            Id = 2
         };
 
         Context.AddRange(evt, evt2, game, genre, platform, pg, user);
         Context.SaveChanges();
-
     }
-    
+
     [Fact]
     public async Task FollowedGame_ShouldGiveHighPriority()
     {
@@ -111,12 +107,12 @@ public class RecommendationScoringTests : DatabaseTestBase
         var user = await _context.Users
             .Include(u => u.FollowedGames)
             .FirstOrDefaultAsync(u => u.Id == 2);
-        
+
         var game = await _context.Games.FirstOrDefaultAsync(g => g.Id == 1);
         user.FollowedGames.Add(game);
         await _context.SaveChangesAsync();
 
-        var eventList= await _rs.GetRecommendedEventList(2);
+        var eventList = await _rs.GetRecommendedEventList(2);
 
         var priority = eventList
             .Find(e => e.Id == 1)!
@@ -139,21 +135,20 @@ public class RecommendationScoringTests : DatabaseTestBase
         var user = await _context.Users
             .Include(u => u.FollowedPlatformGroups)
             .FirstOrDefaultAsync(u => u.Id == 2);
-        
+
         var pg = await _context.PlatformGroups.FirstOrDefaultAsync(p => p.Id == 1);
-        
+
         user.FollowedPlatformGroups.Add(pg);
         await _context.SaveChangesAsync();
-        
-        
+
+
         var eventList = await _rs.GetRecommendedEventList(2);
-        
+
         var priority = eventList
             .Find(e => e.Id == 1)!
             .FinalPriority;
-        
+
         _testOutputHelper.WriteLine(priority.ToString());
         priority.Should().BeGreaterThanOrEqualTo(4); //why 5
     }
-
 }

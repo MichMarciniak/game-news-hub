@@ -3,7 +3,7 @@ using System.Text.Encodings.Web;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.Extensions.Options;
 
-namespace backend.Configuration;
+namespace GameNewsHub.Api.Configuration;
 
 public class AuthDevHandler : AuthenticationHandler<AuthenticationSchemeOptions>
 {

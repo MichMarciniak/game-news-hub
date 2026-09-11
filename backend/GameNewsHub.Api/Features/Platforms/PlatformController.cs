@@ -1,5 +1,4 @@
-using System.Net;
-using backend.Extensions;
+using GameNewsHub.Api.Extensions;
 using GameNewsHub.Api.Features.Shared;
 using GameNewsHub.Contracts;
 using Microsoft.AspNetCore.Authorization;
@@ -11,7 +10,6 @@ namespace GameNewsHub.Api.Features.Platforms;
 [Route("[controller]")]
 public class PlatformController : ControllerBase
 {
-
     private readonly PlatformService _service;
 
     public PlatformController(PlatformService service)
@@ -56,11 +54,9 @@ public class PlatformController : ControllerBase
     public async Task<IActionResult> ReassignPlatformGroup([FromQuery] int platformId, [FromQuery] int groupId)
     {
         var result = await _service.ReassignPlatformGroup(platformId, groupId);
-        
+
         return result.MatchFirst<IActionResult>(
             success => Ok(),
             err => this.ProblemErr(err));
     }
-
-
 }

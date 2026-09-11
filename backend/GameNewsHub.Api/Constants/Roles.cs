@@ -8,7 +8,7 @@ public static class Roles
 
     public static string[] GetArray()
     {
-        var roles =  new[] { Admin, User };
+        var roles = new[] { Admin, User };
         return roles;
     }
 }

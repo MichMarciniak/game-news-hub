@@ -1,4 +1,4 @@
-﻿namespace GameNewsHub.Api.Features.Auth;
+﻿namespace GameNewsHub.Api.Constants;
 
 public static class EmailTemplates
 {

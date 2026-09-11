@@ -4,7 +4,7 @@ namespace GameNewsHub.Sync.Dtos;
 
 public record IgdbPlatformResponse
 {
-    [JsonPropertyName("id")]
-    public int IgdbId { get; set; }
+    [JsonPropertyName("id")] public int IgdbId { get; set; }
+
     public string Name { get; set; } = string.Empty;
 }

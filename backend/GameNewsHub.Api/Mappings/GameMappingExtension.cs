@@ -1,5 +1,4 @@
-﻿using GameNewsHub.Api.Features.Genres;
-using GameNewsHub.Contracts;
+﻿using GameNewsHub.Contracts;
 using GameNewsHub.Data.Entities;
 
 namespace GameNewsHub.Api.Mappings;
@@ -28,7 +27,7 @@ public static class GameMappingExtension
         {
             Id = game.Id,
             Title = game.Title,
-            CoverUrl = game.CoverUrl,
+            CoverUrl = game.CoverUrl
         };
     }
 }

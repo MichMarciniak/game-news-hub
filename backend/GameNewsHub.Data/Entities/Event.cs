@@ -1,14 +1,12 @@
-using Data.Entities;
-
 namespace GameNewsHub.Data.Entities;
 
 public class Event
 {
-    public int Id { get; set; } 
+    public int Id { get; set; }
     public string Name { get; set; }
-    
+
     public string Description { get; set; }
-                                            
+
     public DateTimeOffset StartTime { get; set; }
     public DateTimeOffset? EndTime { get; set; }
 
@@ -22,15 +20,14 @@ public class Event
     public string NormalizedName { get; set; }
     public int EventSeriesId { get; set; }
     public EventSeries Series { get; set; }
-    
+
     // moze bedzie potrzebne pozniej
     // public boolean is_user_added {get; set;}
-    
 }
 
 public enum EventSyncStatus
 {
     Pending, //czeka na pobranie danych
-    Ready,   // wszystkie dane są
-    NoData   // dane niepełne - prawdopodobnie jeszcze się nie zakończył
+    Ready, // wszystkie dane są
+    NoData // dane niepełne - prawdopodobnie jeszcze się nie zakończył
 }

@@ -1,4 +1,4 @@
-﻿namespace backend.Configuration;
+﻿namespace GameNewsHub.Api.Options;
 
 public class EmailTemplateOptions
 {

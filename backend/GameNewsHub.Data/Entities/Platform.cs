@@ -1,6 +1,4 @@
-using GameNewsHub.Data.Entities;
-
-namespace Data.Entities;
+namespace GameNewsHub.Data.Entities;
 
 public class Platform
 {

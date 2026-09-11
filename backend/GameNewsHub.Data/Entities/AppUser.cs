@@ -1,4 +1,3 @@
-using Data.Entities;
 using Microsoft.AspNetCore.Identity;
 
 namespace GameNewsHub.Data.Entities;
@@ -15,5 +14,4 @@ public class AppUser : IdentityUser<int>
     public ICollection<Genre> FollowedGenres { get; set; } = new List<Genre>();
 
     public ICollection<Event> FollowedEvents { get; set; } = new List<Event>();
-
 }

@@ -4,7 +4,7 @@ public class PlatformGroupDto
 {
     public int Id { get; set; }
     public string Name { get; set; }
-    public List<PlatformDto> Platforms { get; set; } = new List<PlatformDto>();
+    public List<PlatformDto> Platforms { get; set; } = new();
 }
 
 public class PlatformDto

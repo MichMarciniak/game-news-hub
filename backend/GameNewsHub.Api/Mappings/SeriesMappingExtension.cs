@@ -1,5 +1,5 @@
-﻿using Data.Entities;
-using GameNewsHub.Contracts;
+﻿using GameNewsHub.Contracts;
+using GameNewsHub.Data.Entities;
 
 namespace GameNewsHub.Api.Mappings;
 
@@ -9,7 +9,7 @@ public static class SeriesMappingExtension
     {
         return new SeriesDto
         {
-            Id = series.Id,
+            Id = series.Id
         };
     }
 }

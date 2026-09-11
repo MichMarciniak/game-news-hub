@@ -2,12 +2,12 @@ using GameNewsHub.Sync.Sync.Events;
 
 namespace GameNewsHub.Sync.Sync.Workers;
 
-public class EventHydrationWorker : BackgroundService 
+public class EventHydrationWorker : BackgroundService
 {
+    private static readonly SemaphoreSlim _semaphore = new(1, 1);
+    private readonly TimeSpan _checkInterval = TimeSpan.FromHours(2);
     private readonly ILogger<EventHydrationWorker> _logger;
     private readonly IServiceProvider _serviceProvider;
-    private readonly TimeSpan _checkInterval = TimeSpan.FromHours(2);
-    private static readonly SemaphoreSlim _semaphore = new SemaphoreSlim(1, 1);
 
     public EventHydrationWorker(ILogger<EventHydrationWorker> logger, IServiceProvider serviceProvider)
     {
@@ -31,7 +31,6 @@ public class EventHydrationWorker : BackgroundService
                     var service = scope.ServiceProvider.GetRequiredService<IEventSyncService>();
 
                     await service.HydrateEventsAsync();
-
                 }
 
                 _logger.LogInformation("Hydration completed.");
@@ -44,9 +43,10 @@ public class EventHydrationWorker : BackgroundService
             {
                 _semaphore.Release();
             }
+
             await Task.Delay(_checkInterval, stoppingToken);
         }
-        _logger.LogInformation("EventHydrationWorker is stopping.");
 
+        _logger.LogInformation("EventHydrationWorker is stopping.");
     }
 }

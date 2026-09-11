@@ -1,11 +1,7 @@
-﻿using Microsoft.AspNetCore.Identity;
-using Microsoft.AspNetCore.Identity.UI.Services;
-
-namespace GameNewsHub.Api.Features.Auth;
+﻿namespace GameNewsHub.Api.Features.Auth;
 
 public static class AuthRegistration
 {
-
     public static IServiceCollection AddAuthServices(this IServiceCollection services)
     {
         services.AddScoped<AuthService>();

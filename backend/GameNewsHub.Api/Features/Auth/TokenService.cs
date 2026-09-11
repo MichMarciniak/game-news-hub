@@ -1,8 +1,8 @@
 ﻿using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;
-using backend.Configuration;
 using GameNewsHub.Api.Constants;
+using GameNewsHub.Api.Options;
 using GameNewsHub.Data.Entities;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.Options;
@@ -20,22 +20,22 @@ public class TokenService
         _jwtTokenOptions = jwtOptions.Value;
         _userManager = userManager;
     }
-    
+
     public async Task<string> GenerateAccessToken(AppUser user)
     {
         var roles = await _userManager.GetRolesAsync(user);
 
         var claims = new List<Claim>
         {
-            new Claim(JwtRegisteredClaimNames.Sub, user.Id.ToString()),
-            new Claim(JwtRegisteredClaimNames.Name, user.UserName),
-            new Claim(JwtRegisteredClaimNames.Email, user.Email),
-            new Claim("token_type", "access"),
+            new(JwtRegisteredClaimNames.Sub, user.Id.ToString()),
+            new(JwtRegisteredClaimNames.Name, user.UserName),
+            new(JwtRegisteredClaimNames.Email, user.Email),
+            new("token_type", "access")
         };
         //jwt registered claim names doesn't have roles i think
         // and default claim names fron .net are toooo long
         claims.AddRange(roles.Select(role => new Claim("roles", role)));
-        
+
         var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_jwtTokenOptions.SigningKey));
         var creds = new SigningCredentials(key, SecurityAlgorithms.HmacSha256);
 
@@ -43,11 +43,11 @@ public class TokenService
         var expires = roles.Contains(Roles.Admin)
             ? DateTime.UtcNow.Add(_jwtTokenOptions.AdminAccessTokenLifetime)
             : DateTime.UtcNow.Add(_jwtTokenOptions.AccessTokenLifetime);
-        
+
         var token = new JwtSecurityToken(
-            issuer: _jwtTokenOptions.Issuer,
-            audience: _jwtTokenOptions.Audience,
-            claims: claims,
+            _jwtTokenOptions.Issuer,
+            _jwtTokenOptions.Audience,
+            claims,
             expires: expires,
             signingCredentials: creds
         );
@@ -59,18 +59,18 @@ public class TokenService
     {
         var claims = new List<Claim>
         {
-            new Claim(JwtRegisteredClaimNames.Sub, user.Id.ToString()),
-            new Claim("token_type", "refresh"),
-            new Claim("security_stamp", user.SecurityStamp)
+            new(JwtRegisteredClaimNames.Sub, user.Id.ToString()),
+            new("token_type", "refresh"),
+            new("security_stamp", user.SecurityStamp)
         };
-        
+
         var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_jwtTokenOptions.SigningKey));
         var creds = new SigningCredentials(key, SecurityAlgorithms.HmacSha256);
 
         var token = new JwtSecurityToken(
-            issuer: _jwtTokenOptions.Issuer,
-            audience: _jwtTokenOptions.Audience,
-            claims: claims,
+            _jwtTokenOptions.Issuer,
+            _jwtTokenOptions.Audience,
+            claims,
             expires: DateTime.UtcNow.Add(_jwtTokenOptions.RefreshTokenLifetime),
             signingCredentials: creds
         );
@@ -99,9 +99,7 @@ public class TokenService
 
             if (validatedToken is not JwtSecurityToken jwt ||
                 !jwt.Header.Alg.Equals(SecurityAlgorithms.HmacSha256, StringComparison.InvariantCultureIgnoreCase))
-            {
                 return null;
-            }
 
             var tokenType = principal.FindFirstValue("token_type");
             return tokenType == "refresh" ? principal : null;
@@ -111,6 +109,4 @@ public class TokenService
             return null;
         }
     }
-    
-    
 }

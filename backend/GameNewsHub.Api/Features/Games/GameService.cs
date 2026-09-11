@@ -1,16 +1,15 @@
-using backend.Configuration;
-using backend.Data;
-using Data.Entities;
 using ErrorOr;
+using GameNewsHub.Api.Configuration;
 using GameNewsHub.Api.Features.Platforms;
 using GameNewsHub.Api.Mappings;
 using GameNewsHub.Contracts;
+using GameNewsHub.Data;
 using GameNewsHub.Data.Entities;
 using Microsoft.EntityFrameworkCore;
 
 namespace GameNewsHub.Api.Features.Games;
 
-public class GameService 
+public class GameService
 {
     private readonly AppDbContext _context;
 
@@ -32,20 +31,18 @@ public class GameService
 
     public async Task<List<GameListItemDto>> SearchGamesAsync(string? query, int page, int pageSize)
     {
-        IQueryable<Game> dbQuery = _context.Games.Where(g => GameTypePolicy.MainTypes.Contains(g.Type));
+        var dbQuery = _context.Games.Where(g => GameTypePolicy.MainTypes.Contains(g.Type));
 
         if (!string.IsNullOrWhiteSpace(query))
-        {
             dbQuery = dbQuery.Where(g => g.Title.ToLower().Contains(query.ToLower()));
-        }
-        
+
         var games = await dbQuery
             .OrderBy(g => g.Title)
             .Select(g => g.ToListItemDto())
             .Skip((page - 1) * pageSize)
             .Take(pageSize)
             .ToListAsync();
-        
+
         return games;
     }
 
@@ -54,21 +51,18 @@ public class GameService
         var game = await _context.Games
             .Include(g => g.ChildGames)
             .Include(g => g.Platforms)
-                .ThenInclude(pg => pg.PlatformGroup)
+            .ThenInclude(pg => pg.PlatformGroup)
             .Include(g => g.Genres)
             .FirstOrDefaultAsync(g => g.Id == gameId);
 
-        if (game == null)
-        {
-            return Error.NotFound("Game.NotFound", $"Game with id {gameId} not found.");
-        }
+        if (game == null) return Error.NotFound("Game.NotFound", $"Game with id {gameId} not found.");
 
         // ???
         var platformGroups = game.Platforms
             .GroupBy(p => p.PlatformGroup)
             .Select(pg => pg.Key.ToDtoWithPlatforms())
             .ToList();
-        
+
         return game.ToDetailDto(platformGroups);
     }
 
@@ -79,10 +73,7 @@ public class GameService
             .Select(g => g.ToListItemDto())
             .ToListAsync();
 
-        if (gameAddons.Count == 0)
-        {
-            return Error.NotFound("GameAddons.NotFound", $"GameAddons not found.");
-        }
+        if (gameAddons.Count == 0) return Error.NotFound("GameAddons.NotFound", "GameAddons not found.");
 
         return gameAddons;
     }

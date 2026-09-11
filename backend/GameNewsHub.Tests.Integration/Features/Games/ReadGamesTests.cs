@@ -9,11 +9,11 @@ using Microsoft.Extensions.DependencyInjection;
 namespace GameNewsHub.Tests.Integration;
 
 [Collection("Integration")]
-public class GamesEndpointTests
+public class GetGamesTests
 {
     private readonly IntegrationTestFixture _fixture;
 
-    public GamesEndpointTests(IntegrationTestFixture fixture) => _fixture = fixture;
+    public GetGamesTests(IntegrationTestFixture fixture) => _fixture = fixture;
 
     public async Task InitializeAsync()
     {

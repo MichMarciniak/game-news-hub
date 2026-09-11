@@ -1,10 +1,11 @@
 using System.IdentityModel.Tokens.Jwt;
 using System.Text.Json.Serialization;
-using backend.Configuration;
-using backend.Data;
-using backend.Extensions;
+using GameNewsHub.Api.Configuration;
+using GameNewsHub.Api.Extensions;
 using GameNewsHub.Api.Features;
+using GameNewsHub.Api.Options;
 using GameNewsHub.Api.Seeder;
+using GameNewsHub.Data;
 using GameNewsHub.Data.Entities;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authorization;
@@ -59,10 +60,7 @@ builder.Services.AddFeatureServices();
 builder.Services.AddAuthDocumentation();
 
 builder.Services.AddControllers()
-    .AddJsonOptions(opt =>
-    {
-        opt.JsonSerializerOptions.Converters.Add(new JsonStringEnumConverter());
-    });
+    .AddJsonOptions(opt => { opt.JsonSerializerOptions.Converters.Add(new JsonStringEnumConverter()); });
 builder.Services.AddCors(options =>
 {
     options.AddPolicy(FrontendCorsPolicy, policy =>
@@ -79,7 +77,7 @@ if (devAuth)
 {
     builder.Services.AddAuthentication("DevScheme")
         .AddScheme<AuthenticationSchemeOptions, AuthDevHandler>("DevScheme", null);
-    
+
     builder.Services.AddAuthorization(options =>
     {
         options.DefaultPolicy = new AuthorizationPolicyBuilder("DevScheme")
@@ -102,20 +100,19 @@ using (var scope = app.Services.CreateScope())
 {
     var db = scope.ServiceProvider.GetRequiredService<AppDbContext>();
     await db.Database.MigrateAsync();
-    
+
     var roleManager = scope.ServiceProvider.GetRequiredService<RoleManager<IdentityRole<int>>>();
     await RoleSeeder.SeedAsync(roleManager);
-
 }
 
 if (app.Environment.IsDevelopment())
 {
     app.MapOpenApi();
     app.MapScalarApiReference();
-    app.UseSwaggerUI(opt => 
+    app.UseSwaggerUI(opt =>
         opt.SwaggerEndpoint("/openapi/v1.json", "GameNews Api")
-    ); 
-    
+    );
+
     app.Lifetime.ApplicationStarted.Register(() =>
     {
         Console.ForegroundColor = ConsoleColor.Cyan;
