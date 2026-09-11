@@ -1,4 +1,5 @@
 ﻿using backend.Data;
+using DotNet.Testcontainers.Containers;
 using GameNewsHub.Sync.Seeder;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Mvc.Testing;
@@ -10,8 +11,7 @@ namespace GameNewsHub.Tests.Integration;
 
 public class IntegrationTestFixture : IAsyncLifetime
 {
-    private readonly PostgreSqlContainer _postgres = new PostgreSqlBuilder()
-        .WithImage("postgres:16-alpine")
+    private readonly PostgreSqlContainer _postgres = new PostgreSqlBuilder("postgres:16-alpine")
         .WithDatabase("gamenewshub_test")
         .WithUsername("test")
         .WithPassword("test")
@@ -52,6 +52,11 @@ public class IntegrationTestFixture : IAsyncLifetime
     {
         await _postgres.DisposeAsync();
         await Factory.DisposeAsync();
+    }
+
+    public async Task ResetDatabaseAsync()
+    {
+        
     }
 }
 
