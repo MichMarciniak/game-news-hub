@@ -8,7 +8,7 @@ public class GameBuilder
     private static readonly Faker Faker = new();
     private readonly List<Genre> _genres = new();
     private readonly List<Platform> _platforms = new();
-    private int _igdbId = Faker.IndexGlobal;
+    private int _igdbId = Faker.IndexGlobal; // nie ma indeksu wiec nie padnie, ale ten nie działa, lepiej Interlocked.Increment
     private Game _parentGame;
     private string _summary = Faker.Lorem.Paragraph();
 
