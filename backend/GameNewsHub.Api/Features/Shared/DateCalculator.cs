@@ -4,7 +4,8 @@ public static class DateCalculator
 {
     public static DateTimeOffset GetMonthStart(DateTimeOffset date)
     {
-        return new DateTimeOffset(date.Year, date.Month, 1, 0, 0, 0, date.Offset);
+        var utc = date.ToUniversalTime();
+        return new DateTimeOffset(utc.Year, utc.Month, 1, 0, 0, 0, TimeSpan.Zero);
     }
 
     public static DateTimeOffset GetMonthEnd(DateTimeOffset date)

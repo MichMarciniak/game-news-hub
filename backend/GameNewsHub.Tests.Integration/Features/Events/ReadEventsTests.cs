@@ -1,4 +1,5 @@
-﻿using System.Net;
+﻿using System.Globalization;
+using System.Net;
 using System.Net.Http.Json;
 using FluentAssertions;
 using GameNewsHub.Contracts;
@@ -6,7 +7,9 @@ using GameNewsHub.Data;
 using GameNewsHub.Tests.Integration.Bases;
 using GameNewsHub.Tests.Integration.Fixtures;
 using GameNewsHub.Tests.Integration.TestData.Events;
+using Microsoft.AspNetCore.WebUtilities;
 using Microsoft.Extensions.DependencyInjection;
+using Xunit.Abstractions;
 
 namespace GameNewsHub.Tests.Integration.Features.Events;
 
@@ -47,7 +50,6 @@ public class ReadEventsTests : BaseIntegrationTest
                 true
             )
         };
-        
         yield return new object[]
         {
             new EventListScenario(
@@ -57,7 +59,6 @@ public class ReadEventsTests : BaseIntegrationTest
                false 
             )
         };
-        
         yield return new object[]
         {
             new EventListScenario(
@@ -113,7 +114,7 @@ public class ReadEventsTests : BaseIntegrationTest
                 "Event without end, start at end range",
                 Anchor.AddDays(2), null,
                 Anchor, Anchor.AddDays(2),
-                false 
+               true 
             )
         };
     }
@@ -134,10 +135,15 @@ public class ReadEventsTests : BaseIntegrationTest
         context.Events.Add(evt);
         await context.SaveChangesAsync();
 
-        var from = Uri.EscapeDataString(scenario.From.ToString());
-        var to = Uri.EscapeDataString(scenario.To.ToString());
 
-        var response = await Client.GetAsync($"/Event?from={from}&to={to}");
+        var queryParams = new Dictionary<string, string?>
+        {
+            ["from"] = scenario.From.ToString("O", CultureInfo.InvariantCulture),
+            ["to"] = scenario.To.ToString("O", CultureInfo.InvariantCulture),
+        };
+
+        var url = QueryHelpers.AddQueryString("/Event", queryParams);
+        var response = await Client.GetAsync(url);
         response.StatusCode.Should().Be(HttpStatusCode.OK);
         
         var events = await response.Content.ReadFromJsonAsync<List<EventListItemDto>>();
@@ -148,8 +154,6 @@ public class ReadEventsTests : BaseIntegrationTest
             names.Should().Contain(evt.Name);
         else
             names.Should().NotContain(evt.Name);
-
-
     }
     
 }

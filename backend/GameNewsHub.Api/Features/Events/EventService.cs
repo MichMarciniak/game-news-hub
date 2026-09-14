@@ -17,24 +17,15 @@ public class EventService
         _context = context;
     }
 
-    public async Task<List<EventListItemDto>> GetEvents(DateTime? startTime, DateTime? endTime)
+    public async Task<List<EventListItemDto>> GetEvents(DateTimeOffset? from, DateTimeOffset? to)
     {
         var now = DateTimeOffset.UtcNow;
-        DateTimeOffset start;
-        if (startTime != null)
-            start = (DateTimeOffset)startTime;
-        else
-            start = DateCalculator.GetMonthStart(now);
-
-        DateTimeOffset end;
-        if (endTime != null)
-            end = (DateTimeOffset)endTime;
-        else
-            end = DateCalculator.GetMonthEnd(now);
+        from = from?.ToUniversalTime() ?? DateCalculator.GetMonthStart(now);
+        to = to?.ToUniversalTime() ?? DateCalculator.GetMonthEnd(now);
 
         var events = await _context.Events
-            .Where(e => e.StartTime >= start)
-            .Where(e => e.StartTime <= end)
+            .Where(e => e.StartTime <= to)
+            .Where(e => (e.EndTime ?? e.StartTime) >= from)
             .Select(e => e.ToListItemDto())
             .ToListAsync();
 

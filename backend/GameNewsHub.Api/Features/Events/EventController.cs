@@ -20,9 +20,9 @@ public class EventController : ControllerBase
     }
 
     [HttpGet]
-    public async Task<ActionResult<List<EventListItemDto>>> GetEvents(DateTime? startTime, DateTime? endTime)
+    public async Task<ActionResult<List<EventListItemDto>>> GetEvents(DateTimeOffset? from, DateTimeOffset? to)
     {
-        var result = await _service.GetEvents(startTime, endTime);
+        var result = await _service.GetEvents(from, to);
         return result;
     }
 
