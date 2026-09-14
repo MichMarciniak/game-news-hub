@@ -12,13 +12,11 @@ public class EventController : ControllerBase
 {
     private readonly FollowEventService _followService;
     private readonly EventService _service;
-    private readonly ILogger<EventController> _logger;
 
-    public EventController(EventService service, FollowEventService followService, ILogger<EventController> logger)
+    public EventController(EventService service, FollowEventService followService)
     {
         _service = service;
         _followService = followService;
-        _logger = logger;
     }
 
     [HttpGet]
@@ -75,18 +73,4 @@ public class EventController : ControllerBase
             err => this.ProblemErr(err));
     }
 
-
-    [HttpPatch("reassign/series")]
-    [Authorize] //admin
-    public async Task<IActionResult> ReassignSeries([FromQuery] int eventId, [FromQuery] int seriesId)
-    {
-        _logger.LogInformation(
-            "Admin {AdminId} attempting to reassign event {EventId} to series {SeriesId}",
-            User.GetUserId(), eventId, seriesId);
-            
-        var result = await _service.ReassignEventToSeries(eventId, seriesId);
-        return result.MatchFirst<IActionResult>(
-            success => Ok(),
-            err => this.ProblemErr(err));
-    }
 }

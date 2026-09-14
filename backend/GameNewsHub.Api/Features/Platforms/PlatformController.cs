@@ -11,12 +11,10 @@ namespace GameNewsHub.Api.Features.Platforms;
 public class PlatformController : ControllerBase
 {
     private readonly PlatformService _service;
-    private readonly ILogger<PlatformController> _logger;
 
-    public PlatformController(PlatformService service,  ILogger<PlatformController> logger)
+    public PlatformController(PlatformService service)
     {
         _service = service;
-        _logger = logger;
     }
 
     [HttpGet("groups")]
@@ -51,17 +49,4 @@ public class PlatformController : ControllerBase
             err => this.ProblemErr(err));
     }
 
-    [HttpPatch("reassign")]
-    [Authorize(Roles = "Admin")] // role admin?
-    public async Task<IActionResult> ReassignPlatformGroup([FromQuery] int platformId, [FromQuery] int groupId)
-    {
-        _logger.LogInformation(
-            "Admin {AdminId} reassigning platform {PlatformId} to group {PlatformGroupId}",
-            User.GetUserId(), platformId, groupId);
-        var result = await _service.ReassignPlatformGroup(platformId, groupId);
-
-        return result.MatchFirst<IActionResult>(
-            success => Ok(),
-            err => this.ProblemErr(err));
-    }
 }
