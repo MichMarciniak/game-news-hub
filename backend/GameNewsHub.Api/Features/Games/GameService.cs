@@ -29,7 +29,9 @@ public class GameService
         return games;
     }
 
-    public async Task<List<GameListItemDto>> SearchGamesAsync(string? query, int page, int pageSize)
+    public async Task<List<GameListItemDto>> SearchGamesAsync(
+        string? query, int page, int pageSize,
+        SortBy sortBy, bool descending)
     {
         var baseQuery = _context.Games
             .Where(g => GameTypePolicy.MainTypes.Contains(g.Type));
@@ -47,8 +49,9 @@ public class GameService
         var cleanQuery = query.Trim();
 
         var games = await baseQuery
-            .Where(g => EF.Functions.ILike(g.Title, $"%{cleanQuery}%")
-                || EF.Functions.TrigramsSimilarity(g.Title, $"%{cleanQuery}%") >= 0.25)
+            //.Where(g => EF.Functions.ILike(g.Title, $"%{cleanQuery}%")
+            //    || EF.Functions.TrigramsSimilarity(g.Title, $"%{cleanQuery}%") >= 0.25)
+            .Where(g => EF.Functions.TrigramsAreSimilar(g.Title, cleanQuery)) //szybciej ~20ms??
             
             .Select(g => new
             {
