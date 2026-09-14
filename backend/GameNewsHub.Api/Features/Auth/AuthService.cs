@@ -22,10 +22,11 @@ public class AuthService
     private readonly EmailTemplateService _templateService;
     private readonly TokenService _tokenService;
     private readonly UserManager<AppUser> _userManager;
+    private readonly ILogger<AuthService> _logger;
 
     public AuthService(UserManager<AppUser> userManager, SignInManager<AppUser> signInManager, IEmailSender emailSender,
         TokenService tokenService, IOptions<FrontendOptions> frontendOptions, EmailTemplateService templateService,
-        RoleManager<IdentityRole<int>> roleManager)
+        RoleManager<IdentityRole<int>> roleManager, ILogger<AuthService> logger)
     {
         _userManager = userManager;
         _signInManager = signInManager;
@@ -34,6 +35,7 @@ public class AuthService
         _frontendOptions = frontendOptions.Value;
         _templateService = templateService;
         _roleManager = roleManager;
+        _logger = logger;
     }
 
     // tworzy usera
@@ -50,13 +52,22 @@ public class AuthService
         var result = await _userManager.CreateAsync(user, registerDto.Password);
 
         if (!result.Succeeded)
+        {
+            _logger.LogWarning(
+                "Register failed for {Email}: {Errors}",
+                registerDto.Email,
+                string.Join(",", result.Errors.Select(e => e.Code)));
             return result.Errors
                 .Select(e => Error.Validation(e.Code, e.Description))
                 .ToList();
+        }
 
         await AssignRoleAsync(user, Roles.User);
-
         await SendConfirmationEmail(user);
+        
+        _logger.LogInformation(
+            "User {UserId} registered with email {EmailId}",
+            user.Id, user.Email);
 
         return new EmailDto
         {
@@ -68,13 +79,23 @@ public class AuthService
     public async Task<ErrorOr<TokenResult>> Login(LoginDto loginDto)
     {
         var user = await _userManager.FindByEmailAsync(loginDto.Email);
-        if (user == null) return Error.Unauthorized("Auth.InvalidCredentials", "Invalid email or password");
+        if (user == null)
+        {
+            _logger.LogWarning(
+                "Login failed: unknown email {Email}",
+                loginDto.Email);
+            return Error.Unauthorized("Auth.InvalidCredentials", "Invalid email or password");
+        }
 
         var signInResult = await _signInManager.CheckPasswordSignInAsync(
             user, loginDto.Password, true);
 
         if (signInResult.IsLockedOut)
         {
+            _logger.LogWarning(
+                "Login blocked: User {UserId} is locked out",
+                user.Id);
+            
             var remainingMinutes = user.LockoutEnd.HasValue
                 ? Math.Max(0, (int)(user.LockoutEnd.Value - DateTimeOffset.UtcNow).TotalMinutes)
                 : 0;
@@ -85,15 +106,29 @@ public class AuthService
             );
         }
 
-        if (!signInResult.Succeeded) return Error.Unauthorized("Auth.InvalidCredentials", "Invalid email or password");
+        if (!signInResult.Succeeded)
+        {
+            _logger.LogWarning(
+                "Login failed: invalid password for User {UserId}",
+                user.Id);
+            return Error.Unauthorized("Auth.InvalidCredentials", "Invalid email or password");
+        }
 
 
         if (!user.EmailConfirmed)
+        {
+            _logger.LogWarning(
+                "Login blocked: User {UserId} has unconfirmed email",
+                user.Id);
             return Error.Unauthorized("Auth.EmailNotConfirmed", "Confirm email before logging in");
+        }
 
         var accessToken = await _tokenService.GenerateAccessToken(user);
         var refreshToken = _tokenService.GenerateRefreshToken(user);
 
+        _logger.LogInformation(
+            "User {UserId} logged in",
+            user.Id);
         return new TokenResult { AccessToken = accessToken, RefreshToken = refreshToken };
     }
 
@@ -106,6 +141,9 @@ public class AuthService
             return Result.Success;
 
         await _userManager.UpdateSecurityStampAsync(user);
+        _logger.LogInformation(
+            "User {UserId} logged out from all sessions",
+            user.Id);
 
         return Result.Success;
     }
@@ -116,7 +154,13 @@ public class AuthService
     {
         var decodedToken = WebUtility.UrlDecode(token);
         var user = await _userManager.FindByIdAsync(userId.ToString());
-        if (user == null) return Error.NotFound("User.NotFound", "User does not exist");
+        if (user == null)
+        {
+            _logger.LogWarning(
+                "Email confirmation failed: User {UserId} not found",
+                userId);
+            return Error.NotFound("User.NotFound", "User does not exist");
+        }
 
         if (user.EmailConfirmed) return Result.Success;
 
@@ -127,13 +171,24 @@ public class AuthService
         }
         catch (FormatException)
         {
+            _logger.LogWarning(
+                "Email confirmation failed: invalid token for user {UserId}",
+                userId);
             return Error.Validation("Token.Invalid", "Invalid token");
         }
 
         if (!result.Succeeded)
+        {
+            _logger.LogWarning(
+                "Email confirmation failed for User {UserId}: {Errors}",
+                userId, string.Join(", ", result.Errors.Select(e => e.Code)));
             return result.Errors
                 .Select(e => Error.Validation(e.Code, e.Description))
                 .ToList();
+        }
+        _logger.LogInformation(
+            "User {UserId} confirmed email",
+            userId );
 
         return Result.Success;
     }
@@ -141,17 +196,38 @@ public class AuthService
     public async Task<ErrorOr<TokenResult>> RefreshToken(string refreshToken)
     {
         var principal = _tokenService.ValidateRefreshToken(refreshToken);
-        if (principal == null) return Error.Unauthorized("Auth.InvalidRefreshToken", "Refresh token is invalid");
+        if (principal == null)
+        {
+            _logger.LogWarning(
+                "Refresh failed: token failed validation (malformed, expired, bad signature)");
+            return Error.Unauthorized("Auth.InvalidRefreshToken", "Refresh token is invalid");
+        }
 
         var userId = principal.FindFirstValue(JwtRegisteredClaimNames.Sub);
-        if (userId == null) return Error.Unauthorized("Auth.InvalidRefreshToken", "Refresh token is invalid");
+        if (userId == null)
+        {
+            _logger.LogWarning(
+                "Refresh failed: token is invalid");
+            return Error.Unauthorized("Auth.InvalidRefreshToken", "Refresh token is invalid");
+        }
 
         var user = await _userManager.FindByIdAsync(userId);
-        if (user == null) return Error.Unauthorized("Auth.InvalidRefreshToken", "Refresh token is invalid");
+        if (user == null)
+        {
+            _logger.LogWarning(
+                "Refresh failed: User {UserId} not found",
+                userId);
+            return Error.Unauthorized("Auth.InvalidRefreshToken", "Refresh token is invalid");
+        }
 
         var stampInToken = principal.FindFirstValue("security_stamp");
         if (stampInToken != user.SecurityStamp)
+        {
+            _logger.LogWarning(
+                "Refresh rejected: invalid security_stamp for User {UserId}",
+                userId);
             return Error.Unauthorized("Auth.TokenRevoked", "Session expired. Log in again");
+        }
 
         var newAccessToken = await _tokenService.GenerateAccessToken(user);
         var newRefreshToken =
@@ -168,6 +244,7 @@ public class AuthService
         if (user == null || user.EmailConfirmed) return Result.Success;
 
         await SendConfirmationEmail(user);
+        _logger.LogInformation("Confirmation email resent to User {UserId}", user.Id);
 
         return Result.Success;
     }
@@ -178,6 +255,7 @@ public class AuthService
         if (user == null || !user.EmailConfirmed) return Result.Success;
 
         await SendPasswordResetEmail(user);
+        _logger.LogInformation("Password reset requested for User {UserId}", user.Id);
 
         return Result.Success;
     }
@@ -186,7 +264,11 @@ public class AuthService
     {
         var decodedToken = WebUtility.UrlDecode(token);
         var user = await _userManager.FindByIdAsync(userId.ToString());
-        if (user == null) return Error.Validation("Token.Invalid", "Invalid or expired token");
+        if (user == null)
+        {
+            _logger.LogWarning("Password reset failed: User {UserId} not found", userId);
+            return Error.Validation("Token.Invalid", "Invalid or expired token");
+        }
 
         IdentityResult result;
         try
@@ -195,16 +277,25 @@ public class AuthService
         }
         catch (FormatException)
         {
+            _logger.LogWarning(
+                "Password reset failed: invalid token for User {UserId}",
+                userId);
             return Error.Validation("Token.Invalid", "Invalid or expired token");
         }
 
         if (!result.Succeeded)
+        {
+            _logger.LogWarning(
+                "Password reset failed for User {UserId}: {Errors}",
+                userId, string.Join(", ", result.Errors.Select(e => e.Code)));
             return result.Errors
                 .Select(e => Error.Validation(e.Code, e.Description))
                 .ToList();
+        }
 
         // unieważnia refresh token
         await _userManager.UpdateSecurityStampAsync(user);
+        _logger.LogInformation("Password reset completed for User {UserId}", user.Id);
 
         return Result.Success;
     }
@@ -216,12 +307,19 @@ public class AuthService
 
         var result = await _userManager.ChangePasswordAsync(user, oldPassword, newPassword);
         if (!result.Succeeded)
+        {
+            _logger.LogWarning(
+                "Password change failed for User {UserId}: {Errors}",
+                userId, string.Join(", ", result.Errors.Select(e => e.Code)));
             return result.Errors
                 .Select(e => Error.Validation(e.Code, e.Description))
                 .ToList();
+        }
 
         await _userManager.UpdateSecurityStampAsync(user);
         await SendPasswordChangedNotificationEmail(user);
+        
+        _logger.LogInformation("Password changed for User {UserId}", user.Id);
 
         return Result.Success;
     }
@@ -271,8 +369,16 @@ public class AuthService
 
     private async Task AssignRoleAsync(AppUser user, string role)
     {
-        if (!await _roleManager.RoleExistsAsync(role)) await _roleManager.CreateAsync(new IdentityRole<int>(role));
+        if (!await _roleManager.RoleExistsAsync(role))
+        {
+            _logger.LogInformation("Role {Role} created (did not exist)", role);
+            await _roleManager.CreateAsync(new IdentityRole<int>(role));
+        }
 
-        if (!await _userManager.IsInRoleAsync(user, role)) await _userManager.AddToRoleAsync(user, role);
+        if (!await _userManager.IsInRoleAsync(user, role))
+        {
+            _logger.LogInformation("Role {Role} assigned to User {UserId}", role, user.Id);
+            await _userManager.AddToRoleAsync(user, role);
+        }
     }
 }
