@@ -161,6 +161,9 @@ namespace Data.Migrations
                     b.Property<int>("EventSeriesId")
                         .HasColumnType("integer");
 
+                    b.Property<int>("FollowerCount")
+                        .HasColumnType("integer");
+
                     b.Property<int>("IgdbId")
                         .HasColumnType("integer");
 
@@ -234,6 +237,9 @@ namespace Data.Migrations
 
                     b.Property<string>("CoverUrl")
                         .HasColumnType("text");
+
+                    b.Property<int>("FollowerCount")
+                        .HasColumnType("integer");
 
                     b.Property<int>("IgdbId")
                         .HasColumnType("integer");

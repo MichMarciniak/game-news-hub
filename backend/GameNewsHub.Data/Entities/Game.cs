@@ -17,5 +17,7 @@ public class Game
     public Game? ParentGame { get; set; }
     public ICollection<Game> ChildGames { get; set; } = new List<Game>();
 
+    public int FollowerCount { get; set; } = 0;
+
     public int IgdbId { get; set; }
 }

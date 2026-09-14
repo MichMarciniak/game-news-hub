@@ -5,6 +5,7 @@ using GameNewsHub.Api.Extensions;
 using GameNewsHub.Api.Features;
 using GameNewsHub.Api.Options;
 using GameNewsHub.Api.Seeder;
+using GameNewsHub.Api.Services;
 using GameNewsHub.Data;
 using GameNewsHub.Data.Entities;
 using Microsoft.AspNetCore.Authentication;
@@ -30,6 +31,9 @@ builder.Services.Configure<SmtpOptions>(
 
 builder.Services.Configure<FrontendOptions>(
     builder.Configuration.GetSection(FrontendOptions.SectionName));
+
+builder.Services.Configure<FollowServiceOptions>(
+    builder.Configuration.GetSection(FollowServiceOptions.SectionName));
 
 var devAuth = builder.Configuration.GetSection("DevAuth").Get<bool>();
 
@@ -61,6 +65,7 @@ builder.Services.Configure<IdentityOptions>(IdentityConfig.ConfigIdentity);
 
 // CONFIG + SERVICES
 builder.Services.AddFeatureServices();
+builder.Services.AddBackgroundServices();
 
 // OPENAPI
 builder.Services.AddAuthDocumentation();
