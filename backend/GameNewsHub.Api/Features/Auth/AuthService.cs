@@ -38,7 +38,7 @@ public class AuthService
 
     // tworzy usera
     // wysyła maila
-    public async Task<ErrorOr<Success>> Register(RegisterDto registerDto)
+    public async Task<ErrorOr<EmailDto>> Register(RegisterDto registerDto)
     {
         var user = new AppUser
         {
@@ -58,7 +58,10 @@ public class AuthService
 
         await SendConfirmationEmail(user);
 
-        return new ErrorOr<Success>();
+        return new EmailDto
+        {
+            Email = user.Email
+        };
     }
 
     // zwraca access i refresh

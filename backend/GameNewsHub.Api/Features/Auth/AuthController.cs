@@ -30,12 +30,12 @@ public class AuthController : ControllerBase
     }
 
     [HttpPost("register")]
-    public async Task<IActionResult> Register(RegisterDto request)
+    public async Task<ActionResult<EmailDto>> Register(RegisterDto request)
     {
         var result = await _service.Register(request);
-        return result.Match<IActionResult>(
-            ok => Ok(),
-            error => BadRequest(error));
+        return result.Match(
+            details => Ok(details),
+            error => this.ProblemErr(error));
     }
 
     [HttpPost("login")]
