@@ -18,8 +18,8 @@ public class RecommendationController : ControllerBase
     }
 
     [HttpGet("events")]
-    public async Task<ActionResult<List<RecommendationDto>>> GetRecommendedEvents([FromQuery] DateTime? from = null,
-        [FromQuery] DateTime? to = null)
+    public async Task<ActionResult<List<RecommendationDto>>> GetRecommendedEvents([FromQuery] DateTimeOffset? from = null,
+        [FromQuery] DateTimeOffset? to = null)
     {
         var userId = User.GetUserId();
 

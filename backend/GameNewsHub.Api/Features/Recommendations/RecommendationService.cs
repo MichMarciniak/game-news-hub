@@ -28,14 +28,6 @@ public class RecommendationService
             .FirstOrDefaultAsync(u => u.Id == userId);
     }
 
-    private (DateTimeOffset From, DateTimeOffset To) GetDateRange(DateTime? from, DateTime? to)
-    {
-        var now = DateTimeOffset.UtcNow;
-        var (defaultFrom, defaultTo) = DateCalculator.GetDefaultRange(now);
-        var rangeFrom = from ?? defaultFrom;
-        var rangeTo = to ?? defaultTo;
-        return (rangeFrom, rangeTo);
-    }
 
     private List<EventSyncStatus> GetStatuses(bool includeUncertain)
     {
@@ -64,14 +56,14 @@ public class RecommendationService
         );
     }
 
-    public async Task<List<RecommendationDto>> GetRecommendedEventList(int userId, DateTime? from = null,
-        DateTime? to = null)
+    public async Task<List<RecommendationDto>> GetRecommendedEventList(int userId, DateTimeOffset? from = null,
+        DateTimeOffset? to = null)
     {
         var user = await LoadUserWithFollows(userId);
         if (user == null) return new List<RecommendationDto>();
 
         var now = DateTimeOffset.UtcNow;
-        var (rangeFrom, rangeTo) = GetDateRange(from, to);
+        var (rangeFrom, rangeTo) = DateCalculator.GetDateRange(from, to);
 
         var statuses = GetStatuses(user.ShowFutureRecommendations);
 
@@ -81,7 +73,8 @@ public class RecommendationService
             .Include(e => e.Games)
             .ThenInclude(g => g.Platforms)
             .ThenInclude(p => p.PlatformGroup)
-            .Where(e => e.StartTime >= rangeFrom && e.StartTime <= rangeTo)
+            .Where(e => e.StartTime <= rangeTo)
+            .Where(e => (e.EndTime ?? e.StartTime) >= rangeFrom)
             .Where(e => statuses.Contains(e.Status))
             .ToListAsync();
 

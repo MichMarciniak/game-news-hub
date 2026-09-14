@@ -22,12 +22,11 @@ public class EventService
     public async Task<List<EventListItemDto>> GetEvents(DateTimeOffset? from, DateTimeOffset? to)
     {
         var now = DateTimeOffset.UtcNow;
-        from = from?.ToUniversalTime() ?? DateCalculator.GetMonthStart(now);
-        to = to?.ToUniversalTime() ?? DateCalculator.GetMonthEnd(now);
+        var (rangeFrom, rangeTo) = DateCalculator.GetDateRange(from, to);
 
         var events = await _context.Events
-            .Where(e => e.StartTime <= to)
-            .Where(e => (e.EndTime ?? e.StartTime) >= from)
+            .Where(e => e.StartTime <= rangeTo)
+            .Where(e => (e.EndTime ?? e.StartTime) >= rangeFrom)
             .Select(e => e.ToListItemDto())
             .ToListAsync();
 
