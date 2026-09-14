@@ -24,7 +24,20 @@ services:
       MP_DATABASE: /data/mailpit.db
     volumes:
       - mailpit_data:/data
+    
+  seq:
+    image: datalust/seq:2026.1
+    container_name: seq
+    environment:
+      - ACCEPT_EULA=y
+      - SEQ_FIRSTRUN_NOAUTHENTICATION=True
+    ports:
+      - "5341:5341"
+      - "8081:80"
+    volumes:
+      - seq-data:/data
 
 volumes:
   pgdata:
   mailpit_data:
+  seq-data:

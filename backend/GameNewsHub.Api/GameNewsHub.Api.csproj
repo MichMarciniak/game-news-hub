@@ -20,6 +20,9 @@
         </PackageReference>
         <PackageReference Include="Scalar.AspNetCore" Version="2.16.20"/>
         <PackageReference Include="Scriban" Version="7.4.0"/>
+        <PackageReference Include="Serilog.AspNetCore" Version="10.0.0" />
+        <PackageReference Include="Serilog.Enrichers.Environment" Version="3.0.1" />
+        <PackageReference Include="Serilog.Sinks.Seq" Version="9.1.0" />
         <PackageReference Include="Swashbuckle.AspNetCore.SwaggerUI" Version="10.2.3"/>
     </ItemGroup>
 

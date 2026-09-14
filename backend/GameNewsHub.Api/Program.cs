@@ -33,6 +33,12 @@ builder.Services.Configure<FrontendOptions>(
 
 var devAuth = builder.Configuration.GetSection("DevAuth").Get<bool>();
 
+var seqOptions = builder.Configuration.GetSection("Seq").Get<SeqOptions>();
+if (seqOptions == null)
+{
+    throw new Exception("Seq:Url is not configured");
+}
+
 //DATABSE + IDENTITY
 builder.Services.AddDbContext<AppDbContext>(options =>
     options.UseNpgsql(connectionString)
@@ -92,8 +98,14 @@ else
     builder.Services.AddAuthorization();
 }
 
+builder.Host.AddAppLogging(seqOptions);
 
 var app = builder.Build();
+
+// logs + exceptions
+app.UseAppExceptionHandler();
+app.UseAppRequestLogging();
+
 
 // DB MIGRATION
 using (var scope = app.Services.CreateScope())
@@ -129,5 +141,7 @@ app.UseAuthentication();
 app.UseAuthorization();
 
 app.MapControllers();
+
+
 
 app.Run();
