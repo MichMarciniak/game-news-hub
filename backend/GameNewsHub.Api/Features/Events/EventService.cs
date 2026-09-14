@@ -11,10 +11,12 @@ namespace GameNewsHub.Api.Features.Events;
 public class EventService
 {
     private readonly AppDbContext _context;
+    private readonly ILogger<EventService> _logger;
 
-    public EventService(AppDbContext context)
+    public EventService(AppDbContext context, ILogger<EventService> logger)
     {
         _context = context;
+        _logger = logger;
     }
 
     public async Task<List<EventListItemDto>> GetEvents(DateTimeOffset? from, DateTimeOffset? to)
@@ -60,16 +62,31 @@ public class EventService
             .FirstOrDefaultAsync(e => e.Id == eventId);
 
         if (evt == null)
+        {
+            _logger.LogWarning(
+                "Reassign failed: Event {EventId} not found",
+                eventId);
             return Error.NotFound("Event.NotFound", $"Event {eventId} not found");
+        }
 
         var series = await _context.EventSeries
             .FirstOrDefaultAsync(s => s.Id == seriesId);
 
         if (series == null)
+        {
+            _logger.LogWarning(
+                "Reassign failed: EventSeries {SeriesId} not found",
+                seriesId);
             return Error.NotFound("EventSeries.NotFound", $"EventSeries {seriesId} not found");
+        }
 
+        var oldSeriesId = evt.EventSeriesId;
         evt.Series = series;
         await _context.SaveChangesAsync();
+        
+        _logger.LogInformation(
+            "Event {EventId} reassigned from series {OldSeriesId} to {NewSeriesId}",
+            evt.Id, oldSeriesId, seriesId);
 
         return new ErrorOr<Success>();
     }
