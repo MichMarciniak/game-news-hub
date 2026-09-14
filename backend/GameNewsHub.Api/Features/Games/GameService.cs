@@ -31,16 +31,39 @@ public class GameService
 
     public async Task<List<GameListItemDto>> SearchGamesAsync(string? query, int page, int pageSize)
     {
-        var dbQuery = _context.Games.Where(g => GameTypePolicy.MainTypes.Contains(g.Type));
+        var baseQuery = _context.Games
+            .Where(g => GameTypePolicy.MainTypes.Contains(g.Type));
+        
+        if (string.IsNullOrWhiteSpace(query))
+        {
+            return await baseQuery
+                .OrderBy(g => g.Title)
+                .Skip((page - 1) * pageSize)
+                .Take(pageSize)
+                .Select(g => g.ToListItemDto())
+                .ToListAsync();
+        }
 
-        if (!string.IsNullOrWhiteSpace(query))
-            dbQuery = dbQuery.Where(g => g.Title.ToLower().Contains(query.ToLower()));
+        var cleanQuery = query.Trim();
 
-        var games = await dbQuery
-            .OrderBy(g => g.Title)
-            .Select(g => g.ToListItemDto())
+        var games = await baseQuery
+            .Where(g => EF.Functions.ILike(g.Title, $"%{cleanQuery}%")
+                || EF.Functions.TrigramsSimilarity(g.Title, $"%{cleanQuery}%") >= 0.25)
+            
+            .Select(g => new
+            {
+                Game = g,
+                IsExact = EF.Functions.ILike(g.Title, $"%{cleanQuery}%"),
+                TrigramScore = EF.Functions.TrigramsSimilarity(g.Title, $"%{cleanQuery}%"),
+                EditDistance = EF.Functions.FuzzyStringMatchLevenshteinLessEqual(g.Title, cleanQuery, 3)
+            })
+            .OrderByDescending(x => x.IsExact)
+            .ThenByDescending(x => x.TrigramScore)
+            .ThenBy(x => x.EditDistance)
+            
             .Skip((page - 1) * pageSize)
             .Take(pageSize)
+            .Select(x => x.Game.ToListItemDto())
             .ToListAsync();
 
         return games;
