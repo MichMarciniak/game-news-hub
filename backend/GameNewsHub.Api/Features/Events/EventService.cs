@@ -1,4 +1,5 @@
-﻿using ErrorOr;
+﻿using System.Diagnostics;
+using ErrorOr;
 using GameNewsHub.Api.Features.Shared;
 using GameNewsHub.Api.Mappings;
 using GameNewsHub.Contracts;
@@ -90,20 +91,33 @@ public class EventService
         return new ErrorOr<Success>();
     }
 
-    public async Task<List<EventListNameDto>> SearchEvents(string? query, int page, int pageSize)
+    public async Task<List<EventListNameDto>> SearchEvents(
+        string? query, int page, int pageSize,
+        SortBy sortBy = SortBy.Date, bool descending = true)
     {
-        IQueryable<Event> dbQuery = _context.Events;
+        IQueryable<Event> dbQuery = _context.Events.AsQueryable();
 
         if (!string.IsNullOrWhiteSpace(query))
-            dbQuery = dbQuery.Where(g => g.Name.ToLower().Trim().Contains(query.ToLower()));
+        {
+            var cleanQuery = query.Trim();
+            dbQuery = dbQuery.Where(e => EF.Functions.ILike(e.Name, $"%{cleanQuery}%"));
+        }
 
-        var events = await dbQuery
-            .OrderBy(e => e.Name)
-            .Select(e => e.ToListNameDto())
+        dbQuery = (sortBy, descending) switch
+        {
+            (SortBy.Date, true) => dbQuery.OrderByDescending(e => e.StartTime),
+            (SortBy.Date, false) => dbQuery.OrderBy(e => e.StartTime),
+            (SortBy.Name, true) => dbQuery.OrderByDescending(e => e.Name),
+            (SortBy.Name, false) => dbQuery.OrderBy(e => e.Name),
+            (SortBy.Popularity, true) => dbQuery.OrderByDescending(e => e.FollowerCount),
+            (SortBy.Popularity, false) => dbQuery.OrderBy(e => e.FollowerCount),
+            _ => dbQuery
+        };
+
+        return await dbQuery
             .Skip((page - 1) * pageSize)
             .Take(pageSize)
+            .Select(e => e.ToListNameDto())
             .ToListAsync();
-
-        return events;
     }
 }

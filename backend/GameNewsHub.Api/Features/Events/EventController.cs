@@ -45,9 +45,11 @@ public class EventController : ControllerBase
     }
 
     [HttpGet("search")]
-    public async Task<ActionResult<EventListNameDto>> SearchEvents(string query, int page = 1, int pageSize = 25)
+    public async Task<ActionResult<EventListNameDto>> SearchEvents(
+        string? query, int page = 1, int pageSize = 25,
+        [FromQuery] SortBy sortBy = SortBy.Date, bool descending = true)
     {
-        var events = await _service.SearchEvents(query, page, pageSize);
+        var events = await _service.SearchEvents(query, page, pageSize, sortBy, descending);
         return Ok(events);
     }
 

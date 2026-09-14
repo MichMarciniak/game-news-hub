@@ -1,4 +1,5 @@
 using System.IdentityModel.Tokens.Jwt;
+using System.Text.Json.Nodes;
 using System.Text.Json.Serialization;
 using GameNewsHub.Api.Configuration;
 using GameNewsHub.Api.Extensions;
@@ -12,6 +13,7 @@ using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.OpenApi;
 using Scalar.AspNetCore;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -69,6 +71,28 @@ builder.Services.AddBackgroundServices();
 
 // OPENAPI
 builder.Services.AddAuthDocumentation();
+
+builder.Services.AddOpenApi(options =>
+{
+    options.AddSchemaTransformer((schema, context, ct) =>
+    {
+        var targetType = Nullable.GetUnderlyingType(context.JsonTypeInfo.Type) ?? context.JsonTypeInfo.Type;
+        if (context.JsonTypeInfo.Type.IsEnum)
+        {
+            schema.Type = JsonSchemaType.String;
+            schema.Format = null;
+            
+            schema.Enum ??= new List<JsonNode>();
+            schema.Enum.Clear();
+
+            foreach (var enumName in Enum.GetNames(targetType))
+            {
+                schema.Enum.Add(JsonValue.Create(enumName));
+            }
+        }
+        return Task.CompletedTask;
+    });
+});
 
 builder.Services.AddControllers()
     .AddJsonOptions(opt => { opt.JsonSerializerOptions.Converters.Add(new JsonStringEnumConverter()); });
