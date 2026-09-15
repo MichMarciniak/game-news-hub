@@ -69,6 +69,7 @@ public class RecommendationService
 
         var events = await _context.Events
             .AsSplitQuery()
+            .AsNoTracking()
             .Include(e => e.GenreWeights)
             .Include(e => e.Games)
             .ThenInclude(g => g.Platforms)

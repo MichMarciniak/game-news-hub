@@ -31,15 +31,18 @@ public class GameService
 
     public async Task<List<GameListItemDto>> SearchGamesAsync(
         string? query, int page, int pageSize,
-        SortBy sortBy, bool descending)
+        GameSortBy? sortBy, bool descending)
     {
-        var baseQuery = _context.Games
+        page = Math.Max(page, 1);
+        pageSize = Math.Max(pageSize, 1);
+
+        IQueryable<Game> baseQuery = _context.Games
             .Where(g => GameTypePolicy.MainTypes.Contains(g.Type));
-        
+
         if (string.IsNullOrWhiteSpace(query))
         {
             return await baseQuery
-                .OrderBy(g => g.Title)
+                .ApplySorting(sortBy ?? GameSortBy.Name, descending)
                 .Skip((page - 1) * pageSize)
                 .Take(pageSize)
                 .Select(g => g.ToListItemDto())
@@ -48,29 +51,30 @@ public class GameService
 
         var cleanQuery = query.Trim();
 
-        var games = await baseQuery
-            //.Where(g => EF.Functions.ILike(g.Title, $"%{cleanQuery}%")
-            //    || EF.Functions.TrigramsSimilarity(g.Title, $"%{cleanQuery}%") >= 0.25)
-            .Where(g => EF.Functions.TrigramsAreSimilar(g.Title, cleanQuery)) //szybciej ~20ms??
-            
-            .Select(g => new
-            {
-                Game = g,
-                IsExact = EF.Functions.ILike(g.Title, $"%{cleanQuery}%"),
-                TrigramScore = EF.Functions.TrigramsSimilarity(g.Title, $"%{cleanQuery}%"),
-                EditDistance = EF.Functions.FuzzyStringMatchLevenshteinLessEqual(g.Title, cleanQuery, 3)
-            })
-            .OrderByDescending(x => x.IsExact)
-            .ThenByDescending(x => x.TrigramScore)
-            .ThenBy(x => x.EditDistance)
-            
+        IQueryable<Game> filteredQuery = baseQuery
+            .Where(g => EF.Functions.TrigramsAreSimilar(g.Title, cleanQuery));
+
+        IQueryable<Game> sortedQuery;
+
+        if (sortBy.HasValue && sortBy.Value != GameSortBy.Relevance)
+        {
+            sortedQuery = filteredQuery.ApplySorting(sortBy.Value, descending);
+        }
+        else
+        {
+            sortedQuery = filteredQuery
+                .OrderByDescending(g => EF.Functions.ILike(g.Title, $"%{cleanQuery}%"))
+                .ThenByDescending(g => EF.Functions.TrigramsSimilarity(g.Title, cleanQuery))
+                .ThenBy(g => EF.Functions.FuzzyStringMatchLevenshteinLessEqual(g.Title, cleanQuery, 3));
+        }
+
+        return await sortedQuery
             .Skip((page - 1) * pageSize)
             .Take(pageSize)
-            .Select(x => x.Game.ToListItemDto())
+            .Select(g => g.ToListItemDto())
             .ToListAsync();
-
-        return games;
     }
+
 
     public async Task<ErrorOr<GameDetailDto>> GetGameDetailsAsync(int gameId)
     {
@@ -103,4 +107,5 @@ public class GameService
 
         return gameAddons;
     }
+
 }

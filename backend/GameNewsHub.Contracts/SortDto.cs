@@ -1,8 +1,16 @@
 ﻿namespace GameNewsHub.Contracts;
 
-public enum SortBy
+public enum EventSortBy
 {
-    Date,
     Name,
-    Popularity
+    Popularity,
+    Date,
+}
+
+public enum GameSortBy
+{
+    Name,
+    Popularity,
+    Relevance
+    
 }

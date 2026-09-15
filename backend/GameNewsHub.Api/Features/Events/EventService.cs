@@ -93,7 +93,7 @@ public class EventService
 
     public async Task<List<EventListNameDto>> SearchEvents(
         string? query, int page, int pageSize,
-        SortBy sortBy = SortBy.Date, bool descending = true)
+        EventSortBy sortBy = EventSortBy.Date, bool descending = true)
     {
         IQueryable<Event> dbQuery = _context.Events.AsQueryable();
 
@@ -101,16 +101,17 @@ public class EventService
         {
             var cleanQuery = query.Trim();
             dbQuery = dbQuery.Where(e => EF.Functions.ILike(e.Name, $"%{cleanQuery}%"));
+            //dbQuery = dbQuery.Where(e => EF.Functions.TrigramsAreSimilar(e.Name, cleanQuery));
         }
 
         dbQuery = (sortBy, descending) switch
         {
-            (SortBy.Date, true) => dbQuery.OrderByDescending(e => e.StartTime),
-            (SortBy.Date, false) => dbQuery.OrderBy(e => e.StartTime),
-            (SortBy.Name, true) => dbQuery.OrderByDescending(e => e.Name),
-            (SortBy.Name, false) => dbQuery.OrderBy(e => e.Name),
-            (SortBy.Popularity, true) => dbQuery.OrderByDescending(e => e.FollowerCount),
-            (SortBy.Popularity, false) => dbQuery.OrderBy(e => e.FollowerCount),
+            (EventSortBy.Date, true) => dbQuery.OrderByDescending(e => e.StartTime),
+            (EventSortBy.Date, false) => dbQuery.OrderBy(e => e.StartTime),
+            (EventSortBy.Name, true) => dbQuery.OrderByDescending(e => e.Name),
+            (EventSortBy.Name, false) => dbQuery.OrderBy(e => e.Name),
+            (EventSortBy.Popularity, true) => dbQuery.OrderByDescending(e => e.FollowerCount),
+            (EventSortBy.Popularity, false) => dbQuery.OrderBy(e => e.FollowerCount),
             _ => dbQuery
         };
 
