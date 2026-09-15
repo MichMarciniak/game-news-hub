@@ -78,7 +78,9 @@ public class GameService
 
     public async Task<ErrorOr<GameDetailDto>> GetGameDetailsAsync(int gameId)
     {
+        // it's slower with split query
         var game = await _context.Games
+            .AsSingleQuery()
             .Include(g => g.ChildGames)
             .Include(g => g.Platforms)
             .ThenInclude(pg => pg.PlatformGroup)

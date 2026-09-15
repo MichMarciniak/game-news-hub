@@ -11,6 +11,7 @@ public class GameBuilder
     private int _igdbId = Faker.IndexGlobal; // nie ma indeksu wiec nie padnie, ale ten nie działa, lepiej Interlocked.Increment
     private Game _parentGame;
     private string _summary = Faker.Lorem.Paragraph();
+    private int _followerCount = 0;
 
     private string _title = Faker.Commerce.ProductName();
     private GameType _type = GameType.MainGame;
@@ -57,6 +58,12 @@ public class GameBuilder
         return this;
     }
 
+    public GameBuilder WithFollowerCount(int followerCount)
+    {
+        _followerCount = followerCount;
+        return this;
+    }
+
     public Game Build() => new()
     {
         Title = _title,
@@ -65,6 +72,7 @@ public class GameBuilder
         Platforms = _platforms,
         IgdbId = _igdbId,
         Genres = _genres,
-        ParentGame = _parentGame
+        ParentGame = _parentGame,
+        FollowerCount = _followerCount
     };
 }
