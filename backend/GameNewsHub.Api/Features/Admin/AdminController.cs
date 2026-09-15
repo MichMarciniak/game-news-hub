@@ -37,7 +37,7 @@ public class AdminController : ControllerBase
             err => this.ProblemErr(err));
     }
     
-    [HttpPatch("reassign")]
+    [HttpPatch("platform/reassign")]
     public async Task<IActionResult> ReassignPlatformGroup([FromQuery] int platformId, [FromQuery] int groupId)
     {
         _logger.LogInformation(
