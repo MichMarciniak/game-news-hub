@@ -93,29 +93,43 @@ public class EventService
 
     public async Task<List<EventListNameDto>> SearchEvents(
         string? query, int page, int pageSize,
-        EventSortBy sortBy = EventSortBy.Date, bool descending = true)
+        EventSortBy? sortBy, bool descending = true)
     {
+        page = Math.Max(1, page);
+        pageSize = Math.Max(1, pageSize);
+        
         IQueryable<Event> dbQuery = _context.Events.AsQueryable();
 
-        if (!string.IsNullOrWhiteSpace(query))
+        if (string.IsNullOrWhiteSpace(query))
         {
-            var cleanQuery = query.Trim();
-            dbQuery = dbQuery.Where(e => EF.Functions.ILike(e.Name, $"%{cleanQuery}%"));
-            //dbQuery = dbQuery.Where(e => EF.Functions.TrigramsAreSimilar(e.Name, cleanQuery));
+            return await dbQuery
+                .ApplySorting(sortBy ?? EventSortBy.Date, descending)
+                .Skip((page - 1) * pageSize)
+                .Take(pageSize)
+                .Select(e => e.ToListNameDto())
+                .ToListAsync();
         }
 
-        dbQuery = (sortBy, descending) switch
-        {
-            (EventSortBy.Date, true) => dbQuery.OrderByDescending(e => e.StartTime),
-            (EventSortBy.Date, false) => dbQuery.OrderBy(e => e.StartTime),
-            (EventSortBy.Name, true) => dbQuery.OrderByDescending(e => e.Name),
-            (EventSortBy.Name, false) => dbQuery.OrderBy(e => e.Name),
-            (EventSortBy.Popularity, true) => dbQuery.OrderByDescending(e => e.FollowerCount),
-            (EventSortBy.Popularity, false) => dbQuery.OrderBy(e => e.FollowerCount),
-            _ => dbQuery
-        };
+        var cleanQuery = query.Trim();
+        
+        var filteredQuery = dbQuery.
+            Where(e => EF.Functions.ILike(e.Name, $"%{cleanQuery}%"));
 
-        return await dbQuery
+        IQueryable<Event> sortedQuery;
+
+        if (sortBy.HasValue && sortBy.Value != EventSortBy.Relevance)
+        {
+            sortedQuery = filteredQuery.ApplySorting(sortBy.Value, descending);
+        }
+        else
+        {
+            sortedQuery = filteredQuery
+                .OrderByDescending(e => EF.Functions.ILike(e.Name, $"%{cleanQuery}%"))
+                .ThenByDescending(e => EF.Functions.TrigramsSimilarity(e.Name, cleanQuery))
+                .ThenBy(e => EF.Functions.FuzzyStringMatchLevenshteinLessEqual(e.Name, cleanQuery, 5));
+        }
+
+        return await sortedQuery
             .Skip((page - 1) * pageSize)
             .Take(pageSize)
             .Select(e => e.ToListNameDto())

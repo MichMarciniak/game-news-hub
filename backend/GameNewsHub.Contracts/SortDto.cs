@@ -5,6 +5,7 @@ public enum EventSortBy
     Name,
     Popularity,
     Date,
+    Relevance
 }
 
 public enum GameSortBy
@@ -12,5 +13,4 @@ public enum GameSortBy
     Name,
     Popularity,
     Relevance
-    
 }
