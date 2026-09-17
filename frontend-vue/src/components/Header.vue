@@ -34,7 +34,7 @@ function toggleEvents() {
 </script>
 
 <template>
-  <header class="absolute top-0 left-0 w-full flex">
+  <header class="top-0 left-0 w-full flex">
     <Menubar :model="menuItems" class="w-full">
       <template #start>
         <RouterLink to="/" class="flex items-center gap-2 p-1">
@@ -102,9 +102,7 @@ function toggleEvents() {
             <OiMoon v-else size="1.5rem" />
           </Button>
 
-          <Button label="Account" severity="primary p-0" rounded variant="link">
-            <OiUser size="32" />
-          </Button>
+
         </div>
       </template>
     </Menubar>
