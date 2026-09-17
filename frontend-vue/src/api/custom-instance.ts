@@ -2,7 +2,7 @@
 import axios, { type AxiosRequestConfig } from 'axios';
 
 export const AXIOS_INSTANCE = axios.create({
-  baseURL: 'http://localhost:5090', // Your .NET API URL
+  baseURL: 'http://localhost:5190',
   withCredentials: true, // Auto-sends httpOnly refresh cookies
 });
 
@@ -43,12 +43,31 @@ AXIOS_INSTANCE.interceptors.response.use(
 );
 
 // Custom Mutator function signature required by Orval
+// why it doesn't work????
+// export const customInstance = <T>(
+//   config: AxiosRequestConfig,
+//   options?: AxiosRequestConfig
+// ): Promise<T> => {
+//   return AXIOS_INSTANCE({
+//     ...config,
+//     ...options,
+//   }).then((res) => res.data);
+// };
+
 export const customInstance = <T>(
-  config: AxiosRequestConfig,
+  config: AxiosRequestConfig | string,
   options?: AxiosRequestConfig
 ): Promise<T> => {
+  // Convert string URLs (e.g. "/Game/7583") into an Axios config object
+  const requestConfig: AxiosRequestConfig =
+    typeof config === 'string' ? { url: config } : config;
+
   return AXIOS_INSTANCE({
-    ...config,
+    ...requestConfig,
     ...options,
-  }).then((res) => res.data);
+    headers: {
+      ...requestConfig?.headers,
+      ...options?.headers,
+    },
+  }).then(({ data }) => data as T);
 };

@@ -1,22 +1,26 @@
 import { createRouter, createWebHistory } from 'vue-router'
-import HomeView from '../views/HomeView.vue'
+import GameDetails from '@/features/games/GameDetails.vue'
+import GameList from '@/features/games/GameList.vue'
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
   routes: [
     {
-      path: '/',
-      name: 'home',
-      component: HomeView,
+      path: '/games',
+      name: 'games',
+      component: GameList //pobiera się od razu z wejściem na stronę
     },
     {
-      path: '/about',
-      name: 'about',
-      // route level code-splitting
-      // this generates a separate chunk (About.[hash].js) for this route
-      // which is lazy-loaded when the route is visited.
-      component: () => import('../views/AboutView.vue'),
+      path: '/games/:id',
+      name: 'game-detail',
+      component: () => import('../features/games/GameDetails.vue'), //pobiera się dopiero jak wchodzi na ten path
+      props: true
     },
+    {
+      path: '/events',
+      name: 'events',
+      component: () => import('../features/events/EventCalendar.vue'),
+    }
   ],
 })
 
