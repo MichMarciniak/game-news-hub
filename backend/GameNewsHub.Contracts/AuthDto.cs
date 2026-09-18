@@ -44,3 +44,9 @@ public class ChangePasswordDto
     [Required] public string OldPassword { get; set; }
     [Required] public string NewPassword { get; set; }
 }
+
+public class RefreshDto
+{
+    public string AccessToken { get; set; }
+    public ProfileDto User { get; set; }
+}

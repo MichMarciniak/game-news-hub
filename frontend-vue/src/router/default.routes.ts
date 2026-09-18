@@ -1,7 +1,19 @@
 import type { RouteRecordRaw } from 'vue-router'
 import GameList from '@/features/games/GameList.vue'
+import HomeView from '@/views/HomeView.vue'
+import ProfileView from '@/views/ProfileView.vue'
 
 export const defaultRoutes: RouteRecordRaw[] = [
+  {
+    path: '/',
+    name: 'home',
+    component: HomeView
+  },
+  {
+    path: '/me',
+    name: 'me',
+    component: ProfileView
+  },
   {
     path: '/games',
     name: 'games',

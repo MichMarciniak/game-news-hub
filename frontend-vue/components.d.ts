@@ -22,6 +22,7 @@ declare module 'vue' {
     Password: typeof import('openvue/password')['default']
     RouterLink: typeof import('vue-router')['RouterLink']
     RouterView: typeof import('vue-router')['RouterView']
+    Splitter: typeof import('openvue/splitter')['default']
     Tab: typeof import('openvue/tab')['default']
     TabList: typeof import('openvue/tablist')['default']
     Tabs: typeof import('openvue/tabs')['default']

@@ -20,9 +20,11 @@ const route = useRoute()
 const toast = useToast()
 
 const initialValues = ref({
-  email: 'asd@asd.we',
-  password: 'asdasdasdasd'
+  email: 'test@test.asd',
+  password: 'Siema1234'
 });
+
+const errorMessage = ref('')
 
 // W formularzu logowania zazwyczaj wystarczy email i password
 // czy ref(zodResolver) potrzebny? Jak to działa? Tak było w docs dla openvue/Password
@@ -43,7 +45,8 @@ const onFormSubmit = async ({ valid, values }: FormSubmitEvent) => {
 
     await router.push((route.query.redirectPath as string) || '/')
   } catch {
-    toast.add({ severity: 'error', summary: 'Error', detail: 'Invalid username or password', life: 3000 });
+    errorMessage.value = 'Invalid username or password'
+    // toast.add({ severity: 'error', summary: 'Error', detail: 'Invalid username or password', life: 3000 });
   }
 };
 </script>

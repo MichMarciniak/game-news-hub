@@ -11,6 +11,7 @@ import { VueQueryPlugin } from '@tanstack/vue-query'
 import OpenVue from 'openvue/config'
 import Aura from '@openvue/themes/aura'
 import { ToastService } from 'openvue';
+import { useAuthStore } from './stores/auth.ts';
 
 const app = createApp(App)
 
@@ -32,4 +33,9 @@ app.use(OpenVue, {
     
 })
 app.use(ToastService)
-app.mount('#app')
+
+const authStore = useAuthStore()
+authStore.initialize().finally(() => {
+    app.mount('#app')
+})
+

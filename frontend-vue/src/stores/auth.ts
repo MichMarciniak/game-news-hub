@@ -1,5 +1,5 @@
 import { setAccessToken } from "@/api/custom-instance";
-import { postLogin, usePostLogin, usePostLogout, usePostLogoutAll } from "@/api/generated";
+import { getUsersMeProfile, postLogin, postRefresh, usePostLogin, usePostLogout, usePostLogoutAll } from "@/api/generated";
 import { type LoginDto, type ProfileDto } from "@/api/generated/models";
 import { defineStore } from "pinia";
 import { computed, ref } from "vue";
@@ -8,32 +8,76 @@ import { computed, ref } from "vue";
 export const useAuthStore = defineStore('auth', () => {
   const user = ref<ProfileDto | null>(null)
   const token = ref<string | null>(null)
+  const isInitialized = ref(false)
   
   const isAuthenticated = computed(() => !!token.value)
 
-  const login = async (values : LoginDto) => {
-    try {
-      const data = await postLogin(values);
-      // user.value = data.data.user
-    } catch (error) {
-      return 'Invalid username or password'
-    }
+  const {mutateAsync: loginMutate} = usePostLogin()
+  const {mutate: logoutMutate} = usePostLogout()
+  const {mutate: logoutAllMutate} = usePostLogoutAll()
 
+  // const login = async (values : LoginDto) => {
+  //   loginMutate(
+  //     {data: values},
+  //     {
+  //     onSuccess: (data) => {
+  //       user.value = data.user as ProfileDto
+  //       token.value = data.accessToken as string
+  //       setAccessToken(data.accessToken as string)
+  //       console.log(token.value)
+
+  //     },
+  //     onError: () => {
+  //       throw new Error('Invalid username or password')
+  //     }
+  //   })
+  // }
+
+    const initialize = async () => {
+    if (isInitialized.value) return // dodatkowe zabezpieczenie, na wypadek podwójnego wywołania
+
+    try {
+      const data = await postRefresh()
+      setAccessToken(data.accessToken as string)
+      token.value = data.accessToken as string
+      user.value = data.user as ProfileDto
+    } catch {
+      setAccessToken(null)
+      user.value = null
+      token.value = null
+    } finally {
+      isInitialized.value = true
+    }
+  }
+
+  const login = async (values: LoginDto) => {
+    const data = await loginMutate({data: values})
+    user.value = data.user as ProfileDto
+    token.value = data.accessToken as string
+    setAccessToken(data.accessToken as string)
   }
 
   const logout = () => {
-    user.value = null
-    token.value = null
+    logoutMutate(undefined, {
+      onSettled: () => {
+        user.value = null
+        token.value = null
+        setAccessToken(null)
 
-    usePostLogout()
+      }
+    })
   }
 
   const logoutAll = () => {
-    user.value = null
-    token.value = null
+    logoutAllMutate(undefined, {
+      onSettled: () => {
+        user.value = null
+        token.value = null
+        setAccessToken(null)
 
-    usePostLogoutAll()
+      }
+    })
   }
 
-  return {user, token, isAuthenticated, login, logout, logoutAll}
+  return {user, token, isAuthenticated, login, logout, logoutAll, initialize}
 })

@@ -11,6 +11,7 @@ public static class ProfileMappingExtension
         return new ProfileDto
         {
             Id = user.Id,
+            Username = user.UserName!,
             CreatedAt = user.CreatedAt,
             Settings = user.ToSettingsDto()
         };

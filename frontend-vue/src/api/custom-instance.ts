@@ -1,4 +1,5 @@
 // src/api/custom-instance.ts
+import router from '@/router';
 import axios, { type AxiosRequestConfig } from 'axios';
 
 export const AXIOS_INSTANCE = axios.create({
@@ -25,7 +26,10 @@ AXIOS_INSTANCE.interceptors.response.use(
   (response) => response,
   async (error) => {
     const originalRequest = error.config;
-    if (error.response?.status === 401 && !originalRequest._retry) {
+    const isAuthEndpoint = 
+      originalRequest.url.includes('/refresh')
+      || originalRequest.url.includes('/logout')
+    if (error.response?.status === 401 && !originalRequest._retry && !isAuthEndpoint) {
       originalRequest._retry = true;
       try {
         const { data } = await AXIOS_INSTANCE.post('/refresh');
@@ -34,7 +38,8 @@ AXIOS_INSTANCE.interceptors.response.use(
         return AXIOS_INSTANCE(originalRequest);
       } catch (refreshError) {
         setAccessToken(null);
-        window.location.href = '/login';
+        router.push('/login')
+        // window.location.href = '/login';
         return Promise.reject(refreshError);
       }
     }
@@ -42,32 +47,31 @@ AXIOS_INSTANCE.interceptors.response.use(
   }
 );
 
-// Custom Mutator function signature required by Orval
-// why it doesn't work????
-// export const customInstance = <T>(
-//   config: AxiosRequestConfig,
-//   options?: AxiosRequestConfig
-// ): Promise<T> => {
-//   return AXIOS_INSTANCE({
-//     ...config,
-//     ...options,
-//   }).then((res) => res.data);
-// };
 
 export const customInstance = <T>(
-  config: AxiosRequestConfig | string,
+  config: AxiosRequestConfig,
   options?: AxiosRequestConfig
 ): Promise<T> => {
-  // Convert string URLs (e.g. "/Game/7583") into an Axios config object
-  const requestConfig: AxiosRequestConfig =
-    typeof config === 'string' ? { url: config } : config;
-
   return AXIOS_INSTANCE({
-    ...requestConfig,
+    ...config,
     ...options,
-    headers: {
-      ...requestConfig?.headers,
-      ...options?.headers,
-    },
-  }).then(({ data }) => data as T);
+  }).then((res) => res.data as T);
 };
+
+// export const customInstance = <T>(
+//   config: AxiosRequestConfig | string,
+//   options?: AxiosRequestConfig
+// ): Promise<T> => {
+//   // Convert string URLs (e.g. "/Game/7583") into an Axios config object
+//   const requestConfig: AxiosRequestConfig =
+//     typeof config === 'string' ? { url: config } : config;
+
+//   return AXIOS_INSTANCE({
+//     ...requestConfig,
+//     ...options,
+//     headers: {
+//       ...requestConfig?.headers,
+//       ...options?.headers,
+//     },
+//   }).then(({ data }) => data as T);
+// };

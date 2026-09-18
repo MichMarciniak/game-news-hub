@@ -205,7 +205,7 @@ public class AuthService
         return Result.Success;
     }
 
-    public async Task<ErrorOr<TokenResult>> RefreshToken(string refreshToken)
+    public async Task<ErrorOr<LoginResult>> RefreshToken(string refreshToken)
     {
         var principal = _tokenService.ValidateRefreshToken(refreshToken);
         if (principal == null)
@@ -245,7 +245,13 @@ public class AuthService
         var newRefreshToken =
             _tokenService.GenerateRefreshToken(user); // rotacja - nowy refresh przy kazdym odswiezeniu
 
-        return new TokenResult { AccessToken = newAccessToken, RefreshToken = newRefreshToken };
+        
+        var tokens = new TokenResult { AccessToken = newAccessToken, RefreshToken = newRefreshToken };
+        return new LoginResult
+        {
+            Tokens = tokens,
+            User = user.ToDto()
+        };
     }
 
 
