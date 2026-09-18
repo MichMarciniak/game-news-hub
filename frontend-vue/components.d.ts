@@ -27,6 +27,8 @@ declare module 'vue' {
     TabList: typeof import('openvue/tablist')['default']
     Tabs: typeof import('openvue/tabs')['default']
     Toast: typeof import('openvue/toast')['default']
+    ToggleButton: typeof import('openvue/togglebutton')['default']
+    ToggleSwitch: typeof import('openvue/toggleswitch')['default']
   }
   export interface GlobalDirectives {
     Ripple: typeof import('openvue/ripple')['default']
