@@ -5,7 +5,8 @@ import { RouterView } from 'vue-router'
 <template>
   <Header />
 
-  <main class="flex-1 flex items-center justify-center p-4">
+  <main class="flex-1 flex justify-center p-4">
+    <Toast />
     <RouterView />
   </main>
 </template>

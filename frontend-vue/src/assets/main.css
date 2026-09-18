@@ -25,3 +25,22 @@
   }
 }
 
+@media (max-width: 640px) {
+  .p-toast {
+    width: calc(100vw - 2rem);
+    left: 1rem;
+    right: 1rem;
+  }
+
+  .p-toast-message-text {
+    font-size: 0.875rem;
+  }
+
+  .p-toast-summary {
+    font-size: 0.9rem;
+  }
+
+  .p-toast-detail {
+    font-size: 0.8rem;
+  }
+}

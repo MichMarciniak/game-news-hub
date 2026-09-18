@@ -1,5 +1,6 @@
-import { usePostLogin, usePostLogout, usePostLogoutAll } from "@/api/generated";
-import { type ProfileDto } from "@/api/generated/models";
+import { setAccessToken } from "@/api/custom-instance";
+import { postLogin, usePostLogin, usePostLogout, usePostLogoutAll } from "@/api/generated";
+import { type LoginDto, type ProfileDto } from "@/api/generated/models";
 import { defineStore } from "pinia";
 import { computed, ref } from "vue";
 
@@ -10,8 +11,14 @@ export const useAuthStore = defineStore('auth', () => {
   
   const isAuthenticated = computed(() => !!token.value)
 
-  const login = () => {
-    const {data: loginData} = usePostLogin()
+  const login = async (values : LoginDto) => {
+    try {
+      const data = await postLogin(values);
+      // user.value = data.data.user
+    } catch (error) {
+      return 'Invalid username or password'
+    }
+
   }
 
   const logout = () => {
@@ -28,5 +35,5 @@ export const useAuthStore = defineStore('auth', () => {
     usePostLogoutAll()
   }
 
-  return {user, token, isAuthenticated}
+  return {user, token, isAuthenticated, login, logout, logoutAll}
 })

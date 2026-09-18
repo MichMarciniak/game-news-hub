@@ -9,41 +9,49 @@ import Message from 'openvue/message';
 import { useAuthStore } from '@/stores/auth';
 import z from 'zod';
 import { useToast } from 'openvue';
+import { useRoute, useRouter } from 'vue-router';
+import type { LoginDto } from '@/api/generated/models';
+import AuthView from '@/views/AuthView.vue';
 
 const authStore = useAuthStore();
+const router = useRouter()
+const route = useRoute()
 
-// const toast = useToast()
+const toast = useToast()
 
 const initialValues = ref({
-  email: '',
-  password: ''
+  email: 'asd@asd.we',
+  password: 'asdasdasdasd'
 });
 
 // W formularzu logowania zazwyczaj wystarczy email i password
-const resolver = ref(zodResolver(
+// czy ref(zodResolver) potrzebny? Jak to działa? Tak było w docs dla openvue/Password
+const resolver = zodResolver(
   z.object({
     email: z.string().min(1, { message: 'Email is required.' }).email({ message: 'Invalid email.' }),
-    password: z.string().min(6, { message: 'Minimum 8 characters' })
+    password: z.string().min(1, { message: 'Password is required' })
   })
-));
+);
 
 const onFormSubmit = async ({ valid, values }: FormSubmitEvent) => {
   if (!valid) return;
-
+  console.log("CLICKED")
+  console.log(values)
   try {
-    await authStore.login(values);
-    // toast.add({ severity: 'success', summary: 'Success', detail: 'Logged in', life: 3000 });
-  } catch (error) {
-    // toast.add({ severity: 'error', summary: 'Error', detail: 'Invalid username or password', life: 3000 });
+    await authStore.login(values as LoginDto);
+    toast.add({ severity: 'success', summary: 'Success', detail: 'Logged in', life: 3000 });
+
+    await router.push((route.query.redirectPath as string) || '/')
+  } catch {
+    toast.add({ severity: 'error', summary: 'Error', detail: 'Invalid username or password', life: 3000 });
   }
 };
 </script>
 
 <template>
-  <!-- <div class=""> -->
-    <div class="grow max-w-md mx-auto my-auto p-6 border ">
-      <h2 class="text-2xl font-bold mb-6">Login</h2>
-  
+  <AuthView>
+    <template #title>Login</template>
+    <template #body>
       <Form 
         :initialValues="initialValues" 
         :resolver="resolver" 
@@ -51,7 +59,7 @@ const onFormSubmit = async ({ valid, values }: FormSubmitEvent) => {
         v-slot="$form" 
         class="flex flex-col gap-4"
       >
-        <!-- Pole Email -->
+
         <div class="flex flex-col gap-1">
           <label for="email">Email</label>
           <InputText name="email" type="text" placeholder="your@email.com" fluid />
@@ -60,7 +68,7 @@ const onFormSubmit = async ({ valid, values }: FormSubmitEvent) => {
           </Message>
         </div>
   
-        <!-- Pole Hasło z szablonym wymagań -->
+
         <div class="flex flex-col gap-1">
           <label for="password">Password</label>
           <Password
@@ -68,24 +76,8 @@ const onFormSubmit = async ({ valid, values }: FormSubmitEvent) => {
             toggleMask
             fluid
             variant="filled"
-            :feedback="true"
+            :feedback="false"
           >
-            <!-- Szablon nagłówka podpowiedzi -->
-            <template #header>
-              <div class="font-semibold text-xs mb-2">Strength</div>
-            </template>
-  
-            <!-- Szablon stopki wyświetlający warunki -->
-            <template #footer>
-              <div class="mt-2 pt-2 border-t">
-                <p class="text-xs font-semibold mb-1">Password requirements:</p>
-                <ul class="text-xs list-disc pl-4 space-y-1">
-                  <li>Minimum 8 characters</li>
-                  <li>At least one uppercase</li>
-                  <li>At least one number</li>
-                </ul>
-              </div>
-            </template>
           </Password>
           <Message v-if="$form.password?.invalid" severity="error" size="small" variant="simple">
             {{ $form.password.error?.message }}
@@ -107,7 +99,6 @@ const onFormSubmit = async ({ valid, values }: FormSubmitEvent) => {
         </RouterLink>
       </div>
       
-    </div>
-
-  <!-- </div> -->
+    </template>
+  </AuthView>
 </template>

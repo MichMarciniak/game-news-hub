@@ -11,6 +11,7 @@ export default defineConfig({
       target: 'src/api/generated/endpoints.ts',
       schemas: 'src/api/generated/models', // Outputs DTO TypeScript types here
       client: 'vue-query', // Auto-generates Vue Query hooks
+      httpClient: 'axios',
       override: {
         mutator: {
           path: 'src/api/custom-instance.ts',

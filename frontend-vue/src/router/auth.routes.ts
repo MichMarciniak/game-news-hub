@@ -16,5 +16,10 @@ export const authRoutes: RouteRecordRaw[] = [
     name: 'confirm-email',
     component: () => import('@/features/auth/ConfirmEmail.vue')
   },
+  {
+    path: '/confirm-email-sent',
+    name: 'confirm-email-sent',
+    component: () => import('@/features/auth/ConfirmEmailSent.vue')
+  }
   
 ]

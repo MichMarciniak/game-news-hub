@@ -1,6 +1,7 @@
 <script lang="ts" setup>
 import { isDark, toggleDarkMode } from '@/composables/theme';
-import { OiAngleDown, OiAngleRight, OiMap, OiMoon, OiSun, OiUser } from '@openvue/openicons-vue';
+import Profile from '@/features/auth/Profile.vue';
+import { OiAngleDown, OiAngleRight, OiMap, OiMoon, OiSun } from '@openvue/openicons-vue';
 import { computed, ref } from 'vue';
 import { useRoute } from 'vue-router';
 
@@ -35,7 +36,7 @@ function toggleEvents() {
 
 <template>
   <header class="top-0 left-0 w-full flex">
-    <Menubar :model="menuItems" class="w-full">
+    <Menubar :model="menuItems" class="w-full" breakpoint="632px">
       <template #start>
         <RouterLink to="/" class="flex items-center gap-2 p-1">
           <OiMap size="32" class="text-primary" />
@@ -97,12 +98,12 @@ function toggleEvents() {
 
       <template #end>
         <div class="flex items-center gap-3">
-          <Button @click="() => toggleDarkMode()" class="p-1">
+          <Button @click="() => toggleDarkMode()" class="p-1" severity="contrast">
             <OiSun v-if="isDark" size="1.5rem" />
             <OiMoon v-else size="1.5rem" />
           </Button>
-
-
+        
+          <Profile />
         </div>
       </template>
     </Menubar>
