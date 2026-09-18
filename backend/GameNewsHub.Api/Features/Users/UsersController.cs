@@ -67,4 +67,14 @@ public class UsersController : ControllerBase
             details => Ok(details),
             err => this.ProblemErr(err));
     }
+    
+    [HttpGet("me/profile-full")]
+    public async Task<ActionResult<ProfileDto>> GetFullProfile()
+    {
+        var userId = User.GetUserId();
+        var result = await _service.GetFullProfile(userId);
+        return result.MatchFirst(
+            details => Ok(details),
+            err => this.ProblemErr(err));
+    }
 }

@@ -18,6 +18,7 @@ public record LoginDto
 public class LoginResponse
 {
     public string AccessToken { get; set; }
+    public ProfileDto User { get; set; }
 }
 
 public class EmailConfirmDto

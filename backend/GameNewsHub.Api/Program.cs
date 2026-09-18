@@ -12,6 +12,7 @@ using GameNewsHub.Data.Entities;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.OpenApi;
 using Scalar.AspNetCore;
@@ -44,6 +45,8 @@ if (seqOptions == null)
 {
     throw new Exception("Seq:Url is not configured");
 }
+
+var frontendOptions = builder.Configuration.GetSection(FrontendOptions.SectionName).Get<FrontendOptions>();
 
 //DATABSE + IDENTITY
 builder.Services.AddDbContext<AppDbContext>(options =>
@@ -94,16 +97,20 @@ builder.Services.AddOpenApi(options =>
     });
 });
 
-builder.Services.AddControllers()
+builder.Services.AddControllers(options =>
+    {
+        options.Filters.Add(new ProducesAttribute("application/json"));
+    })
     .AddJsonOptions(opt => { opt.JsonSerializerOptions.Converters.Add(new JsonStringEnumConverter()); });
 builder.Services.AddCors(options =>
 {
     options.AddPolicy(FrontendCorsPolicy, policy =>
     {
         policy
-            .WithOrigins("http://localhost:4200", "http://127.0.0.1:4200", "http://localhost:5180")
+            .WithOrigins(frontendOptions!.Url, "http://localhost:5173", "http://127.0.0.1:5173", "http://localhost:5180")
             .AllowAnyHeader()
-            .AllowAnyMethod();
+            .AllowAnyMethod()
+            .AllowCredentials();
     });
 });
 

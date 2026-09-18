@@ -20,6 +20,16 @@ export const authRoutes: RouteRecordRaw[] = [
     path: '/confirm-email-sent',
     name: 'confirm-email-sent',
     component: () => import('@/features/auth/ConfirmEmailSent.vue')
+  },
+  {
+    path: '/forgot-password',
+    name: 'forgot-password',
+    component: () => import('@/features/auth/ForgotPassword.vue')
+  },
+  {
+    path: '/reset-password',
+    name: 'reset-password',
+    component: () => import('@/features/auth/PasswordReset.vue')
   }
   
 ]

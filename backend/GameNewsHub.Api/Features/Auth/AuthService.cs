@@ -4,6 +4,7 @@ using System.Security.Claims;
 using ErrorOr;
 using GameNewsHub.Api.Constants;
 using GameNewsHub.Api.Features.Shared.Email;
+using GameNewsHub.Api.Mappings;
 using GameNewsHub.Api.Options;
 using GameNewsHub.Contracts;
 using GameNewsHub.Data.Entities;
@@ -76,7 +77,7 @@ public class AuthService
     }
 
     // zwraca access i refresh
-    public async Task<ErrorOr<TokenResult>> Login(LoginDto loginDto)
+    public async Task<ErrorOr<LoginResult>> Login(LoginDto loginDto)
     {
         var user = await _userManager.FindByEmailAsync(loginDto.Email);
         if (user == null)
@@ -129,7 +130,17 @@ public class AuthService
         _logger.LogInformation(
             "User {UserId} logged in",
             user.Id);
-        return new TokenResult { AccessToken = accessToken, RefreshToken = refreshToken };
+        var tokens = new TokenResult
+        {
+            AccessToken = accessToken,
+            RefreshToken = refreshToken
+        };
+        var res = new LoginResult
+        {
+            Tokens = tokens,
+            User = user.ToDto()
+        };
+        return res;
     }
 
     // usuwa access i refresh token
@@ -152,7 +163,8 @@ public class AuthService
     // jeśli token i userId sie zgadzaja
     public async Task<ErrorOr<Success>> ConfirmEmail(int userId, string token)
     {
-        var decodedToken = WebUtility.UrlDecode(token);
+        //var decodedToken = WebUtility.UrlDecode(token);
+        var decodedToken = token;
         var user = await _userManager.FindByIdAsync(userId.ToString());
         if (user == null)
         {
@@ -262,7 +274,8 @@ public class AuthService
 
     public async Task<ErrorOr<Success>> ResetPassword(int userId, string token, string newPassword)
     {
-        var decodedToken = WebUtility.UrlDecode(token);
+        //var decodedToken = WebUtility.UrlDecode(token);
+        var decodedToken = token;
         var user = await _userManager.FindByIdAsync(userId.ToString());
         if (user == null)
         {

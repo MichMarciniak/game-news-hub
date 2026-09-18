@@ -12,6 +12,16 @@ public static class ProfileMappingExtension
         {
             Id = user.Id,
             CreatedAt = user.CreatedAt,
+            Settings = user.ToSettingsDto()
+        };
+    }
+    
+    public static FullProfileDto ToFullDto(this AppUser user)
+    {
+        return new FullProfileDto
+        {
+            Id = user.Id,
+            CreatedAt = user.CreatedAt,
             Events = user.FollowedEvents.Select(e => e.ToListNameDto()).ToList(),
             Games = user.FollowedGames.Select(g => g.ToListItemDto()).ToList(),
             Genres = user.FollowedGenres.Select(g => g.ToDto()).ToList(),

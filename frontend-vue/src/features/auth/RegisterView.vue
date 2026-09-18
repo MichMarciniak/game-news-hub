@@ -22,13 +22,13 @@ const initialValues = ref({
   password: 'asdasdasdasd'
 });
 
-const resolver = ref(zodResolver(
+const resolver = zodResolver(
   z.object({
     username: z.string().min(3, { message: 'Minimum 3 characters' }),
     email: z.string().min(1, { message: 'Email is required.' }).email({ message: 'Invalid email.' }),
     password: z.string().min(8, { message: 'Minimum 8 characters' })
   })
-));
+);
 
 const {mutate: register, isPending, isError} = usePostRegister()
 const errorMessage = ref('asd')

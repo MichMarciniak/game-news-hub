@@ -43,16 +43,20 @@ public class AuthController : ControllerBase
     {
         var result = await _service.Login(request);
         return result.Match(
-            tokenResult =>
+            value=>
             {
-                Response.Cookies.Append("refreshToken", tokenResult.RefreshToken, new CookieOptions
+                Response.Cookies.Append("refreshToken", value.Tokens.RefreshToken, new CookieOptions
                 {
                     HttpOnly = true,
                     Secure = true,
                     SameSite = SameSiteMode.Lax, //TODO change to strict
                     Expires = DateTimeOffset.UtcNow.Add(_tokenOptions.RefreshTokenLifetime)
                 });
-                return Ok(new LoginResponse { AccessToken = tokenResult.AccessToken });
+                return Ok(new LoginResponse
+                {
+                    AccessToken = value.Tokens.AccessToken,
+                    User = value.User
+                });
             },
             errors => this.ProblemErr(errors)
         );

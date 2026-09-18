@@ -16,6 +16,17 @@ public class UsersService
         _context = context;
     }
 
+    public async Task<ErrorOr<ProfileDto>> GetProfile(int userId)
+    {
+        var user = await _context.Users
+            .FirstOrDefaultAsync(u => u.Id == userId);
+
+        if (user == null)
+            return Error.NotFound("User.NotFound", $"User {userId} not found");
+
+        return user.ToDto();
+    }
+
     public async Task<ErrorOr<List<GameListItemDto>>> GetFollowedGames(int userId)
     {
         var user = await _context.Users
@@ -77,7 +88,7 @@ public class UsersService
         return events;
     }
 
-    public async Task<ErrorOr<ProfileDto>> GetFullProfile(int userId)
+    public async Task<ErrorOr<FullProfileDto>> GetFullProfile(int userId)
     {
         var user = await _context.Users
             .Include(u => u.FollowedEvents)
@@ -89,6 +100,6 @@ public class UsersService
         if (user == null)
             return Error.NotFound("User.NotFound", $"User {userId} not found");
 
-        return user.ToDto();
+        return user.ToFullDto();
     }
 }
