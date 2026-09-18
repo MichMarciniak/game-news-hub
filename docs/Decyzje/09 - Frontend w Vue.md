@@ -1,5 +1,5 @@
 ## Kontekst
-Potrzeba frontendu. Tylko który framework?
+Potrzeba frontendu. Planowo był angular. Ale czy na pewno?
 
 ## Opcje
 - Angular

@@ -1,7 +1,7 @@
 ## Cel aplikacji
 Agregacja i personalizacja informacji o wydarzeniach z branży gier (pokazy, prezentacje, showcase'y). System automatycznie pobierane dane o wydarzeniach i grach z zewnętrznego API (IGDB), oraz zwraca spersonalizowane rekomendacje na podstawie obserwowanych gier, gatunków, platform i wydarzeń.
 
-Główny problem: wydarzenia branżowe dostają przypisane gry w IGDB dopiero po zakończeniu (2-3 dni), więc nadchodzące, jeszcze niezakończone wydarzenia nie mają danych do rekomendacji. System rozwiązuje to przez wykrywanie cykliczności wydarzeń i dziedziczenie przewidywanego profilu z poprzednich edycji. (ALE TO NIE MA SENSU?)
+Główny problem: wydarzenia branżowe dostają przypisane gry w IGDB dopiero po zakończeniu (2-3 dni), więc nadchodzące, jeszcze niezakończone wydarzenia nie mają danych do rekomendacji. System rozwiązuje to przez wykrywanie cykliczności wydarzeń i dziedziczenie przewidywanego profilu z poprzednich edycji.
 ## Diagram wysokopoziomowy
 ```mermaid
 graph TD

@@ -13,12 +13,12 @@
             "state": {
               "type": "markdown",
               "state": {
-                "file": "Decyzje/09 - Frontend w Vue.md",
+                "file": "Arch/Przegląd systemu.md",
                 "mode": "source",
                 "source": false
               },
               "icon": "lucide-file",
-              "title": "09 - Frontend w Vue"
+              "title": "Przegląd systemu"
             }
           }
         ]
@@ -186,10 +186,14 @@
       "bases:Stwórz nową bazę danych": false
     }
   },
-  "active": "fef2451e5da0e1d5",
+  "active": "c0803f6556359e97",
   "lastOpenFiles": [
-    "Decyzje/08 - Cykliczne liczenie popularności.md",
+    "Arch/Przegląd systemu.md",
+    "Arch/Podział projektów.md",
+    "cos tam.md",
+    "todo.md",
     "Decyzje/09 - Frontend w Vue.md",
+    "Decyzje/08 - Cykliczne liczenie popularności.md",
     "Decyzje/_template.md",
     "Komponenty/Cykliczność eventów (serie).md",
     "Komponenty/Emaile.md",
@@ -198,15 +202,11 @@
     "Komponenty/Parent game i dlc.md",
     "Komponenty/Sync z igdb.md",
     "Komponenty/Wyszukiwanie.md",
-    "Arch/Przegląd systemu.md",
     "Komponenty/_template.md",
     "Dane zewnętrzne/Sync.md",
     "Komponenty/Zliczanie obserwacji.md",
     "Komponenty/Autoryzacja.md",
-    "cos tam.md",
-    "todo.md",
     "Arch/Warstra Contracts i DTO.md",
-    "Arch/Podział projektów.md",
     "Teoria",
     "Komponenty/Testy.md",
     "Testy",
