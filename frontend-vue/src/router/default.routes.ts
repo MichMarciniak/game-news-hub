@@ -30,4 +30,9 @@ export const defaultRoutes: RouteRecordRaw[] = [
     name: 'events',
     component: () => import('@/features/events/EventCalendar.vue'),
   },
+  {
+    path: '/events/search',
+    name: 'events-search',
+    component: () => import('@/features/events/EventList.vue')
+  }
 ]

@@ -36,7 +36,7 @@ public class EventController : ControllerBase
 
 
     [HttpGet("{eventId}")]
-    public async Task<ActionResult<EventListItemDto>> GetEvent(int eventId)
+    public async Task<ActionResult<EventDetailDto>> GetEvent(int eventId)
     {
         var result = await _service.GetEventDetails(eventId);
         return result.MatchFirst(
@@ -45,7 +45,7 @@ public class EventController : ControllerBase
     }
 
     [HttpGet("search")]
-    public async Task<ActionResult<EventListNameDto>> SearchEvents(
+    public async Task<ActionResult<SearchDto<EventListItemDto>>> SearchEvents(
         string? query, int page = 1, int pageSize = 25,
         EventSortBy sortBy = EventSortBy.Relevance, bool descending = true)
     {

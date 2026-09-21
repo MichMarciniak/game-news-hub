@@ -91,7 +91,7 @@ public class EventService
         return new ErrorOr<Success>();
     }
 
-    public async Task<List<EventListNameDto>> SearchEvents(
+    public async Task<SearchDto<EventListItemDto>> SearchEvents(
         string? query, int page, int pageSize,
         EventSortBy? sortBy, bool descending = true)
     {
@@ -100,39 +100,55 @@ public class EventService
         
         IQueryable<Event> dbQuery = _context.Events.AsQueryable();
 
-        if (string.IsNullOrWhiteSpace(query))
+        var hasQuery = !string.IsNullOrWhiteSpace(query);
+        var cleanQuery = string.Empty;
+
+        if (hasQuery)
         {
-            return await dbQuery
-                .ApplySorting(sortBy ?? EventSortBy.Date, descending)
-                .Skip((page - 1) * pageSize)
-                .Take(pageSize)
-                .Select(e => e.ToListNameDto())
-                .ToListAsync();
+            cleanQuery = query!.Trim();
+            dbQuery = dbQuery
+                .Where(e => EF.Functions.ILike(e.Name, $"%{cleanQuery}%"));
         }
 
-        var cleanQuery = query.Trim();
-        
-        var filteredQuery = dbQuery.
-            Where(e => EF.Functions.ILike(e.Name, $"%{cleanQuery}%"));
+        var total = await dbQuery.CountAsync();
 
+        if (total == 0)
+        {
+            return new SearchDto<EventListItemDto>
+            {
+                Total = 0,
+                Items = new()
+            };
+        }
+        
         IQueryable<Event> sortedQuery;
 
-        if (sortBy.HasValue && sortBy.Value != EventSortBy.Relevance)
+        if (!hasQuery)
         {
-            sortedQuery = filteredQuery.ApplySorting(sortBy.Value, descending);
+            sortedQuery = dbQuery.ApplySorting(sortBy ?? EventSortBy.Date, descending);
+        }
+        else if (sortBy.HasValue && sortBy.Value != EventSortBy.Relevance)
+        {
+            sortedQuery = dbQuery.ApplySorting(sortBy.Value, descending);
         }
         else
         {
-            sortedQuery = filteredQuery
+            sortedQuery = dbQuery 
                 .OrderByDescending(e => EF.Functions.ILike(e.Name, $"%{cleanQuery}%"))
                 .ThenByDescending(e => EF.Functions.TrigramsSimilarity(e.Name, cleanQuery))
                 .ThenBy(e => EF.Functions.FuzzyStringMatchLevenshteinLessEqual(e.Name, cleanQuery, 5));
         }
 
-        return await sortedQuery
+        var items = await sortedQuery
             .Skip((page - 1) * pageSize)
             .Take(pageSize)
-            .Select(e => e.ToListNameDto())
+            .Select(e => e.ToListItemDto())
             .ToListAsync();
+
+        return new SearchDto<EventListItemDto>
+        {
+            Total = total,
+            Items = items
+        };
     }
 }

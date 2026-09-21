@@ -4,7 +4,7 @@ import { GameSortBy, type GetGameSearchParams } from '@/api/generated/models';
 import type { PageState } from 'openvue';
 import { ref, watch } from 'vue';
 import DebouncedInput from '../search/DebouncedInput.vue';
-import { OiFilter } from '@openvue/openicons-vue';
+import { OiArrowDown, OiArrowUp, OiFilter } from '@openvue/openicons-vue';
 import GameCard from './GameCard.vue';
 import SkeletonGameCard from './SkeletonGameCard.vue';
 import { keepPreviousData } from '@tanstack/vue-query';
@@ -73,7 +73,16 @@ function onPageChange(event: PageState) {
         option-value="value"
         placeholder="Sort by..."
         class="flex-2"
-      ></Select>
+      />
+      <Button
+        class="h-[2.7rem]!"
+        variant="outlined"
+        :aria-label="searchQuery.descending ? 'Descending' : 'Ascending'"
+        @click="searchQuery.descending = !searchQuery.descending"
+      >
+        <OiArrowDown v-if="searchQuery.descending"/>
+        <OiArrowUp v-else/>
+      </Button>
     </div>
 
     <Drawer
@@ -109,6 +118,16 @@ function onPageChange(event: PageState) {
               option-label="label"
               option-value="value"
             />
+            <Button
+              size="large"
+              class="h-[2.7rem]!"
+              variant="outlined"
+              :aria-label="searchQuery.descending ? 'Descending' : 'Ascending'"
+              @click="searchQuery.descending = !searchQuery.descending"
+            >
+              <OiArrowDown v-if="searchQuery.descending"/>
+              <OiArrowUp v-else/>
+            </Button>
           </div> 
         </div>
 
@@ -122,7 +141,7 @@ function onPageChange(event: PageState) {
         >
           <div
             :key="isPending ? 'skeleton' : `${searchQuery.page}-${searchQuery.pageSize}-${searchQuery.query}-${searchQuery.sortBy}`"
-            class="grid grid-cols-2 sm:grid-cols-3 xl:grid-cols-4 gap-4 min-h-[600px]"
+            class="grid grid-cols-2 sm:grid-cols-3 xl:grid-cols-4 gap-4 "
           >
             <template v-if="isPending">
               <SkeletonGameCard v-for="num in searchQuery.pageSize" :key="`skeleton-${num}`" />
@@ -134,7 +153,7 @@ function onPageChange(event: PageState) {
         </Transition>
 
         <!-- Paginator -->
-        <div class="mt-auto">
+        <div class="mt-4">
           <Paginator
             :first="(searchQuery.page as number - 1) * (searchQuery.pageSize as number)"
             :rows="searchQuery.pageSize as number"
