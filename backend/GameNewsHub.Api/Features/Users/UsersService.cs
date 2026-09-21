@@ -82,7 +82,7 @@ public class UsersService
         if (user == null) return Error.NotFound("User.NotFound", $"User {userId} not found.");
 
         var events = user.FollowedPlatformGroups
-            .Select(pg => pg.ToDtoWithPlatforms())
+            .Select(pg => pg.ToDto())
             .ToList();
 
         return events;

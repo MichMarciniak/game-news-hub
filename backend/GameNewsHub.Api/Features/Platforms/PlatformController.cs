@@ -25,6 +25,16 @@ public class PlatformController : ControllerBase
         return result;
     }
 
+    [HttpGet("groups/full")]
+    public async Task<ActionResult<List<PlatformGroupWithPlatformsDto>>> GetGroupsFull()
+    {
+        var result = await _service.GetPlatformGroupsFull();
+
+        return result;
+    }
+    
+    
+
     [HttpPost("groups/{groupId}/follow")]
     [Authorize]
     public async Task<IActionResult> FollowGroup(int groupId)

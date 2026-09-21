@@ -29,34 +29,44 @@ public class GameService
         return games;
     }
 
-    public async Task<List<GameListItemDto>> SearchGamesAsync(
+    public async Task<SearchDto<GameListItemDto>> SearchGamesAsync(
         string? query, int page, int pageSize,
         GameSortBy? sortBy, bool descending)
     {
         page = Math.Max(page, 1);
         pageSize = Math.Max(pageSize, 1);
 
-        IQueryable<Game> baseQuery = _context.Games
+        IQueryable<Game> filteredQuery = _context.Games
             .Where(g => GameTypePolicy.MainTypes.Contains(g.Type));
+        
+        var hasQuery = !string.IsNullOrWhiteSpace(query);
+        var cleanQuery = string.Empty;
 
-        if (string.IsNullOrWhiteSpace(query))
+        if (hasQuery)
         {
-            return await baseQuery
-                .ApplySorting(sortBy ?? GameSortBy.Name, descending)
-                .Skip((page - 1) * pageSize)
-                .Take(pageSize)
-                .Select(g => g.ToListItemDto())
-                .ToListAsync();
+            cleanQuery = query!.Trim();
+            filteredQuery = filteredQuery
+                .Where(g => EF.Functions.TrigramsAreSimilar(g.Title, cleanQuery));
         }
 
-        var cleanQuery = query.Trim();
+        var total = await filteredQuery.CountAsync();
 
-        IQueryable<Game> filteredQuery = baseQuery
-            .Where(g => EF.Functions.TrigramsAreSimilar(g.Title, cleanQuery));
+        if (total == 0)
+        {
+            return new SearchDto<GameListItemDto>
+            {
+                Total = 0,
+                Items = new List<GameListItemDto>()
+            };
+        }
 
         IQueryable<Game> sortedQuery;
 
-        if (sortBy.HasValue && sortBy.Value != GameSortBy.Relevance)
+        if (!hasQuery) // nie powinno być bo w kontrolerze jest defaultowo Relevance? ale sie nie znam
+        {
+            sortedQuery = filteredQuery.ApplySorting(sortBy ?? GameSortBy.Name, descending);
+        }
+        else if (sortBy.HasValue && sortBy.Value != GameSortBy.Relevance)
         {
             sortedQuery = filteredQuery.ApplySorting(sortBy.Value, descending);
         }
@@ -68,11 +78,17 @@ public class GameService
                 .ThenBy(g => EF.Functions.FuzzyStringMatchLevenshteinLessEqual(g.Title, cleanQuery, 3));
         }
 
-        return await sortedQuery
+        var items = await sortedQuery
             .Skip((page - 1) * pageSize)
             .Take(pageSize)
             .Select(g => g.ToListItemDto())
             .ToListAsync();
+
+        return new SearchDto<GameListItemDto>
+        {
+            Total = total,
+            Items = items
+        };
     }
 
 

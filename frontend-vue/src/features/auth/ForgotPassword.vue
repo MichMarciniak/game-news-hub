@@ -64,7 +64,13 @@ function submit({valid, values}: FormSubmitEvent) {
         </div>
 
         <Button type="submit" fluid label="Send" :disabled="isPending"/>
-
+        
+      <!-- Może zrobić żeby brało z history i wracało? Ale co jak ktoś nie wszedł z loginu? -->
+      <div class="text-center text-sm mt-4">
+        <RouterLink to="/login" class="font-semibold text-primary hover:underline ml-1">
+          Go back to login
+        </RouterLink>
+      </div>
       </Form>
     </template>
   </AuthView>

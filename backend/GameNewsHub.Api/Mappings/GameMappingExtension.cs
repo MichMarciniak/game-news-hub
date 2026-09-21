@@ -5,7 +5,7 @@ namespace GameNewsHub.Api.Mappings;
 
 public static class GameMappingExtension
 {
-    public static GameDetailDto ToDetailDto(this Game game, List<PlatformGroupDto> platformGroupDtos)
+    public static GameDetailDto ToDetailDto(this Game game, List<PlatformGroupWithPlatformsDto> platformGroupDtos)
     {
         return new GameDetailDto
         {

@@ -20,7 +20,7 @@ public class GenreController : ControllerBase
     }
 
     [HttpGet("genres")]
-    public async Task<ActionResult<GenreDto>> GetGenres()
+    public async Task<ActionResult<List<GenreDto>>> GetGenres()
     {
         var genres = await _service.GetGenreListAsync();
         return Ok(genres);

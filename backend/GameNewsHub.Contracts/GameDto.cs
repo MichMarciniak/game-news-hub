@@ -17,7 +17,7 @@ public class GameDetailDto
     public string? CoverUrl { get; set; }
     public List<GenreDto> Genres { get; set; } = new();
 
-    public List<PlatformGroupDto> PlatformGroups { get; set; } = new();
+    public List<PlatformGroupWithPlatformsDto> PlatformGroups { get; set; } = new();
 
     public List<GameListItemDto>? Addons { get; set; }
 

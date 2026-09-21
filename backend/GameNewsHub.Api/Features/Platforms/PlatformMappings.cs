@@ -14,9 +14,9 @@ public static class PlatformMappings
         };
     }
 
-    public static PlatformGroupDto ToDtoWithPlatforms(this PlatformGroup group)
+    public static PlatformGroupWithPlatformsDto ToDtoWithPlatforms(this PlatformGroup group)
     {
-        return new PlatformGroupDto
+        return new PlatformGroupWithPlatformsDto
         {
             Id = group.Id,
             Name = group.Name,

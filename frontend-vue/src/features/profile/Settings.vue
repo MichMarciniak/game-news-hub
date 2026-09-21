@@ -12,6 +12,7 @@ const settingsConf = [
   {key:'showFutureRecommendations', label: 'Show predicted recommendations'}
 ] as const
 
+// what?
 const settingModels = Object.fromEntries(
   settingsConf.map(({ key }) => [
     key,

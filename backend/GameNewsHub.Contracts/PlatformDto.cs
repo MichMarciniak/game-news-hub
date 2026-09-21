@@ -1,10 +1,16 @@
 ﻿namespace GameNewsHub.Contracts;
 
-public class PlatformGroupDto
+public class PlatformGroupWithPlatformsDto
 {
     public int Id { get; set; }
     public string Name { get; set; }
     public List<PlatformDto> Platforms { get; set; } = new();
+}
+
+public class PlatformGroupDto
+{
+    public required int Id { get; set; }
+    public required string Name { get; set; }
 }
 
 public class PlatformDto

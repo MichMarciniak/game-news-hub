@@ -1,4 +1,5 @@
 using System.IdentityModel.Tokens.Jwt;
+using System.Text.Json;
 using System.Text.Json.Nodes;
 using System.Text.Json.Serialization;
 using GameNewsHub.Api.Configuration;
@@ -77,7 +78,7 @@ builder.Services.AddAuthDocumentation();
 
 builder.Services.AddOpenApi(options =>
 {
-    options.AddSchemaTransformer((schema, context, ct) =>
+    options.AddSchemaTransformer((schema, context, _) =>
     {
         var targetType = Nullable.GetUnderlyingType(context.JsonTypeInfo.Type) ?? context.JsonTypeInfo.Type;
         if (context.JsonTypeInfo.Type.IsEnum)
@@ -91,6 +92,21 @@ builder.Services.AddOpenApi(options =>
             foreach (var enumName in Enum.GetNames(targetType))
             {
                 schema.Enum.Add(JsonValue.Create(enumName));
+            }
+        }
+        return Task.CompletedTask;
+    });
+    options.AddOperationTransformer((operation, _, _) =>
+    {
+        if (operation.Parameters is null) return Task.CompletedTask;
+
+        foreach (var parameter in operation.Parameters)
+        {
+            if (parameter is OpenApiParameter concrete
+                && parameter.In == ParameterLocation.Query
+                && !string.IsNullOrEmpty(parameter.Name))
+            {
+                concrete.Name = JsonNamingPolicy.CamelCase.ConvertName(parameter.Name);
             }
         }
         return Task.CompletedTask;

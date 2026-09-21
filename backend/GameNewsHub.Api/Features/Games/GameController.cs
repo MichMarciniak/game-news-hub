@@ -27,11 +27,15 @@ public class GameController : ControllerBase
     }
 
     [HttpGet("search")]
-    public async Task<ActionResult<List<GameListItemDto>>> SearchGames(
-        string? query, int page = 1, int pageSize = 25,
-        GameSortBy sortBy = GameSortBy.Relevance, bool descending = true)
+    public async Task<ActionResult<SearchDto<GameListItemDto>>> SearchGames([FromQuery] GetGameSearchParams request)
     {
-        var games = await _service.SearchGamesAsync(query, page, pageSize, sortBy, descending);
+        var games = await _service.SearchGamesAsync(
+            request.Query,
+            request.Page,
+            request.PageSize,
+            request.SortBy,
+            request.Descending 
+        );
         return Ok(games);
     }
 

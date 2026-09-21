@@ -20,6 +20,16 @@ public class PlatformService
     {
         var groups = await _context.PlatformGroups
             .Include(pg => pg.Platforms)
+            .Select(pg => pg.ToDto())
+            .ToListAsync();
+
+        return groups;
+    }
+    
+    public async Task<List<PlatformGroupWithPlatformsDto>> GetPlatformGroupsFull()
+    {
+        var groups = await _context.PlatformGroups
+            .Include(pg => pg.Platforms)
             .Select(pg => pg.ToDtoWithPlatforms())
             .ToListAsync();
 
