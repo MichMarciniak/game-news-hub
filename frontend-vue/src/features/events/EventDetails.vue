@@ -9,6 +9,7 @@ import { OiHeart, OiHeartFill } from '@openvue/openicons-vue'
 import EventItemSimple from '@/features/events/EventItemSimple.vue'
 import GameGrid from '@/features/games/GameGrid.vue'
 import EventStatusBadge from '@/features/events/EventStatusBadge.vue'
+import FollowHeart from '../shared/FollowHeart.vue'
 
 const route = useRoute()
 
@@ -26,10 +27,10 @@ const otherSeriesEvents = computed(() =>
 
 <template>
   <div v-if="isPending" class="max-w-4xl mx-auto px-4 py-8">
-    <!-- skeleton, osobny temat -->
+    <!-- skeleton -->
   </div>
 
-  <div v-else-if="event" class="max-w-4xl mx-auto flex flex-col gap-8 min-w-0">
+  <div v-else-if="event" class="max-w-4xl mx-auto flex flex-col gap-8 min-w-2/3">
 
     <!-- Header -->
     <div class="flex flex-col gap-4">
@@ -39,13 +40,14 @@ const otherSeriesEvents = computed(() =>
             :start-time="event.startTime" 
             :end-time="event.endTime" 
           />
-          <h1 class="text-2xl font-semibold truncate">{{ event.name }}</h1>
+          <h1 class="text-2xl font-semibold">{{ event.name }}</h1>
         </div>
 
         <Button
           :severity="isFollowed ? 'secondary' : 'primary'"
           :outlined="isFollowed"
           @click="toggleFollowEvent(event.id as string)"
+          class="not-sm:hidden"
         >
           <template v-if="isFollowed">
             <OiHeartFill v-if="isFollowed" size="1.2rem"/>
@@ -54,12 +56,15 @@ const otherSeriesEvents = computed(() =>
           <template v-else>
             <OiHeart size="1.2rem"/>
             <span>Follow</span>
-
-
           </template>
-           
-      
         </Button>
+
+        <FollowHeart 
+          class="sm:hidden"
+          :size='"2rem"'
+          :is-followed="isFollowed"
+          @click="toggleFollowEvent(event.id as string)"
+        />
       </div>
 
       <div class="flex items-center gap-4 text-sm text-muted-color">
@@ -87,9 +92,9 @@ const otherSeriesEvents = computed(() =>
         <Tab value="1" v-if="otherSeriesEvents.length">Events ({{ otherSeriesEvents.length }})</Tab>
       </TabList>
       <TabPanels class="p-0">
-        <TabPanel value="0" class="p-0">
+        <TabPanel value="0" class="pt-2">
           <GameGrid>
-            <GameCard v-for="game in event.games" :key="game.id" :game="game" />
+            <GameCard v-for="game in event.games" :key="game.id" :game="game"/>
           </GameGrid>
         </TabPanel>
         <TabPanel value="1" class="p-0">
