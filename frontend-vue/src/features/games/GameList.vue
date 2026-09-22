@@ -140,7 +140,7 @@ function onPageChange(event: PageState) {
           leave-to-class="opacity-0"
         >
           <div
-            :key="isPending ? 'skeleton' : `${searchQuery.page}-${searchQuery.pageSize}-${searchQuery.query}-${searchQuery.sortBy}`"
+            :key="isPending ? 'skeleton' : `${searchQuery.page}-${searchQuery.pageSize}-${searchQuery.query}-${searchQuery.sortBy}-${searchQuery.descending}`"
             class="grid grid-cols-2 sm:grid-cols-3 xl:grid-cols-4 gap-4 "
           >
             <template v-if="isPending">

@@ -7,8 +7,9 @@ import DebouncedInput from '../shared/DebouncedInput.vue';
 import { keepPreviousData } from '@tanstack/vue-query';
 import { OiArrowDown, OiArrowUp } from '@openvue/openicons-vue';
 import EventItem from './EventItem.vue';
+import SkeletonEventItem from './SkeletonEventItem.vue';
 
-const gridCols = 'grid grid-cols-[1fr_9rem_9rem_auto] items-center gap-4'
+const gridCols = 'grid grid-cols-[1rem_1fr_11rem_11rem_auto] items-center gap-4'
 
 const searchQuery = ref<GetEventSearchParams>({
   query: undefined,
@@ -25,7 +26,7 @@ const sortOptions = [
   {label: 'Date', value: EventSortBy.Date}
 ]
 
-const {data: eventsData, isPending, isPlaceholderData, isFetching} = useGetEventSearch(searchQuery, {
+const {data: eventsData, isPending} = useGetEventSearch(searchQuery, {
   query: {
     placeholderData: keepPreviousData
   }
@@ -102,8 +103,9 @@ function onPageChange(event: PageState) {
 
         <div
           :class="gridCols"
-          class="hidden md:grid px-4 py-2 text-sm font-semibold text-muted-color border-b"
+          class="hidden md:grid px-4 py-2 text-sm font-semibold text-muted-color border-b mb-2"
         >
+          <span></span>
           <span>Name</span>
           <span>Start</span>
           <span>End</span>
@@ -113,13 +115,28 @@ function onPageChange(event: PageState) {
 
         <!-- Event list -->
 
+        <Transition
+          mode="out-in"
+          enter-active-class="transition-opacity duration-200 ease-out"
+          enter-from-class="opacity-0"
+          leave-active-class="transition-opacity duration-150 ease-in"
+          leave-to-class="opacity-0"
+        >
+          <div 
+            v-if="isPending" 
+            key="skeleton" 
+            class="flex flex-col gap-2"
+          >
+            <SkeletonEventItem v-for="i in searchQuery.pageSize" :key="`skeleton-${i}`" />
+          </div>
 
-        <template v-if="isPending">
-          <p>test</p>
-        </template>
-        <template v-else>
-          <EventItem v-for="event in eventsData?.items" :event="event" :key="event.id"></EventItem>
-        </template>
+          <div v-else 
+            :key="`${searchQuery.page}-${searchQuery.pageSize}-${searchQuery.query}-${searchQuery.sortBy}-${searchQuery.descending}`"
+            class="flex flex-col gap-2"
+          >
+            <EventItem v-for="event in eventsData?.items" :event="event" :key="event.id"></EventItem>
+          </div>
+        </Transition>
           
 
         <!-- Paginator -->

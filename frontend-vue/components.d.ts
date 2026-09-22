@@ -42,5 +42,6 @@ declare module 'vue' {
   }
   export interface GlobalDirectives {
     Ripple: typeof import('openvue/ripple')['default']
+    Tooltip: typeof import('openvue/tooltip')['default']
   }
 }
