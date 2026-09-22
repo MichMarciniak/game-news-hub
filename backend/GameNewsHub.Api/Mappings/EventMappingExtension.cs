@@ -46,6 +46,7 @@ public static class EventMappingExtension
             StartTime = e.StartTime,
             EndTime = e.EndTime,
             Games = e.Games.Select(g => g.ToListItemDto()).ToList(),
+            FollowerCount = e.FollowerCount,
             RelatedEvents = e.Series?.Events
                 .Where(se => se.Id != e.Id)
                 .Select(se => se.ToListNameDto())

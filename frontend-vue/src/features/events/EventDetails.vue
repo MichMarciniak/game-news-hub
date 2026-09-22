@@ -30,7 +30,7 @@ const otherSeriesEvents = computed(() =>
     <!-- skeleton -->
   </div>
 
-  <div v-else-if="event" class="max-w-4xl mx-auto flex flex-col gap-8 min-w-2/3">
+  <div v-else-if="event" class="max-w-4xl w-full mx-auto flex flex-col gap-8">
 
     <!-- Header -->
     <div class="flex flex-col gap-4">

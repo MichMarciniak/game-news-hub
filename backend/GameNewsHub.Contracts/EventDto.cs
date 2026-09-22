@@ -9,6 +9,7 @@ public class EventDetailDto
     public DateTimeOffset? EndTime { get; set; }
     public List<GameListItemDto>? Games { get; set; }
     public List<EventListNameDto>? RelatedEvents { get; set; }
+    public int FollowerCount { get; set; }
 }
 
 public class EventListItemDto
