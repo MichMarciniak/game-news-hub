@@ -1,7 +1,7 @@
 <script lang="ts" setup>
 import { isDark, toggleDarkMode } from '@/composables/theme';
 import Profile from '@/features/auth/Profile.vue';
-import { OiAngleDown, OiAngleRight, OiMap, OiMoon, OiSun } from '@openvue/openicons-vue';
+import { OiAngleDown, OiAngleRight, OiAsterisk, OiMap, OiMoon, OiSun } from '@openvue/openicons-vue';
 import { computed, ref } from 'vue';
 import { useRoute } from 'vue-router';
 
@@ -38,8 +38,12 @@ function toggleEvents() {
   <header class="top-0 left-0 w-full flex">
     <Menubar :model="menuItems" class="w-full" breakpoint="632px">
       <template #start>
-        <RouterLink to="/" class="flex items-center gap-2 p-1">
-          <OiMap size="32" class="text-primary" />
+        <RouterLink 
+          to="/" 
+          class="flex items-center gap-2 p-1"
+          v-slot="{isActive}"
+        >
+          <OiAsterisk size="32" :class="{'text-primary': isActive}" />
         </RouterLink>
       </template>
 
