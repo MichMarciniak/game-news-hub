@@ -7,7 +7,7 @@ import { RouterView } from 'vue-router'
 
   <main class="flex-1 flex justify-center p-4">
     <Toast />
-    <RouterView />
+  <RouterView />
   </main>
 </template>
 

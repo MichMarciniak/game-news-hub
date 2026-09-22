@@ -10,6 +10,7 @@ import SkeletonGameCard from './SkeletonGameCard.vue';
 import { keepPreviousData } from '@tanstack/vue-query';
 import FilterList from '@/features/games/FilterList.vue';
 import GameGrid from './GameGrid.vue';
+import { useSearchQuerySync } from '@/utils/saveSearch.ts';
 
 const searchQuery = ref<GetGameSearchParams>({
   query: undefined,
@@ -20,6 +21,8 @@ const searchQuery = ref<GetGameSearchParams>({
   genreIds: [],
   platformIds: []
 })
+
+useSearchQuerySync(searchQuery)
 
 const sortOptions = [
   {label: 'Relevance', value: GameSortBy.Relevance},

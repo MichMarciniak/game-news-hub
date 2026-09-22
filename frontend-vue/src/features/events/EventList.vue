@@ -8,6 +8,7 @@ import { keepPreviousData } from '@tanstack/vue-query';
 import { OiArrowDown, OiArrowUp } from '@openvue/openicons-vue';
 import EventItem from './EventItem.vue';
 import SkeletonEventItem from './SkeletonEventItem.vue';
+import { useSearchQuerySync } from '@/utils/saveSearch.ts';
 
 const gridCols = 'grid grid-cols-[1rem_1fr_11rem_11rem_auto] items-center gap-4'
 
@@ -18,6 +19,8 @@ const searchQuery = ref<GetEventSearchParams>({
   descending: true,
   sortBy: EventSortBy.Relevance
 })
+
+useSearchQuerySync(searchQuery)
 
 const sortOptions = [
   {label: 'Relevance', value: EventSortBy.Relevance},

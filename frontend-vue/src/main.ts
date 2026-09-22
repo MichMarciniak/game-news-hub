@@ -12,6 +12,14 @@ import OpenVue from 'openvue/config'
 import Aura from '@openvue/themes/aura'
 import { ToastService } from 'openvue';
 import { useAuthStore } from './stores/auth.ts';
+import { definePreset, palette } from '@openvue/themes';
+
+// const blueTheme = definePreset(Aura, {
+//     semantic: {
+//         primary: palette('#123432')
+//     }
+// })
+
 
 const app = createApp(App)
 

@@ -20,7 +20,7 @@ defineEmits<{
 <template>
   <Button
     variant="text"
-    class="p-0 m-0 hover:bg-transparent self-center shrink-0"
+    class="p-0 m-0 hover:bg-transparent focus:bg-transparent self-center shrink-0"
     @click="$emit('click', $event)"
   >
     <Transition mode="out-in" name="heart-pop">

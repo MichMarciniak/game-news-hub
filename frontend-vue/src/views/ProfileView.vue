@@ -13,7 +13,10 @@ const {user, isAuthenticated } = storeToRefs(authStore)
 
 
 <template>
-  <h2 class="text-2xl font-semibold">{{ user?.username }}</h2>
-  <Settings />
+  <div>
+    <h2 class="text-2xl font-semibold">{{ user?.username }}</h2>
+    <Settings />
+
+  </div>
  
 </template>
