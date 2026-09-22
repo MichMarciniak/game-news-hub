@@ -3,7 +3,7 @@ import { useGetEventSearch } from '@/api/generated';
 import { EventSortBy, type GetEventSearchParams, } from '@/api/generated/models';
 import type { PageState } from 'openvue';
 import { ref, watch } from 'vue';
-import DebouncedInput from '../search/DebouncedInput.vue';
+import DebouncedInput from '../shared/DebouncedInput.vue';
 import { keepPreviousData } from '@tanstack/vue-query';
 import { OiArrowDown, OiArrowUp } from '@openvue/openicons-vue';
 import EventItem from './EventItem.vue';

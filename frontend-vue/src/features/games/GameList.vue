@@ -3,12 +3,12 @@ import { useGetGameSearch } from '@/api/generated';
 import { GameSortBy, type GetGameSearchParams } from '@/api/generated/models';
 import type { PageState } from 'openvue';
 import { ref, watch } from 'vue';
-import DebouncedInput from '../search/DebouncedInput.vue';
+import DebouncedInput from '../shared/DebouncedInput.vue';
 import { OiArrowDown, OiArrowUp, OiFilter } from '@openvue/openicons-vue';
 import GameCard from './GameCard.vue';
 import SkeletonGameCard from './SkeletonGameCard.vue';
 import { keepPreviousData } from '@tanstack/vue-query';
-import FilterList from '../search/FilterList.vue';
+import FilterList from '@/features/games/FilterList.vue';
 
 const searchQuery = ref<GetGameSearchParams>({
   query: undefined,
@@ -27,7 +27,7 @@ const sortOptions = [
 ]
 
 const isMobileOpen = ref<boolean>(false)
-const {data: gamesData, isPending, isPlaceholderData, isFetching} = useGetGameSearch(searchQuery, {
+const {data: gamesData, isPending} = useGetGameSearch(searchQuery, {
   query: {
     placeholderData: keepPreviousData
   }

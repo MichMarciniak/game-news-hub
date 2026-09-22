@@ -1,11 +1,20 @@
 <script setup lang="ts">
 import type { EventListItemDto } from '@/api/generated/models'; // dopasuj nazwę typu
+import { useFollowedEvents } from '@/composables/eventFollows';
 import { formatEventDate } from '@/utils/date';
+import { computed } from 'vue';
+import FollowHeart from '../shared/FollowHeart.vue';
 
+const HEART_SIZE = '1.5rem'
 
-defineProps<{
+const props = defineProps<{
   event: EventListItemDto
 }>()
+
+const {followedEventIds, toggleFollowEvent } = useFollowedEvents()
+
+const isFollowed = computed(() => followedEventIds.value.has(String(props.event.id)))
+
 </script>
 
 <template>
@@ -14,7 +23,11 @@ defineProps<{
     <span class="truncate font-medium">{{ event.name }}</span>
     <span>{{ formatEventDate(event.startTime) }}</span>
     <span>{{ event.endTime ? formatEventDate(event.endTime) : '—' }}</span>
-    <FollowButton :event="event" />
+    <FollowHeart
+      :is-followed="isFollowed"
+      :size="HEART_SIZE"
+      @click="toggleFollowEvent(event.id as string)"
+    />  
   </div>
 
   <!-- Mobile -->
@@ -25,6 +38,10 @@ defineProps<{
         {{ formatEventDate(event.startTime) }}<template v-if="event.endTime"> – {{ formatEventDate(event.endTime) }}</template>
       </p>
     </div>
-    <FollowButton :event="event" />
+    <FollowHeart
+      :is-followed="isFollowed"
+      :size="HEART_SIZE"
+      @click="toggleFollowEvent(event.id as string)"
+    />
   </div>
 </template>

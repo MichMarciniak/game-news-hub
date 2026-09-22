@@ -1,5 +1,8 @@
 <script setup lang="ts">
 import type { GameListItemDto } from '@/api/generated/models';
+import FollowHeart from '../shared/FollowHeart.vue';
+import { useFollowedGames } from '@/composables/gameFollows';
+import { computed } from 'vue';
 
 const props = defineProps<{
   game: GameListItemDto
@@ -8,12 +11,22 @@ const props = defineProps<{
 const TRANSPARENT_IMAGE = 'data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="264" height="352"></svg>'
 // const TRANSPARENT_IMAGE =
 //   'data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="264" height="352"><rect width="100%" height="100%" fill="white"/></svg>'
+
+const {followedGameIds, toggleFollowGame} = useFollowedGames()
+
+const isFollowed = computed(() => followedGameIds.value.has(String(props.game.id)))
+
 </script>
 
 <template>
   <div class="relative">
     <!-- <img :src="props.game.coverUrl as string" alt="asd" /> -->
-     <Image :src="TRANSPARENT_IMAGE"/>
+    <Image :src="TRANSPARENT_IMAGE"/>
+    <FollowHeart 
+      :is-followed="isFollowed"
+      @click="toggleFollowGame(game.id as string)"
+      class="absolute top-0 right-0"   
+    />
     <div class="absolute bottom-0 right-0 left-0">
       <span class="block text-center font-medium line-clamp-2">{{ props.game.title }}</span>
 
