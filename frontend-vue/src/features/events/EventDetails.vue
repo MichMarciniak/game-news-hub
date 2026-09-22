@@ -10,6 +10,8 @@ import EventItemSimple from '@/features/events/EventItemSimple.vue'
 import GameGrid from '@/features/games/GameGrid.vue'
 import EventStatusBadge from '@/features/events/EventStatusBadge.vue'
 import FollowHeart from '../shared/FollowHeart.vue'
+import GameInfiniteGrid from '../shared/GameInfiniteGrid.vue'
+import type { GameListItemDto } from '@/api/generated/models/gameListItemDto.ts'
 
 const route = useRoute()
 
@@ -23,6 +25,11 @@ const isFollowed = computed(() => !!event.value && followedEventIds.value.has(St
 const otherSeriesEvents = computed(() =>
   event.value?.relatedEvents?.filter((e) => e.id !== event.value?.id) ?? []
 )
+
+const defaultValue = computed(() =>
+  event.value?.games?.length ? "0" : otherSeriesEvents.value.length ? "1" : "0"
+)
+
 </script>
 
 <template>
@@ -86,16 +93,16 @@ const otherSeriesEvents = computed(() =>
     </p>
 
     <!-- Games -->
-     <Tabs value="0" v-if="event.games?.length || otherSeriesEvents.length">
+     <Tabs :value="defaultValue" v-if="event.games?.length || otherSeriesEvents.length">
       <TabList>
         <Tab value="0" v-if="event.games?.length">Games ({{ event.games?.length }})</Tab>
         <Tab value="1" v-if="otherSeriesEvents.length">Events ({{ otherSeriesEvents.length }})</Tab>
       </TabList>
       <TabPanels class="p-0">
         <TabPanel value="0" class="pt-2">
-          <GameGrid>
-            <GameCard v-for="game in event.games" :key="game.id" :game="game"/>
-          </GameGrid>
+          <GameInfiniteGrid
+            :games="event.games as GameListItemDto[]"
+          />
         </TabPanel>
         <TabPanel value="1" class="p-0">
           <div class="flex flex-col gap-4 overflow-y-auto pb-2">

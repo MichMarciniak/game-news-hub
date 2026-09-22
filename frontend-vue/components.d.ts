@@ -18,6 +18,7 @@ declare module 'vue' {
     Button: typeof import('openvue/button')['default']
     Card: typeof import('openvue/card')['default']
     Checkbox: typeof import('openvue/checkbox')['default']
+    DataView: typeof import('openvue/dataview')['default']
     Drawer: typeof import('openvue/drawer')['default']
     Form: typeof import('@openvue/forms/form')['default']
     Header: typeof import('./src/components/Header.vue')['default']
