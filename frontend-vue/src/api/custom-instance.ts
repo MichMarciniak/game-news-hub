@@ -38,7 +38,10 @@ AXIOS_INSTANCE.interceptors.response.use(
         return AXIOS_INSTANCE(originalRequest);
       } catch (refreshError) {
         setAccessToken(null);
-        router.push('/login')
+        router.push({
+          path: '/login',
+          query: {redirectPath: router.currentRoute.value.fullPath}
+        })
         // window.location.href = '/login';
         return Promise.reject(refreshError);
       }
