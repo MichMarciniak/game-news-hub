@@ -81,6 +81,13 @@ function onPageChange(event: PageState) {
       <section class="flex-1 flex flex-col">
         <div class="hidden md:flex justify-between items-center mb-4">
           <span>Found: {{ eventsData?.total ?? 0 }} events</span>
+            <Paginator
+              :first="(searchQuery.page as number - 1) * (searchQuery.pageSize as number)"
+              :rows="searchQuery.pageSize as number"
+              :total-records="eventsData?.total as number ?? 0"
+              template="FirstPageLink PrevPageLink CurrentPageReport NextPageLink LastPageLink"
+              @page="onPageChange"
+            />
           <div class="flex items-center gap-2">
             <span>Sort: </span>
             <Select

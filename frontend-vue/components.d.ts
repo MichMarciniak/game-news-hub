@@ -35,6 +35,8 @@ declare module 'vue' {
     Splitter: typeof import('openvue/splitter')['default']
     Tab: typeof import('openvue/tab')['default']
     TabList: typeof import('openvue/tablist')['default']
+    TabPanel: typeof import('openvue/tabpanel')['default']
+    TabPanels: typeof import('openvue/tabpanels')['default']
     Tabs: typeof import('openvue/tabs')['default']
     Toast: typeof import('openvue/toast')['default']
     ToggleButton: typeof import('openvue/togglebutton')['default']

@@ -9,6 +9,7 @@ import GameCard from './GameCard.vue';
 import SkeletonGameCard from './SkeletonGameCard.vue';
 import { keepPreviousData } from '@tanstack/vue-query';
 import FilterList from '@/features/games/FilterList.vue';
+import GameGrid from './GameGrid.vue';
 
 const searchQuery = ref<GetGameSearchParams>({
   query: undefined,
@@ -110,6 +111,14 @@ function onPageChange(event: PageState) {
       <section class="flex-1 flex flex-col">
         <div class="hidden md:flex justify-between items-center mb-4">
           <span>Found: <strong>{{ gamesData?.total ?? 0 }}</strong> games</span>
+          <Paginator
+            :first="(searchQuery.page as number - 1) * (searchQuery.pageSize as number)"
+            :rows="searchQuery.pageSize as number"
+            :total-records="gamesData?.total as number ?? 0"
+            template="FirstPageLink PrevPageLink CurrentPageReport NextPageLink LastPageLink"
+            class="not-lg:hidden"
+            @page="onPageChange"
+          />
           <div class="flex items-center gap-2">
             <span>Sort: </span>
             <Select
@@ -139,17 +148,14 @@ function onPageChange(event: PageState) {
           leave-active-class="transition-opacity duration-150 ease-in"
           leave-to-class="opacity-0"
         >
-          <div
-            :key="isPending ? 'skeleton' : `${searchQuery.page}-${searchQuery.pageSize}-${searchQuery.query}-${searchQuery.sortBy}-${searchQuery.descending}`"
-            class="grid grid-cols-2 sm:grid-cols-3 xl:grid-cols-4 gap-4 "
-          >
+          <GameGrid :key="isPending ? 'skeleton' : `${searchQuery.page}-${searchQuery.pageSize}-${searchQuery.query}-${searchQuery.sortBy}-${searchQuery.descending}`">
             <template v-if="isPending">
               <SkeletonGameCard v-for="num in searchQuery.pageSize" :key="`skeleton-${num}`" />
             </template>
             <template v-else>
               <GameCard v-for="game in gamesData?.items" :key="game.id" :game="game" />
             </template>
-          </div>
+          </GameGrid>
         </Transition>
 
         <!-- Paginator -->
