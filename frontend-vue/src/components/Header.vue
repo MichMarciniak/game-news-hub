@@ -1,7 +1,8 @@
 <script lang="ts" setup>
 import { isDark, toggleDarkMode } from '@/composables/theme';
 import Profile from '@/features/auth/Profile.vue';
-import { OiAngleDown, OiAngleRight, OiAsterisk, OiMap, OiMoon, OiSun } from '@openvue/openicons-vue';
+import ThemeSwitcher from '@/features/themes/ThemeSwitcher.vue';
+import { OiAngleDown, OiAngleRight, OiAsterisk, OiMoon, OiSun } from '@openvue/openicons-vue';
 import { computed, ref } from 'vue';
 import { useRoute } from 'vue-router';
 
@@ -102,6 +103,7 @@ function toggleEvents() {
 
       <template #end>
         <div class="flex items-center gap-3">
+            <ThemeSwitcher />
           <Button @click="() => toggleDarkMode()" class="p-1" severity="contrast">
             <OiSun v-if="isDark" size="1.5rem" />
             <OiMoon v-else size="1.5rem" />

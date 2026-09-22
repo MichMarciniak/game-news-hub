@@ -13,12 +13,9 @@ import Aura from '@openvue/themes/aura'
 import { ToastService } from 'openvue';
 import { useAuthStore } from './stores/auth.ts';
 import { definePreset, palette } from '@openvue/themes';
+import { initTheme } from './composables/theme.ts';
 
-// const blueTheme = definePreset(Aura, {
-//     semantic: {
-//         primary: palette('#123432')
-//     }
-// })
+
 
 
 const app = createApp(App)
@@ -41,6 +38,8 @@ app.use(OpenVue, {
     
 })
 app.use(ToastService)
+
+initTheme()
 
 const authStore = useAuthStore()
 authStore.initialize().finally(() => {
