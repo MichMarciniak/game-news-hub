@@ -1,6 +1,5 @@
 <script setup lang="ts">
 import { OiAngleLeft, OiAngleRight } from '@openvue/openicons-vue';
-import { computed, ref } from 'vue';
 
 const ICON_SIZE = '2rem'
 

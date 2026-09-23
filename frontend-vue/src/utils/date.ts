@@ -47,3 +47,26 @@ export function isTodayInRange(start: Date, end: Date): boolean {
   const todayStart = new Date(now.getFullYear(), now.getMonth(), now.getDate())
   return todayStart >= start && todayStart < end
 }
+
+function startOfDay(date: Date): Date {
+  return new Date(date.getFullYear(), date.getMonth(), date.getDate())
+}
+
+
+export function isInRange(
+  day: Date | string,
+  start: Date | string,
+  end?: Date | string | null,
+): boolean {
+  const dayDate = startOfDay(day instanceof Date ? day : new Date(day))
+  const startDate = startOfDay(start instanceof Date ? start : new Date(start))
+
+  if (!end) {
+    return dayDate.getTime() === startDate.getTime()
+  }
+
+  const endDate = startOfDay(end instanceof Date ? end : new Date(end))
+
+  return dayDate >= startDate && dayDate <= endDate
+}
+

@@ -4,7 +4,7 @@ import MonthCalendar from '@/features/events/calendar/MonthCalendar.vue';
 import type { EventListItemDto } from '@/api/generated/models/eventListItemDto.ts';
 import { computed, ref } from 'vue';
 import EventDayList from './calendar/EventDayList.vue';
-import { isSameDay } from '@/utils/date.ts';
+import { isInRange } from '@/utils/date.ts';
 import { keepPreviousData } from '@tanstack/vue-query';
 import SkeletonCalendar from '../shared/skeletons/SkeletonCalendar.vue';
 
@@ -38,7 +38,7 @@ function handleDateSelect(date: Date) {
 function updateSelectedDateEvents() {
   if (!eventsData.value) return []
   selectedDateEvents.value = eventsData.value.filter(
-    e => isSameDay(new Date(e.startTime as string), selectedDate.value)
+    e => isInRange(selectedDate.value, e.startTime as string, e.endTime as string | undefined)
   )
 }
 

@@ -19,16 +19,6 @@ const {followedEventIds, toggleFollowEvent } = useFollowedEvents()
 
 const isFollowed = computed(() => followedEventIds.value.has(String(props.event.id)))
 
-const eventStatus = computed<EventStatus>(() => {
-  const now = new Date()
-  const start = new Date(props.event.startTime as string)
-  const end = props.event.endTime ? new Date(props.event.endTime) : null
-
-  if (end ? end < now : start < now) return 'ended'
-  if (start <= now) return 'ongoing'
-  return 'upcoming'
-})
-
 function goToEvent() {
   router.push({ name: 'event-detail', params: { id: props.event.id } })
 }
