@@ -11,14 +11,8 @@ import SkeletonCalendar from '../shared/skeletons/SkeletonCalendar.vue';
 const rangeStart = ref<Date>()
 const rangeEnd = ref<Date>()
 
-function handleRangeChange(start: Date, end: Date) {
-  rangeStart.value = start
-  rangeEnd.value = end
-}
-
 const selectedDate = ref<Date>(new Date())
 const selectedDateEvents = ref<EventListItemDto[]>([])
-
 
 const {data: eventsData, isPending} = useGetEvent(
   computed(() => ({
@@ -29,6 +23,11 @@ const {data: eventsData, isPending} = useGetEvent(
     query: { placeholderData: keepPreviousData }
   }
 )
+
+function handleRangeChange(start: Date, end: Date) {
+  rangeStart.value = start
+  rangeEnd.value = end
+}
 
 function handleDateSelect(date: Date) {
   selectedDate.value = date

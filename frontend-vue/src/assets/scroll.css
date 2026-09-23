@@ -3,7 +3,7 @@
   --c-scroll-thumb-color: var(--p-primary-color);
   /* --c-scroll-track-color: var(--p-highlight-background); */
   --c-scroll-track-color: transparent;
-  --c-scroll-hover-color: var(--p-primary-hover-color)
+  --c-scroll-hover-color: var(--p-primary-hover-color);
 }
 
 * {

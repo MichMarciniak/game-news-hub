@@ -31,8 +31,6 @@ const defaultValue = computed(() =>
 </script>
 
 <template>
-
-
   <div class="max-w-4xl w-full mx-auto flex flex-col gap-8">
     <template v-if="isPending">
       <!-- <SkeletonEventDetails /> -->
