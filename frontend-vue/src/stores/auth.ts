@@ -33,7 +33,7 @@ export const useAuthStore = defineStore('auth', () => {
   //   })
   // }
 
-    const initialize = async () => {
+  const initialize = async () => {
     if (isInitialized.value) return // dodatkowe zabezpieczenie, na wypadek podwójnego wywołania
 
     try {

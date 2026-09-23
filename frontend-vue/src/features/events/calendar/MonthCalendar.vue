@@ -6,6 +6,8 @@ import interactionPlugin from '@fullcalendar/interaction'
 import type { CalendarOptions, DatesSetArg, EventClickArg } from '@fullcalendar/core'
 import type { DateClickArg } from '@fullcalendar/interaction'
 import type { EventListItemDto } from '@/api/generated/models'
+import CalendarHeader from './CalendarHeader.vue'
+import { isTodayInRange } from '@/utils/date.ts'
 
 const props = defineProps<{
   events: EventListItemDto[],
@@ -15,6 +17,10 @@ const emit = defineEmits<{
   rangeChange: [start: Date, end: Date],
   dateSelect: [date: Date]
 }>()
+
+const title = ref('')
+const currentView = ref('dayGridMonth')
+const today = ref(true)
 
 const toCalendarEvent = (event: EventListItemDto) => {
   return {
@@ -34,6 +40,9 @@ function handleEventClick(clickInfo: EventClickArg) {
 }
 
 function handleDatesSet(arg: DatesSetArg) {
+  title.value = arg.view.title
+  currentView.value = arg.view.type
+  today.value = isTodayInRange(arg.view.currentStart, arg.view.currentEnd)
   emit('rangeChange', arg.view.activeStart, arg.view.activeEnd)
 }
 
@@ -48,21 +57,54 @@ const calendarOptions = ref<CalendarOptions>({
   eventClick: handleEventClick,
   datesSet: handleDatesSet,
   dateClick: handleDateClick,
-  headerToolbar: {
-    left: 'prev,next today',
-    center: 'title',
-    right: 'dayGridWeek,dayGridMonth'
-  },
+  headerToolbar: false,
 })
 
 watch(events, (newEvents) => {
   calendarOptions.value.events = newEvents
 })
 
+const calendarRef = ref<InstanceType<typeof FullCalendar> | null>(null)
+const calendarApi = computed(() => calendarRef.value?.getApi())
+
+const viewOptions = [
+  { label: 'Month', value: 'dayGridMonth' },
+  { label: 'Week', value: 'dayGridWeek' },
+]
+
+function goPrev() {
+  calendarApi.value?.prev()
+}
+
+function goNext() {
+  calendarApi.value?.next()
+}
+
+function goToday() {
+  calendarApi.value?.today()
+}
+
+function changeView(view: string) {
+  calendarApi.value?.changeView(view)
+  currentView.value = view
+}
+
 </script>
 
 <template>
-  <FullCalendar :options="calendarOptions"/>
+  <div >
+    <CalendarHeader 
+      :today="today"
+      :title="title"
+      :current-view="currentView"
+      :view-options="viewOptions"
+      @prev="goPrev"
+      @next="goNext"
+      @today="goToday"
+      @update:current-view="changeView"
+    />
+    <FullCalendar ref="calendarRef" :options="calendarOptions"/>
+  </div>
 </template>
 
 <style lang="css" scoped>

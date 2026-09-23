@@ -41,3 +41,9 @@ export function isSameDay(a: Date | string, b: Date | string): boolean {
     && dateA.getDate() == dateB.getDate()
   )
 }
+
+export function isTodayInRange(start: Date, end: Date): boolean {
+  const now = new Date()
+  const todayStart = new Date(now.getFullYear(), now.getMonth(), now.getDate())
+  return todayStart >= start && todayStart < end
+}

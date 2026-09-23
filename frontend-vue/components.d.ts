@@ -35,6 +35,7 @@ declare module 'vue' {
     RouterLink: typeof import('vue-router')['RouterLink']
     RouterView: typeof import('vue-router')['RouterView']
     Select: typeof import('openvue/select')['default']
+    SelectButton: typeof import('openvue/selectbutton')['default']
     Skeleton: typeof import('openvue/skeleton')['default']
     Splitter: typeof import('openvue/splitter')['default']
     Tab: typeof import('openvue/tab')['default']
