@@ -30,6 +30,7 @@ declare module 'vue' {
     Message: typeof import('openvue/message')['default']
     Navigation: typeof import('./src/components/Navigation.vue')['default']
     Paginator: typeof import('openvue/paginator')['default']
+    Panel: typeof import('openvue/panel')['default']
     Password: typeof import('openvue/password')['default']
     RouterLink: typeof import('vue-router')['RouterLink']
     RouterView: typeof import('vue-router')['RouterView']

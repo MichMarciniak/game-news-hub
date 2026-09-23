@@ -3,7 +3,7 @@ import { ref, computed, watch } from 'vue'
 import FullCalendar from '@fullcalendar/vue3'
 import dayGridPlugin from '@fullcalendar/daygrid'
 import interactionPlugin from '@fullcalendar/interaction'
-import type { CalendarOptions, DatesSetArg, EventClickArg, EventInput, EventSourceInput } from '@fullcalendar/core'
+import type { CalendarOptions, DatesSetArg, EventClickArg } from '@fullcalendar/core'
 import type { DateClickArg } from '@fullcalendar/interaction'
 import type { EventListItemDto } from '@/api/generated/models'
 
@@ -12,7 +12,8 @@ const props = defineProps<{
 }>()
 
 const emit = defineEmits<{
-  rangeChange: [start: Date, end: Date]
+  rangeChange: [start: Date, end: Date],
+  dateSelect: [date: Date]
 }>()
 
 const toCalendarEvent = (event: EventListItemDto) => {
@@ -23,6 +24,7 @@ const toCalendarEvent = (event: EventListItemDto) => {
     end: event.endTime ?? undefined,
   }
 }
+
 
 const events = computed(() => (props.events ?? []).map((e) => toCalendarEvent(e)))
 
@@ -35,12 +37,17 @@ function handleDatesSet(arg: DatesSetArg) {
   emit('rangeChange', arg.view.activeStart, arg.view.activeEnd)
 }
 
+function handleDateClick(arg: DateClickArg) {
+  emit('dateSelect', arg.date)
+}
+
 const calendarOptions = ref<CalendarOptions>({
   plugins: [dayGridPlugin, interactionPlugin],
   initialView: 'dayGridMonth',
   events: events.value,
   eventClick: handleEventClick,
   datesSet: handleDatesSet,
+  dateClick: handleDateClick,
   headerToolbar: {
     left: 'prev,next today',
     center: 'title',
