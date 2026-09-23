@@ -6,7 +6,7 @@ import { ref, watch } from 'vue';
 import DebouncedInput from '../shared/DebouncedInput.vue';
 import { OiArrowDown, OiArrowUp, OiFilter } from '@openvue/openicons-vue';
 import GameCard from './GameCard.vue';
-import SkeletonGameCard from './SkeletonGameCard.vue';
+import SkeletonGameCard from '../shared/skeletons/SkeletonGameCard.vue';
 import { keepPreviousData } from '@tanstack/vue-query';
 import FilterList from '@/features/games/FilterList.vue';
 import GameGrid from './GameGrid.vue';
