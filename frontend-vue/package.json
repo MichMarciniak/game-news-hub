@@ -16,6 +16,10 @@
     "generate:api": "orval"
   },
   "dependencies": {
+    "@fullcalendar/core": "^6.1.21",
+    "@fullcalendar/daygrid": "^6.1.21",
+    "@fullcalendar/interaction": "^6.1.21",
+    "@fullcalendar/vue3": "^6.1.21",
     "@openvue/forms": "^1.0.0",
     "@openvue/openicons-vue": "^1.0.0",
     "@openvue/themes": "^1.0.0",
@@ -26,6 +30,7 @@
     "pinia": "^4.0.3",
     "tailwindcss": "^4.3.3",
     "tailwindcss-primeui": "^0.6.1",
+    "temporal-polyfill": "^1.0.5",
     "vue": "^3.5.42",
     "vue-router": "^5.3.1",
     "zod": "^4.6.5"
