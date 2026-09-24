@@ -7,6 +7,7 @@ public record EventScoringInput(
     int EventId,
     string Name,
     DateTimeOffset StartTime,
+    DateTimeOffset? EndTime,
     IReadOnlyCollection<int> GameIds,
     IReadOnlyCollection<int> PlatformGroupIds,
     IReadOnlyCollection<EventGenreWeightInput> GenreWeights
@@ -54,7 +55,9 @@ public static class RecommendationCalculator
             ContainsFollowedPlatformGroup = containsFollowedPlatformGroup,
             MatchScore = matchScore,
             IsFollowed = isFollowed,
-            FinalPriority = priority
+            FinalPriority = priority,
+            StartTime = evt.StartTime,
+            EndTime = evt.EndTime
         };
     }
 

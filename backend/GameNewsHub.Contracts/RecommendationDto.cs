@@ -10,4 +10,6 @@ public record RecommendationDto
     public double MatchScore { get; set; }
     public double FinalPriority { get; set; }
     public bool IsPredicted { get; set; }
+    public DateTimeOffset StartTime { get; set; }
+    public DateTimeOffset? EndTime { get; set; }
 }
