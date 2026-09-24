@@ -19,3 +19,30 @@
 .fc .fc-daygrid-event-harness:hover {
   cursor: pointer;
 }
+
+.fc .fc-event-title-container {
+  display: flex;
+}
+
+/* .fc-event-start.fc-daygrid-block-event {
+  margin-left: 0.4em !important;
+}
+
+.fc-event-end.fc-daygrid-block-event {
+  margin-right: 0.4em !important;
+} */
+
+@media (max-width: 768px) {
+  .fc .fc-daygrid-event-dot {
+    display: none;
+  }
+
+  .fc-event-title {
+    -webkit-line-clamp: 2;
+    line-clamp: 2;
+    overflow: hidden;
+    line-height: 1;
+    font-size: 0.6rem;
+  }
+
+}

@@ -6,9 +6,9 @@ import Footer from './components/Footer.vue';
 <template>
   <Header />
 
-  <main class="flex-1 flex justify-center p-4">
+  <main class="flex-1 flex justify-center py-4">
     <Toast />
-  <RouterView />
+    <RouterView />
   </main>
   <Footer />
 </template>
