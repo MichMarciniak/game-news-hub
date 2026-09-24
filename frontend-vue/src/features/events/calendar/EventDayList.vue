@@ -24,7 +24,7 @@ const props = defineProps<{
         <template v-if="events">
           <EventDayItem v-for="e in events" :key="e.id" :event="e"/>
         </template>
-        <div class="flex flex-col mx-auto items-center text-muted-color">
+        <div v-else class="flex flex-col mx-auto items-center text-muted-color">
           <OiTimes size="2rem"/>
           <span class="text-xl">No events that day.</span>
         </div>
