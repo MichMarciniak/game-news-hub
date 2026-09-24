@@ -5,7 +5,7 @@ import { formatEventDate } from '@/utils/date';
 import { computed } from 'vue';
 import FollowHeart from '../shared/FollowHeart.vue';
 import { useRouter } from 'vue-router';
-import EventStatusBadge, { type EventStatus } from '@/features/events/EventStatusBadge.vue';
+import EventStatusBadge from '@/features/events/EventStatusBadge.vue';
 
 const HEART_SIZE = '1.5rem'
 

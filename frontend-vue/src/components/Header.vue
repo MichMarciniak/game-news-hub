@@ -44,7 +44,7 @@ function toggleEvents() {
           class="flex items-center gap-2 p-1"
           v-slot="{isActive}"
         >
-          <OiAsterisk size="32" :class="{'text-primary': isActive}" />
+          <OiAsterisk size="32" :class="{'text-primary': isActive}" title="home" />
         </RouterLink>
       </template>
 

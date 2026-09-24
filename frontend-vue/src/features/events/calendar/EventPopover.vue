@@ -59,7 +59,7 @@ function goToEvent() {
         <span class="text-semibold! max-w-70 text-center">{{ selectedEvent.name }}</span>
         <div class="flex items-start">
           <Button class="p-0 m-0 hover:bg-transparent hover:text-muted-color text-color" variant="text" @click="hide">
-            <OiTimes size="1.5rem" />
+            <OiTimes size="1.5rem" title="close"/>
           </Button>
         </div>
       </div>
@@ -68,7 +68,7 @@ function goToEvent() {
       <div class="text-muted-color flex justify-between gap-5">
         <!-- Time -->
         <div class="flex items-center gap-1">
-          <OiClock size="1rem"/>
+          <OiClock size="1rem" title="time"/>
           <div>
             <span class="text-muted-color">{{ formatTime(event?.startTime) }}</span>
             <span v-if="event?.endTime" class="text-muted-color"> - {{ formatTime(event?.endTime) }}</span>
@@ -77,7 +77,7 @@ function goToEvent() {
         </div>
         <!-- Follows -->
         <div class="flex items-center gap-1">
-          <OiHeartFill size="1rem"/>
+          <OiHeartFill size="1rem" title="follows"/>
           <span>FollowNum</span>
         </div>
       </div>
@@ -88,7 +88,7 @@ function goToEvent() {
           :is-followed="isFollowed"
           @click="toggleFollowEvent(activeEventId as string)" 
         />
-        <Button variant="text" class="p-0 m-0" @click="goToEvent">
+        <Button variant="text" class="p-0 m-0" @click="goToEvent" aria-label="go-to-event">
           <OiArrowRight size="1.5rem"/>
         </Button>
       </div>

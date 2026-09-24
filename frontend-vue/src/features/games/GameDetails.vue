@@ -15,7 +15,7 @@ const router = useRouter()
 
 const gameId = computed(() => String(route.params.id))
 
-const { data: gameResponse, isPending } = useGetGameGameId(gameId)
+const { data: gameResponse } = useGetGameGameId(gameId)
 const game = computed(() => (gameResponse.value))
 
 function goToGame() {
@@ -29,9 +29,12 @@ function goToGame() {
   <div class="max-w-6xl w-full mx-auto flex flex-col gap-4">
     <!-- Image, title, follow -->
     <div class="flex not-sm:flex-col">
-      <Image :src="TRANSPARENT_IMAGE" class="shrink-0 mr-2"/>
+      <div class="flex justify-center shrink-0">
+        <Image :src="TRANSPARENT_IMAGE" class="shrink-0 mr-2"/>
+      </div>
       <div class="flex flex-col gap-2">
         <h2 class="text-2xl font-medium">{{ game?.title }}</h2>
+        <span class="text-muted-color-emphasis text-xl">release date placeholder</span>
         <span class="text-muted-color">{{ game?.summary }}</span>
         <span class="text-muted-color">{{ game?.type }}</span>
         <span v-if="game?.parentGameId" @click="goToGame" class="cursor-pointer self-start">Parent game name</span>
@@ -41,18 +44,22 @@ function goToGame() {
 
     <!-- platforms, genres, childs -->
     <div class="flex flex-col gap-5">
-      <div class="flex gap-3">
+      <div class="flex gap-3 flex-wrap">
         <GenreCard v-for="g in game?.genres" :key="g.id" :name="g.name"/>
       </div>
-      <div class="flex gap-3">
+      <div class="flex gap-3 flex-wrap">
         <PlatformGroupCard v-for="p in game?.platformGroups" :key="p.id" :name="p.name!" :platforms="p.platforms!" />
       </div>
     </div>
 
-    <div class="flex flex-col">
-      <GameGrid>
-        <GameCard v-for="g in game?.addons" :game="g" :key="g.id" />
-      </GameGrid>
+    <div v-if="game?.addons?.length != 0" class="flex flex-col">
+      <h2 class="text-xl">Addons</h2>
+      <div class="px-1 py-3">
+        <GameGrid class="max-w-[80%]">
+          <GameCard v-for="g in game?.addons" :game="g" :key="g.id" />
+        </GameGrid>
+
+      </div>
     </div>
 
   </div>

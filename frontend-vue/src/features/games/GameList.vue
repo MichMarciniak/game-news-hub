@@ -84,8 +84,8 @@ function onPageChange(event: PageState) {
         :aria-label="searchQuery.descending ? 'Descending' : 'Ascending'"
         @click="searchQuery.descending = !searchQuery.descending"
       >
-        <OiArrowDown v-if="searchQuery.descending"/>
-        <OiArrowUp v-else/>
+        <OiArrowDown v-if="searchQuery.descending" title="descending"/>
+        <OiArrowUp v-else title="ascending"/>
       </Button>
     </div>
 
@@ -137,8 +137,8 @@ function onPageChange(event: PageState) {
               :aria-label="searchQuery.descending ? 'Descending' : 'Ascending'"
               @click="searchQuery.descending = !searchQuery.descending"
             >
-              <OiArrowDown v-if="searchQuery.descending"/>
-              <OiArrowUp v-else/>
+              <OiArrowDown v-if="searchQuery.descending" title="descending"/>
+              <OiArrowUp v-else title="ascending"/>
             </Button>
           </div> 
         </div>

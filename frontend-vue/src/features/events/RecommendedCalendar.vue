@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { useGetEvent, useGetRecommendationEvents } from '@/api/generated/index.ts';
+import { useGetRecommendationEvents } from '@/api/generated/index.ts';
 import MonthCalendar from '@/features/events/calendar/MonthCalendar.vue';
 import type { EventListItemDto } from '@/api/generated/models/eventListItemDto.ts';
 import { computed, ref } from 'vue';

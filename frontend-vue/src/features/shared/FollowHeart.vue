@@ -21,6 +21,7 @@ defineEmits<{
   <Button
     variant="text"
     class="p-0 m-0 hover:bg-transparent focus:bg-transparent self-center shrink-0"
+    aria-label="follow"
     @click="$emit('click', $event)"
   >
     <Transition mode="out-in" name="heart-pop">
