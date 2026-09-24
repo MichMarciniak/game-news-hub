@@ -8,6 +8,7 @@ import type { DateClickArg } from '@fullcalendar/interaction'
 import type { EventListItemDto } from '@/api/generated/models'
 import CalendarHeader from './CalendarHeader.vue'
 import { isTodayInRange } from '@/utils/date.ts'
+import EventPopover from './EventPopover.vue'
 
 const props = defineProps<{
   events: EventListItemDto[],
@@ -22,12 +23,16 @@ const title = ref('')
 const currentView = ref('dayGridMonth')
 const today = ref(true)
 
+const popoverRef = ref<InstanceType<typeof EventPopover> | null>(null)
+const selectedEvent = ref<EventListItemDto | null>(null)
+
 const toCalendarEvent = (event: EventListItemDto) => {
   return {
     id: String(event.id),
     title: event.name,
     start: event.startTime,
     end: event.endTime ?? undefined,
+    extendedProps: {raw: event }
   }
 }
 
@@ -36,7 +41,8 @@ const events = computed(() => (props.events ?? []).map((e) => toCalendarEvent(e)
 
 
 function handleEventClick(clickInfo: EventClickArg) {
-  console.log(clickInfo)
+  selectedEvent.value = clickInfo.event.extendedProps.raw as EventListItemDto
+  popoverRef.value?.open(clickInfo.jsEvent, clickInfo.el, clickInfo.event.id)
 }
 
 function handleDatesSet(arg: DatesSetArg) {
@@ -48,6 +54,7 @@ function handleDatesSet(arg: DatesSetArg) {
 
 function handleDateClick(arg: DateClickArg) {
   emit('dateSelect', arg.date)
+  popoverRef.value?.hide()
 }
 
 const calendarOptions = ref<CalendarOptions>({
@@ -111,6 +118,11 @@ function changeView(view: string) {
       @update:current-view="changeView"
     />
     <FullCalendar ref="calendarRef" :options="calendarOptions"/>
+
+    <EventPopover 
+      ref="popoverRef"
+      :event="selectedEvent"
+    />
   </div>
 </template>
 
