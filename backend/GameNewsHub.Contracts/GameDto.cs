@@ -20,6 +20,7 @@ public class GameDetailDto
     public List<PlatformGroupWithPlatformsDto> PlatformGroups { get; set; } = new();
 
     public List<GameListItemDto>? Addons { get; set; }
+    public DateTimeOffset? ReleaseDate { get; set; }
 
     public int? ParentGameId { get; set; }
 

@@ -12,6 +12,7 @@ public class Game
     public ICollection<Platform> Platforms { get; set; } = new List<Platform>();
 
     public GameType Type { get; set; } = GameType.MainGame;
+    public DateTimeOffset? ReleaseDate { get; set; }
     public int? ParentGameIgdbId { get; set; }
     public int? ParentGameId { get; set; }
     public Game? ParentGame { get; set; }

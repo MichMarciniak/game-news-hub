@@ -26,6 +26,9 @@ public class GameSyncService : IGameSyncService
         _logger = logger;
     }
 
+    /*
+     * UNUSED
+     */
     public async Task SyncUpcomingGamesAsync(int limit = 10)
     {
         var rawGames = await _client.GetGamesFromIgdb(limit);
@@ -116,6 +119,7 @@ public class GameSyncService : IGameSyncService
                 Type = dto.GameType != null ? (GameType)dto.GameType.IgdbId : GameType.MainGame,
                 ParentGameIgdbId = dto.ParentGame,
                 Genres = MapGenres(dto.Genres, genres),
+                ReleaseDate = GetMinReleaseDate(dto.ReleaseDates),
                 Platforms = MapPlatforms(dto.Platforms, platforms)
             };
         }).ToList();
@@ -128,6 +132,14 @@ public class GameSyncService : IGameSyncService
         await PullParentGames(newGames, visited);
 
         return allGames;
+    }
+
+    private DateTimeOffset? GetMinReleaseDate(IEnumerable<ReleaseDate>? releaseDates)
+    {
+        if (releaseDates == null || !releaseDates.Any()) return null;
+        var relDate = releaseDates.MinBy(x => x.Date);
+        if (relDate == null) return null;
+        return DateTimeOffset.FromUnixTimeSeconds(relDate.Date);
     }
 
     private ICollection<Genre> MapGenres(IEnumerable<IgdbGenreResponse> dtos, IEnumerable<Genre> genres)

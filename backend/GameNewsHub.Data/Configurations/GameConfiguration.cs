@@ -14,6 +14,8 @@ public class GameConfiguration : IEntityTypeConfiguration<Game>
 
         builder.HasIndex(x => x.ParentGameId);
 
+        builder.HasIndex(x => x.ReleaseDate);
+
         builder.Property(x => x.Summary)
             .HasColumnType("text");
 

@@ -17,6 +17,7 @@ public static class GameMappingExtension
             Addons = game.ChildGames.Select(g => g.ToListItemDto()).ToList(),
             PlatformGroups = platformGroupDtos,
             ParentGameId = game.ParentGameId,
+            ReleaseDate = game.ReleaseDate,
             Type = (GameTypeString)game.Type
         };
     }

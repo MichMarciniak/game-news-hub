@@ -11,7 +11,7 @@ public class StandardIgdbClient : BaseIgdbClient, IIgdbClient
 
     public override async Task<List<IgdbGameResponse>> GetGamesFromIgdb(int limit = 5)
     {
-        var query = $"fields name, summary, cover.url, genres.name, platforms.name; " +
+        var query = $"fields name, summary, cover.url, genres.name, platforms.name, release_dates.date; " +
                     $"limit {limit};";
         var url = "games";
         return await SendRequestAsync<IgdbGameResponse>(query, url);

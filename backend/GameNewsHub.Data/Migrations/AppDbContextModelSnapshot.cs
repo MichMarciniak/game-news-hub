@@ -254,6 +254,9 @@ namespace Data.Migrations
                     b.Property<int?>("ParentGameIgdbId")
                         .HasColumnType("integer");
 
+                    b.Property<DateTimeOffset?>("ReleaseDate")
+                        .HasColumnType("timestamp with time zone");
+
                     b.Property<string>("Summary")
                         .IsRequired()
                         .HasColumnType("text");
@@ -268,6 +271,8 @@ namespace Data.Migrations
                     b.HasKey("Id");
 
                     b.HasIndex("ParentGameId");
+
+                    b.HasIndex("ReleaseDate");
 
                     b.HasIndex("Title");
 

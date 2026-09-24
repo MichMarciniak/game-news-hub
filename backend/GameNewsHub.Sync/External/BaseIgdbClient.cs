@@ -28,7 +28,7 @@ public abstract class BaseIgdbClient : IIgdbClient
         {
             var ids = string.Join(',', chunk);
             var query =
-                $"fields name, summary, cover.url, genres.name, platforms.name, category, parent_game, game_type.type; " +
+                $"fields name, summary, cover.url, genres.name, platforms.name, category, parent_game, game_type.type, release_dates.date; " +
                 $"where id = ({ids}); limit {chunkSize};";
 
             var url = "games";

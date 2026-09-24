@@ -15,6 +15,8 @@ public record IgdbGameResponse
     [JsonPropertyName("game_type")] public IgdbGameTypeDto? GameType { get; set; }
 
     [JsonPropertyName("parent_game")] public int? ParentGame { get; set; }
+    
+    [JsonPropertyName("release_dates")] public List<ReleaseDate>? ReleaseDates { get; set; }
 
     public IgdbCoverResponse? Cover { get; set; }
 }
@@ -26,4 +28,9 @@ public class IgdbGameTypeDto
     [JsonPropertyName("id")] public int IgdbId { get; set; }
 
     public string Type { get; set; } = string.Empty;
+}
+
+public class ReleaseDate
+{
+    public long Date { get; set; }
 }
