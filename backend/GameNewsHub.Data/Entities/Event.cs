@@ -13,6 +13,7 @@ public class Event
     public EventSyncStatus Status { get; set; }
 
     public int IgdbId { get; set; }
+    public string LiveStreamUrl { get; set; } = string.Empty;
 
     public ICollection<Game> Games { get; set; } = new List<Game>();
     public ICollection<EventGenreWeight> GenreWeights { get; set; } = new List<EventGenreWeight>();

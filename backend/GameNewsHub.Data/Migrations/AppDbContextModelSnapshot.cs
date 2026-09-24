@@ -167,6 +167,10 @@ namespace Data.Migrations
                     b.Property<int>("IgdbId")
                         .HasColumnType("integer");
 
+                    b.Property<string>("LiveStreamUrl")
+                        .IsRequired()
+                        .HasColumnType("text");
+
                     b.Property<string>("Name")
                         .IsRequired()
                         .HasMaxLength(200)

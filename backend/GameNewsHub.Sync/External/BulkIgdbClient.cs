@@ -27,7 +27,7 @@ public class BulkIgdbClient : BaseIgdbClient, IIgdbClient
     public override async Task<List<IgdbEventResponse>> UpdateEventsFromIgdb(IEnumerable<int> eventIds)
     {
         var ids = string.Join(",", eventIds);
-        var query = $"fields name, start_time, end_time, description, games.id;" +
+        var query = $"fields name, start_time, end_time, description, games.id, live_stream_url;" +
                     $"where id = ({ids}); limit 500;";
         var url = "events";
         return await SendRequestAsync<IgdbEventResponse>(query, url);

@@ -15,4 +15,5 @@ public record IgdbEventResponse
     public string Description { get; set; } = string.Empty;
 
     public List<GameIdContainer> Games { get; set; }
+    [JsonPropertyName("live_stream_url")] public string? LiveStreamUrl { get; set; } = string.Empty;
 }

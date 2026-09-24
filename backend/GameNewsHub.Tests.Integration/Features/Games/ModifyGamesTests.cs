@@ -55,7 +55,8 @@ public class ModifyGamesTests : MutatingIntegrationTest
         var totalItems = pageSize * pages;
             
         var games = GameFactory.Create()
-            .RuleFor(g => g.Title, f => query != null ? $"Test Game {f.UniqueIndex}" : f.Commerce.ProductName())
+            .RuleFor(g => g.Title, f => query != null ?
+                $"Test Game {f.UniqueIndex}" : f.Commerce.ProductName())
             .Generate(totalItems);
 
         context.AddRange(games);

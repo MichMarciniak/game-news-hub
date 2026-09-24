@@ -60,7 +60,8 @@ public class EventSyncService : IEventSyncService
                 StartTime = DateTimeOffset.FromUnixTimeSeconds(e.StartTime),
                 EndTime = e.EndTime.HasValue ? DateTimeOffset.FromUnixTimeSeconds(e.EndTime.Value) : null,
                 Description = e.Description,
-                Status = EventSyncStatus.Pending
+                Status = EventSyncStatus.Pending,
+                LiveStreamUrl = e.LiveStreamUrl ?? string.Empty,
             };
             evt = await AssignToSeries(evt, newSeriesCache);
 
@@ -128,6 +129,7 @@ public class EventSyncService : IEventSyncService
             e.EndTime = apiData.EndTime.HasValue //na wypadek żeby jeszcze nie było
                 ? DateTimeOffset.FromUnixTimeSeconds(apiData.EndTime.Value)
                 : null;
+            e.LiveStreamUrl = apiData.LiveStreamUrl ?? string.Empty;
 
             if (apiData.Games != null && apiData.Games.Any())
             {

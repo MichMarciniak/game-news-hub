@@ -10,6 +10,7 @@ public class EventDetailDto
     public List<GameListItemDto>? Games { get; set; }
     public List<EventListNameDto>? RelatedEvents { get; set; }
     public int FollowerCount { get; set; }
+    public string? LiveStreamUrl { get; set; }
 }
 
 public class EventListItemDto

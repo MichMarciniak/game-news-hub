@@ -21,6 +21,9 @@ public class EventConfiguration : IEntityTypeConfiguration<Event>
         builder.Property(x => x.Description)
             .HasColumnType("text");
 
+        builder.Property(x => x.LiveStreamUrl)
+            .HasColumnType("text");
+
         builder.HasMany(x => x.Games)
             .WithMany() // nie ma relacji w Game
             .UsingEntity("GameEvents");

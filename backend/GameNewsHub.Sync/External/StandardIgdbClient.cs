@@ -20,7 +20,7 @@ public class StandardIgdbClient : BaseIgdbClient, IIgdbClient
 
     public override async Task<List<IgdbEventResponse>> GetEventsFromIgdb(long from, long to)
     {
-        var query = $"fields name, start_time, end_time, description, games.id; " +
+        var query = $"fields name, start_time, end_time, description, games.id, live_stream_url; " +
                     $"where start_time >= {from} & start_time <= {to};" +
                     $"sort start_time asc;";
         var url = "events";
@@ -30,7 +30,7 @@ public class StandardIgdbClient : BaseIgdbClient, IIgdbClient
     public override async Task<List<IgdbEventResponse>> UpdateEventsFromIgdb(IEnumerable<int> eventIds)
     {
         var ids = string.Join(",", eventIds);
-        var query = $"fields name, start_time, end_time, description, games.id;" +
+        var query = $"fields name, start_time, end_time, description, games.id, live_stream_url;" +
                     $"where id = ({ids});";
         var url = "events";
         return await SendRequestAsync<IgdbEventResponse>(query, url);
