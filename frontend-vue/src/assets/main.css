@@ -2,6 +2,7 @@
 @plugin 'tailwindcss-primeui';
 @import './base.css';
 @import './scroll.css';
+@import './calendar.css';
 
 #app {
   /* max-width: 1280px; */

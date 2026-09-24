@@ -1,0 +1,21 @@
+:root {
+  --fc-border-color: var(--p-content-border-color);
+  --fc-event-bg-color: var(--p-highlight-background);
+  --fc-event-border-color: var(--p-primary-color);
+  --fc-event-text-color: var(--text-contrast);
+
+}
+
+.fc {
+  border-radius: var(--p-border-radius-lg);
+  overflow: hidden;
+  border: 1px solid var(--p-content-border-color);
+}
+
+.fc .fc-col-header-cell-cushion {
+  font-weight: 500;
+}
+
+.fc .fc-daygrid-event-harness:hover {
+  cursor: pointer;
+}

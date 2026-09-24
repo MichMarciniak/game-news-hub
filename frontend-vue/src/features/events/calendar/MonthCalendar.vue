@@ -53,11 +53,18 @@ function handleDateClick(arg: DateClickArg) {
 const calendarOptions = ref<CalendarOptions>({
   plugins: [dayGridPlugin, interactionPlugin],
   initialView: 'dayGridMonth',
+  height: 'auto',
+  stickyHeaderDates: false,
   events: events.value,
   eventClick: handleEventClick,
   datesSet: handleDatesSet,
   dateClick: handleDateClick,
   headerToolbar: false,
+  views: {
+    dayGridMonth: {
+      displayEventTime: false
+    }
+  }
 })
 
 watch(events, (newEvents) => {
