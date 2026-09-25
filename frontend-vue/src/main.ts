@@ -2,7 +2,7 @@
 import './assets/main.css';
 
 import { createApp } from 'vue'
-import { createPinia } from 'pinia'
+import { createPinia, storeToRefs } from 'pinia'
 
 import App from './App.vue'
 import router from './router'
@@ -42,6 +42,14 @@ app.use(ToastService)
 initTheme()
 
 const authStore = useAuthStore()
+
+router.beforeEach((to, from) => {
+    const {isAuthenticated} = storeToRefs(authStore)
+    if (!isAuthenticated) {
+        return false
+    }
+})
+
 authStore.initialize().finally(() => {
     app.mount('#app')
 })

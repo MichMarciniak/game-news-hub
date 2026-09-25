@@ -16,23 +16,6 @@ export const useAuthStore = defineStore('auth', () => {
   const {mutate: logoutMutate} = usePostLogout()
   const {mutate: logoutAllMutate} = usePostLogoutAll()
 
-  // const login = async (values : LoginDto) => {
-  //   loginMutate(
-  //     {data: values},
-  //     {
-  //     onSuccess: (data) => {
-  //       user.value = data.user as ProfileDto
-  //       token.value = data.accessToken as string
-  //       setAccessToken(data.accessToken as string)
-  //       console.log(token.value)
-
-  //     },
-  //     onError: () => {
-  //       throw new Error('Invalid username or password')
-  //     }
-  //   })
-  // }
-
   const initialize = async () => {
     if (isInitialized.value) return // dodatkowe zabezpieczenie, na wypadek podwójnego wywołania
 

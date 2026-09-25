@@ -20,7 +20,7 @@ const game = computed(() => (gameResponse.value))
 
 function goToGame() {
   router.push({ name: 'game-detail', params: { id: game.value?.parentGameId } })
-  console.log(game.value?.parentGameId)
+  // console.log(game.value?.parentGameId)
 }
 
 </script>
