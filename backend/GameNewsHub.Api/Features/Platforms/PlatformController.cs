@@ -52,7 +52,7 @@ public class PlatformController : ControllerBase
     public async Task<IActionResult> UnfollowGroup(int groupId)
     {
         var userId = User.GetUserId();
-        var result = await _service.FollowPlatformGroup(userId, groupId);
+        var result = await _service.UnfollowPlatformGroup(userId, groupId);
 
         return result.MatchFirst<IActionResult>(
             success => Ok(),
