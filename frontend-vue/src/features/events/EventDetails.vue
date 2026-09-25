@@ -4,7 +4,7 @@ import { useFollowedEvents } from '@/composables/eventFollows'
 import { formatEventDate } from '@/utils/date'
 import { useGetEventEventId } from '@/api/generated'
 import { useRoute } from 'vue-router'
-import { OiHeart, OiHeartFill } from '@openvue/openicons-vue'
+import { OiHeart, OiHeartFill, OiLink } from '@openvue/openicons-vue'
 import EventItemSimple from '@/features/events/EventItemSimple.vue'
 import EventStatusBadge from '@/features/events/EventStatusBadge.vue'
 import FollowHeart from '../shared/FollowHeart.vue'
@@ -82,6 +82,10 @@ const defaultValue = computed(() =>
             <i class="pi pi-users" />
             {{ event.followerCount }} followers
           </span>
+          <a v-if="event.liveStreamUrl" :href="event.liveStreamUrl" rel="noopener noreferrer" target="_blank" class="flex items-center ">
+            <OiLink size="1.5rem"/>
+            {{ event.liveStreamUrl }}
+          </a>
         </div>
 
       </div>
