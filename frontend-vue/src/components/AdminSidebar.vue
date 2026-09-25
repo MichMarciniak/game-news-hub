@@ -3,7 +3,7 @@ import { OiTimes } from '@openvue/openicons-vue';
 import { ref } from 'vue';
 
 const navItems = [
-  {label: 'Reassign event series', to: '/admin/series-assign'},
+  {label: 'Reassign event series', to: '/admin/event-assign'},
   {label: 'Reassign platforms', to: '/admin/platform-assign'}
 ]
 

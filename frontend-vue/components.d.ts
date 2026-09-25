@@ -41,6 +41,7 @@ declare module 'vue' {
     SelectButton: typeof import('openvue/selectbutton')['default']
     Skeleton: typeof import('openvue/skeleton')['default']
     Splitter: typeof import('openvue/splitter')['default']
+    SplitterPanel: typeof import('openvue/splitterpanel')['default']
     Tab: typeof import('openvue/tab')['default']
     TabList: typeof import('openvue/tablist')['default']
     TabPanel: typeof import('openvue/tabpanel')['default']
