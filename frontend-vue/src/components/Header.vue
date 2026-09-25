@@ -1,6 +1,6 @@
 <script lang="ts" setup>
 import { isDark, toggleDarkMode } from '@/composables/theme';
-import Profile from '@/features/auth/Profile.vue';
+import ProfileButton from '@/components/ProfileButton.vue';
 import ThemeSwitcher from '@/features/themes/ThemeSwitcher.vue';
 import { OiAngleDown, OiAngleRight, OiAsterisk, OiMoon, OiSun } from '@openvue/openicons-vue';
 import { computed, ref } from 'vue';
@@ -109,7 +109,7 @@ function toggleEvents() {
             <OiMoon v-else size="1.5rem" />
           </Button>
         
-          <Profile />
+          <ProfileButton />
         </div>
       </template>
     </Menubar>

@@ -33,6 +33,7 @@ declare module 'vue' {
     Panel: typeof import('openvue/panel')['default']
     Password: typeof import('openvue/password')['default']
     Popover: typeof import('openvue/popover')['default']
+    ProfileButton: typeof import('./src/components/ProfileButton.vue')['default']
     RouterLink: typeof import('vue-router')['RouterLink']
     RouterView: typeof import('vue-router')['RouterView']
     Select: typeof import('openvue/select')['default']

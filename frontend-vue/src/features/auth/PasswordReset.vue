@@ -9,6 +9,7 @@ import { useToast } from 'openvue';
 import { computed, ref } from 'vue';
 import { useRoute, useRouter } from 'vue-router';
 import z from 'zod';
+import PasswordWithHints from './PasswordWithHints.vue';
 
 const initialValues = ref({
   password: ''
@@ -37,8 +38,6 @@ const onFormSubmit = async ({ valid, values }: FormSubmitEvent) => {
     token: token.value,
     password: values.password as string
   }
-  console.log(data as ResetPasswordDto)
-  console.log(data.token)
 
   resetPassword(
     {data: data as ResetPasswordDto},
@@ -72,30 +71,10 @@ const onFormSubmit = async ({ valid, values }: FormSubmitEvent) => {
       >
         <div class="flex flex-col gap-1 mt-3">
           <label for="password" class="text-sm">Password</label>
-          <Password
+          <PasswordWithHints 
             name="password"
-            toggleMask
-            fluid
-            variant="filled"
-            :feedback="true"
-          >
-            <!-- Szablon nagłówka podpowiedzi -->
-            <template #header>
-              <div class="font-semibold text-xs mb-2">Strength</div>
-            </template>
-
-            <!-- Szablon stopki wyświetlający warunki -->
-            <template #footer>
-              <div class="mt-2 pt-2 border-t">
-                <p class="text-xs font-semibold mb-1">Password requirements:</p>
-                <ul class="text-xs list-disc pl-4 space-y-1">
-                  <li>Minimum 8 characters</li>
-                  <li>At least one uppercase</li>
-                  <li>At least one number</li>
-                </ul>
-              </div>
-            </template>
-          </Password>
+            placeholder="password"
+          />
           <Message v-if="$form.password?.invalid" severity="error" size="small" variant="simple">
             {{ $form.password.error?.message }}
           </Message>
