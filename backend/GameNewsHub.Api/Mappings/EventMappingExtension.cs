@@ -13,7 +13,8 @@ public static class EventMappingExtension
             Id = e.Id,
             Name = e.Name,
             StartTime = e.StartTime,
-            EndTime = e.EndTime
+            EndTime = e.EndTime,
+            FollowerCount = e.FollowerCount
         };
     }
 

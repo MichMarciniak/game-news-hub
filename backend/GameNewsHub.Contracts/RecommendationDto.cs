@@ -12,4 +12,5 @@ public record RecommendationDto
     public bool IsPredicted { get; set; }
     public DateTimeOffset StartTime { get; set; }
     public DateTimeOffset? EndTime { get; set; }
+    public int FollowerCount { get; set; }
 }

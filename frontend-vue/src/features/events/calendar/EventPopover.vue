@@ -78,7 +78,7 @@ function goToEvent() {
         <!-- Follows -->
         <div class="flex items-center gap-1">
           <OiHeartFill size="1rem" title="follows"/>
-          <span>FollowNum</span>
+          <span>{{ event?.followerCount }}</span>
         </div>
       </div>
 

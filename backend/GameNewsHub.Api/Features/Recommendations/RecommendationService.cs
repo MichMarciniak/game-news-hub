@@ -115,6 +115,7 @@ public class RecommendationService
                     e.Name,
                     e.StartTime,
                     e.EndTime,
+                    e.FollowerCount,
                     e.Games.Select(g => g.Id).ToList(),
                     e.Games
                         .SelectMany(g => g.Platforms)
