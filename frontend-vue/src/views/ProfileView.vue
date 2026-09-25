@@ -12,14 +12,14 @@ import { storeToRefs } from 'pinia';
 const authStore = useAuthStore();
 const {user, isAuthenticated } = storeToRefs(authStore)
 
-const {data: platforms, isPending: platformPending} = useGetPlatformGroups()
-const {data: genres, isPending: genrePending} = useGetGenreGenres()
+const {data: platforms} = useGetPlatformGroups()
+const {data: genres} = useGetGenreGenres()
 
 </script>
 
 
 <template>
-  <div>
+  <div class="max-w-7xl w-full mt-5 mx-auto">
     <h2 class="text-2xl font-semibold">{{ user?.username }}</h2>
     <Settings />
     <PasswordChange />

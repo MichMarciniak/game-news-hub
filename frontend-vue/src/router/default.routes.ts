@@ -12,7 +12,8 @@ export const defaultRoutes: RouteRecordRaw[] = [
   {
     path: '/me',
     name: 'me',
-    component: ProfileView
+    component: ProfileView,
+    meta: {requiresAuth: true}
   },
   {
     path: '/games',
