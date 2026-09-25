@@ -13,6 +13,7 @@ import { OiSpinner } from '@openvue/openicons-vue';
 import { useRouter } from 'vue-router';
 import type { ProblemDetails, RegisterDto } from '@/api/generated/models';
 import type { AxiosError } from 'axios';
+import PasswordWithHints from './PasswordWithHints.vue';
 
 const router = useRouter()
 
@@ -68,8 +69,10 @@ const onFormSubmit = async ({ valid, values }: FormSubmitEvent) => {
       >
         <!-- Pole Username -->
         <div class="flex flex-col gap-1">
-          <label for="username">Username</label>
-          <InputText name="username" type="text" placeholder="yourusername" fluid />
+          <FloatLabel variant="on">
+            <InputText name="username" type="text" placeholder="yourusername" fluid />
+            <label for="username">Username</label>
+          </FloatLabel>
           <Message v-if="$form.username?.invalid" severity="error" size="small" variant="simple">
             {{ $form.username.error?.message }}
           </Message>
@@ -77,8 +80,10 @@ const onFormSubmit = async ({ valid, values }: FormSubmitEvent) => {
 
         <!-- Pole Email -->
         <div class="flex flex-col gap-1">
-          <label for="email">Email</label>
-          <InputText name="email" type="text" placeholder="your@email.com" fluid />
+          <FloatLabel variant="on">
+            <InputText name="email" type="text" placeholder="your@email.com" fluid />
+            <label for="email">Email</label>
+          </FloatLabel>
           <Message v-if="$form.email?.invalid" severity="error" size="small" variant="simple">
             {{ $form.email.error?.message }}
           </Message>
@@ -86,31 +91,10 @@ const onFormSubmit = async ({ valid, values }: FormSubmitEvent) => {
 
         <!-- Pole Hasło z szablonem wymagań -->
         <div class="flex flex-col gap-1">
-          <label for="password">Password</label>
-          <Password
-            name="password"
-            toggleMask
-            fluid
-            variant="filled"
-            :feedback="true"
-          >
-            <!-- Szablon nagłówka podpowiedzi -->
-            <template #header>
-              <div class="font-semibold text-xs mb-2">Strength</div>
-            </template>
-
-            <!-- Szablon stopki wyświetlający warunki -->
-            <template #footer>
-              <div class="mt-2 pt-2 border-t">
-                <p class="text-xs font-semibold mb-1">Password requirements:</p>
-                <ul class="text-xs list-disc pl-4 space-y-1">
-                  <li>Minimum 8 characters</li>
-                  <li>At least one uppercase</li>
-                  <li>At least one number</li>
-                </ul>
-              </div>
-            </template>
-          </Password>
+          <FloatLabel variant="on">
+            <PasswordWithHints name="password"/>
+            <label for="password">Password</label>
+          </FloatLabel>
           <Message v-if="$form.password?.invalid" severity="error" size="small" variant="simple">
             {{ $form.password.error?.message }}
           </Message>

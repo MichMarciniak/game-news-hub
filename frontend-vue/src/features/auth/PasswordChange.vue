@@ -62,14 +62,16 @@ const onFormSubmit = async ({valid, values}: FormSubmitEvent) => {
         class="mx-auto mt-[5rem] max-w-md flex flex-col gap-5"
       >
         <div>
-          <label for="oldPassword">Current password</label>
-          <Password toggle-mask :feedback="false" name="oldPassword" fluid type="password"/>
+          <FloatLabel variant="on">
+            <Password toggle-mask :feedback="false" name="oldPassword" fluid type="password"/>
+            <label for="oldPassword">Current password</label>
+          </FloatLabel>
         </div>
         <div>
-          <label for="newPassword">New password</label>
-          <PasswordWithHints 
-            name="newPassword"
-          />
+          <FloatLabel variant="on">
+            <PasswordWithHints name="newPassword"/>
+            <label for="newPassword">New password</label>
+          </FloatLabel>
           <Message v-if="$form.newPassword?.invalid" severity="error" size="small" variant="simple">
             {{ $form.newPassword.error.message }}
           </Message>

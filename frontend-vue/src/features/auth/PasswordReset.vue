@@ -70,11 +70,11 @@ const onFormSubmit = async ({ valid, values }: FormSubmitEvent) => {
         :initialValues="initialValues"
       >
         <div class="flex flex-col gap-1 mt-3">
-          <label for="password" class="text-sm">Password</label>
-          <PasswordWithHints 
-            name="password"
-            placeholder="password"
-          />
+          <FloatLabel variant="on">
+            <PasswordWithHints name="password" placeholder="password"/>
+            <label for="password" class="text-sm">Password</label>
+
+          </FloatLabel>
           <Message v-if="$form.password?.invalid" severity="error" size="small" variant="simple">
             {{ $form.password.error?.message }}
           </Message>

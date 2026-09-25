@@ -53,11 +53,14 @@ function submit({valid, values}: FormSubmitEvent) {
         class="flex flex-col gap-4"
       >
         <div>
-          <InputText fluid
-            name="email"
-            type="text" 
-            placeholder="your@email.com" 
-            class="mt-5"/>
+          <FloatLabel variant="on" class="mt-5">
+            <InputText fluid
+              name="email"
+              type="text" 
+              placeholder="your@email.com" 
+              />
+            <label for="email">Email</label>
+          </FloatLabel>
           <Message v-if="$form.email?.invalid" severity="error" size="small" variant="simple">
               {{ $form.email.error?.message }}
           </Message>

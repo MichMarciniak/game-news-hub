@@ -64,8 +64,11 @@ const onFormSubmit = async ({ valid, values }: FormSubmitEvent) => {
       >
 
         <div class="flex flex-col gap-1">
-          <label for="email">Email</label>
-          <InputText name="email" type="text" placeholder="your@email.com" fluid />
+          <FloatLabel variant="on">
+            <InputText name="email" type="text" placeholder="your@email.com" fluid />
+            <label for="email">Email</label>
+
+          </FloatLabel>
           <Message v-if="$form.email?.invalid" severity="error" size="small" variant="simple">
             {{ $form.email.error?.message }}
           </Message>
@@ -73,15 +76,16 @@ const onFormSubmit = async ({ valid, values }: FormSubmitEvent) => {
   
 
         <div class="flex flex-col gap-1">
-          <label for="password">Password</label>
-          <Password
-            name="password"
-            toggleMask
-            fluid
-            variant="filled"
-            :feedback="false"
-          >
-          </Password>
+          <FloatLabel variant="on" >
+            <Password
+              name="password"
+              toggleMask
+              fluid
+              variant="filled"
+              :feedback="false"
+            />
+            <label for="password">Password</label>
+          </FloatLabel>
           <Message v-if="$form.password?.invalid" severity="error" size="small" variant="simple">
             {{ $form.password.error?.message }}
           </Message>

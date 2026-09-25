@@ -22,6 +22,7 @@ declare module 'vue' {
     DataView: typeof import('openvue/dataview')['default']
     Divider: typeof import('openvue/divider')['default']
     Drawer: typeof import('openvue/drawer')['default']
+    FloatLabel: typeof import('openvue/floatlabel')['default']
     Footer: typeof import('./src/components/Footer.vue')['default']
     Form: typeof import('@openvue/forms/form')['default']
     Header: typeof import('./src/components/Header.vue')['default']
