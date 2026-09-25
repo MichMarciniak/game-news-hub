@@ -1,5 +1,6 @@
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
+using GameNewsHub.Api.Constants;
 
 namespace GameNewsHub.Api.Extensions;
 
@@ -11,5 +12,11 @@ public static class ClaimsPrincipalExtensions
                  ?? user.FindFirstValue(JwtRegisteredClaimNames.Sub);
 
         return id != null ? int.Parse(id) : throw new UnauthorizedAccessException();
+    }
+
+    public static bool isAdmin(this ClaimsPrincipal user)
+    {
+        var val = user.IsInRole(Roles.Admin);
+        return val;
     }
 }

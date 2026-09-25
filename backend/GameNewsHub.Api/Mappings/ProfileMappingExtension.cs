@@ -6,14 +6,15 @@ namespace GameNewsHub.Api.Mappings;
 
 public static class ProfileMappingExtension
 {
-    public static ProfileDto ToDto(this AppUser user)
+    public static ProfileDto ToDto(this AppUser user, bool isAdmin)
     {
         return new ProfileDto
         {
             Id = user.Id,
             Username = user.UserName!,
             CreatedAt = user.CreatedAt,
-            Settings = user.ToSettingsDto()
+            Settings = user.ToSettingsDto(),
+            isAdmin = isAdmin
         };
     }
     

@@ -15,6 +15,7 @@ declare module 'vue' {
     AccordionContent: typeof import('openvue/accordioncontent')['default']
     AccordionHeader: typeof import('openvue/accordionheader')['default']
     AccordionPanel: typeof import('openvue/accordionpanel')['default']
+    AdminSidebar: typeof import('./src/components/AdminSidebar.vue')['default']
     Button: typeof import('openvue/button')['default']
     Card: typeof import('openvue/card')['default']
     Checkbox: typeof import('openvue/checkbox')['default']

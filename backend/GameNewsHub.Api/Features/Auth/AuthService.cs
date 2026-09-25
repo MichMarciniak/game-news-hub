@@ -127,6 +127,8 @@ public class AuthService
         var accessToken = await _tokenService.GenerateAccessToken(user);
         var refreshToken = _tokenService.GenerateRefreshToken(user);
 
+        var isAdmin = await _userManager.IsInRoleAsync(user, Roles.Admin);
+
         _logger.LogInformation(
             "User {UserId} logged in",
             user.Id);
@@ -138,7 +140,7 @@ public class AuthService
         var res = new LoginResult
         {
             Tokens = tokens,
-            User = user.ToDto()
+            User = user.ToDto(isAdmin)
         };
         return res;
     }
@@ -245,12 +247,13 @@ public class AuthService
         var newRefreshToken =
             _tokenService.GenerateRefreshToken(user); // rotacja - nowy refresh przy kazdym odswiezeniu
 
+        var isAdmin = await _userManager.IsInRoleAsync(user, Roles.Admin);
         
         var tokens = new TokenResult { AccessToken = newAccessToken, RefreshToken = newRefreshToken };
         return new LoginResult
         {
             Tokens = tokens,
-            User = user.ToDto()
+            User = user.ToDto(isAdmin)
         };
     }
 

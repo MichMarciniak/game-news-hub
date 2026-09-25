@@ -39,6 +39,7 @@ function toggleEvents() {
   <header class="top-0 left-0 w-full flex">
     <Menubar :model="menuItems" class="w-full" breakpoint="632px">
       <template #start>
+        <slot />
         <RouterLink 
           to="/" 
           class="flex items-center gap-2 p-1"
@@ -98,6 +99,7 @@ function toggleEvents() {
               {{ child.label }}
             </a>
           </RouterLink>
+          
         </div>
       </template>
 

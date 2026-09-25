@@ -57,7 +57,7 @@ public class AuthController : ControllerBase
                 return Ok(new LoginResponse
                 {
                     AccessToken = value.Tokens.AccessToken,
-                    User = value.User
+                    User = value.User,
                 });
             },
             errors => this.ProblemErr(errors)

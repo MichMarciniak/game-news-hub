@@ -11,6 +11,7 @@ export const useAuthStore = defineStore('auth', () => {
   const isInitialized = ref(false)
   
   const isAuthenticated = computed(() => !!token.value)
+  const isAdmin = computed(() => user.value?.isAdmin)
 
   const {mutateAsync: loginMutate} = usePostLogin()
   const {mutate: logoutMutate} = usePostLogout()
@@ -62,5 +63,5 @@ export const useAuthStore = defineStore('auth', () => {
     })
   }
 
-  return {user, token, isAuthenticated, login, logout, logoutAll, initialize}
+  return {user, token, isAuthenticated, isAdmin, login, logout, logoutAll, initialize}
 })

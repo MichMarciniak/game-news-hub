@@ -24,7 +24,7 @@ public class UsersService
         if (user == null)
             return Error.NotFound("User.NotFound", $"User {userId} not found");
 
-        return user.ToDto();
+        return user.ToDto(false);
     }
 
     public async Task<ErrorOr<List<GameListItemDto>>> GetFollowedGames(int userId)

@@ -46,5 +46,10 @@ export const defaultRoutes: RouteRecordRaw[] = [
     name: 'events-recommended',
     component: () => import('@/features/events/RecommendedCalendar.vue'),
     meta: {requiresAuth: true}
+  },
+  {
+    path: '/:pathMatch(.*)*',
+    name: 'not-found',
+    component: () => import('@/views/NotFoundView.vue')
   }
 ]

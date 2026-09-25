@@ -6,6 +6,7 @@ public class ProfileDto
     public string Username { get; set; }
     public DateTimeOffset CreatedAt { get; set; }
     public SettingsDto Settings { get; set; }
+    public bool? isAdmin { get; set; }
 
 }
 
