@@ -51,10 +51,10 @@ function formatGameType(type?: string): string {
 
     <!-- platforms, genres, childs -->
     <div class="flex flex-col gap-5">
-      <div class="flex gap-3 flex-wrap">
+      <div v-if="game?.genres" class="flex gap-3 flex-wrap">
         <GenreCard v-for="g in game?.genres" :key="g.id" :name="g.name"/>
       </div>
-      <div class="flex gap-3 flex-wrap">
+      <div v-if="game?.platformGroups" class="flex gap-3 flex-wrap">
         <PlatformGroupCard v-for="p in game?.platformGroups" :key="p.id" :name="p.name!" :platforms="p.platforms!" />
       </div>
     </div>

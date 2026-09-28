@@ -14,9 +14,15 @@ const target = ref(null)
 </script>
 <template>
   <div ref="target">
-    <div @pointerover="open=true" @pointerleave="open = false" class="cursor-pointer border rounded-lg py-1 px-2">
+    <button 
+      @pointerover="open=true"  
+      @pointerleave="open = false"
+      @focusin="open = true"
+      @focusout="open = false"
+      class=" border-surface border-2 rounded-lg py-1 px-2"
+    >
       <span>{{ name }}</span>
-    </div>
+  </button>
     <div :class="{'hidden': !open}" 
       class="flex flex-col gap-1 absolute bg-emphasis p-2 rounded-lg">
       <span v-for="p in platforms" :key="p.id">{{ p.name }}</span>

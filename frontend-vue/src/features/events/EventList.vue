@@ -69,13 +69,13 @@ function onPageChange(event: PageState) {
         class="flex-2"
       ></Select>
       <Button
-        class="h-[2.7rem]!"
+        class="h-[2.7rem]! aspect-square p-0!"
         variant="outlined"
         :aria-label="searchQuery.descending ? 'Descending' : 'Ascending'"
         @click="searchQuery.descending = !searchQuery.descending"
       >
-        <OiArrowDown v-if="searchQuery.descending"/>
-        <OiArrowUp v-else/>
+        <OiArrowDown v-if="searchQuery.descending" size="1.5rem"/>
+        <OiArrowUp v-else size="1.5rem"/>
       </Button>
     </div>
 
@@ -100,13 +100,13 @@ function onPageChange(event: PageState) {
               option-value="value"
             />
             <Button
-              class="h-[2.7rem]!"
+              class="h-[2.7rem]! aspect-square p-0!"
               variant="outlined"
               :aria-label="searchQuery.descending ? 'Descending' : 'Ascending'"
               @click="searchQuery.descending = !searchQuery.descending"
             >
-              <OiArrowDown v-if="searchQuery.descending"/>
-              <OiArrowUp v-else/>
+              <OiArrowDown v-if="searchQuery.descending" size="1.5rem"/>
+              <OiArrowUp v-else size="1.5rem"/>
             </Button>
           </div> 
         </div>
