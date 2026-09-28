@@ -165,13 +165,13 @@ public class EventSyncService : IEventSyncService
         if (string.IsNullOrWhiteSpace(evt.NormalizedName)) evt.NormalizedName = evt.Name; // fallback
 
         var exactMatch = await _context.Events
-            .Where(e => e.EventSeriesId != null && e.NormalizedName == evt.NormalizedName)
-            .Select(e => e.EventSeriesId)
+            .Where(e => e.NormalizedName == evt.NormalizedName)
+            .Select(e => (int?)e.EventSeriesId)
             .FirstOrDefaultAsync();
 
-        if (exactMatch != null)
+        if (exactMatch.HasValue && exactMatch.Value > 0)
         {
-            evt.EventSeriesId = exactMatch;
+            evt.EventSeriesId = exactMatch.Value;
             return evt;
         }
 
