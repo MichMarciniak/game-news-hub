@@ -18,6 +18,17 @@ public class UsersController : ControllerBase
         _service = service;
     }
 
+    [HttpPatch("me/settings")]
+    public async Task<IActionResult> PatchSettings(SettingsDto settings)
+    {
+        var userId = User.GetUserId();
+        var result = await _service.PatchSettings(userId, settings);
+        return result.Match(
+            details => Ok(details),
+            err => this.ProblemErr(err));
+            
+    }
+
     [HttpGet("me/games/followed")]
     public async Task<ActionResult<List<GameListItemDto>>> GetFollowedGames()
     {
