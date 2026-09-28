@@ -96,7 +96,7 @@ public class EventService
         EventSortBy? sortBy, bool descending = true)
     {
         page = Math.Max(1, page);
-        pageSize = Math.Max(1, pageSize);
+        pageSize = Math.Clamp(pageSize, 1, 50);
         
         IQueryable<Event> dbQuery = _context.Events.AsQueryable();
 
@@ -146,6 +146,48 @@ public class EventService
             .ToListAsync();
 
         return new SearchDto<EventListItemDto>
+        {
+            Total = total,
+            Items = items
+        };
+    }
+
+    public async Task<SearchDto<AdminSeriesDto>> GetAdminSeries(string? query, int page, int pageSize)
+    {
+        page = Math.Max(1, page);
+        pageSize = Math.Clamp(pageSize, 1, 50);
+
+        IQueryable<EventSeries> dbQuery = _context.EventSeries
+            .Where(s => s.Events.Any());
+
+        if (!string.IsNullOrWhiteSpace(query))
+        {
+            query = query.Trim();
+            dbQuery = dbQuery
+                .Where(s => s.Events
+                    .Any(e => EF.Functions.ILike(e.Name, $"%{query}%")));
+
+        };
+
+        var total = await dbQuery.CountAsync();
+
+        var items = await dbQuery
+            .OrderByDescending(s => s.Events.Max(e => e.StartTime))
+            .ThenBy(s => s.Id)
+            .Skip((page - 1) * pageSize)
+            .Take(pageSize)
+            .Select(s => new AdminSeriesDto
+            {
+                Id = s.Id,
+                DisplayName = s.Events
+                    .OrderByDescending(e => e.StartTime)
+                    .Select(e => e.NormalizedName)
+                    .FirstOrDefault() ?? "",
+                Events = s.Events.Select(e => e.ToListItemDto()).ToList()
+            })
+            .ToListAsync();
+
+        return new SearchDto<AdminSeriesDto>
         {
             Total = total,
             Items = items

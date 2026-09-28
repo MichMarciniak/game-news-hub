@@ -41,6 +41,7 @@ const defaultValue = computed(() =>
       <!-- Header, follow, description -->
       <div class="flex flex-col gap-4">
         <div class="flex items-start justify-between gap-4">
+          <!-- Badge + title -->
           <div class="flex items-center gap-3 min-w-0">
             <EventStatusBadge
               :start-time="event.startTime" 
@@ -49,6 +50,7 @@ const defaultValue = computed(() =>
             <h1 class="text-2xl font-semibold">{{ event.name }}</h1>
           </div>
 
+          <!-- Follow btn -->
           <Button
             :severity="isFollowed ? 'secondary' : 'primary'"
             :outlined="isFollowed"
@@ -65,6 +67,7 @@ const defaultValue = computed(() =>
             </template>
           </Button>
 
+          <!-- Follow btn mobile -->
           <FollowHeart 
             class="sm:hidden"
             :size='"2rem"'
@@ -73,6 +76,7 @@ const defaultValue = computed(() =>
           />
         </div>
 
+        <!-- Time, follow count, stream url -->
         <div class="flex items-center gap-4 text-sm text-muted-color">
           <span>
             {{ formatEventDate(event.startTime) }}

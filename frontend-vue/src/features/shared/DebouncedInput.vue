@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { refDebounced, watchDebounced } from '@vueuse/core';
-import { ref, watch } from 'vue';
+import { ref, toRef, watch } from 'vue';
 
 
 const props = withDefaults(
@@ -15,23 +15,21 @@ const props = withDefaults(
 )
 
 const model = defineModel<string>({default: ''})
-
 const localValue = ref(model.value)
 
-const debouncedValue = refDebounced(localValue, props.delay)
+watchDebounced(
+  localValue,
+  (val) => {model.value = val},
+  {debounce: toRef(props, 'delay')}
+)
 
-watchDebounced(debouncedValue, (val) => {
-  model.value = val
+watch(model, (val) => {
+  if (val !== localValue.value) localValue.value = val
 })
 
-watch(
-  () => model.value,
-  (newVal) => {
-    if (newVal !== localValue.value) {
-      localValue.value = newVal
-    }
-  }
-)
+function flush() {
+  model.value = localValue.value
+}
 
 </script>
 
@@ -40,5 +38,6 @@ watch(
     fluid
     v-model="localValue"
     :placeholder="placeholder"
+    @keyup.enter="flush"
   ></InputText>
 </template>

@@ -10,7 +10,7 @@ import { VueQueryPlugin } from '@tanstack/vue-query'
 
 import OpenVue from 'openvue/config'
 import Aura from '@openvue/themes/aura'
-import { ToastService } from 'openvue';
+import { ConfirmationService, ToastService } from 'openvue';
 import { useAuthStore } from './stores/auth.ts';
 import { definePreset, palette } from '@openvue/themes';
 import { initTheme } from './composables/theme.ts';
@@ -38,6 +38,7 @@ app.use(OpenVue, {
     
 })
 app.use(ToastService)
+app.use(ConfirmationService)
 
 initTheme()
 

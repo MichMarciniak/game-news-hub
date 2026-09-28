@@ -34,3 +34,11 @@ public class NormalizedEventListItemDto
     public string Name { get; set; }
     public string NormalizedName { get; set; }
 }
+
+public class AdminSeriesDto
+{
+    public int Id { get; set; }
+    public string DisplayName { get; set; }
+    public List<EventListItemDto> Events { get; set; }
+
+}

@@ -2,6 +2,7 @@
 using GameNewsHub.Api.Features.Events;
 using GameNewsHub.Api.Features.Platforms;
 using GameNewsHub.Api.Features.Shared;
+using GameNewsHub.Contracts;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
@@ -48,5 +49,14 @@ public class AdminController : ControllerBase
         return result.MatchFirst<IActionResult>(
             success => Ok(),
             err => this.ProblemErr(err));
+    }
+
+    [HttpGet("series/search")]
+    public async Task<ActionResult<SearchDto<AdminSeriesDto>>> SearchSeries(
+        string? query, int page = 1, int pageSize = 20)
+    {
+        var result = await _eventService.GetAdminSeries(query, page, pageSize);
+
+        return result;
     }
 }

@@ -30,6 +30,7 @@ function handleOpen() {
 
   <main class="flex-1 flex justify-center py-4 sm:px-4 not-sm:px-1">
     <Toast />
+    <ConfirmDialog />
     <AdminSidebar v-if="isAdmin" ref="adminPanelRef"/>
     <RouterView />
   </main>
