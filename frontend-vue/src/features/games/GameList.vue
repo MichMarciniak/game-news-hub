@@ -12,6 +12,8 @@ import FilterList from '@/features/games/FilterList.vue';
 import GameGrid from './GameGrid.vue';
 import { useSearchQuerySync } from '@/utils/saveSearch.ts';
 import SortButton from '../shared/SortButton.vue';
+import FadeTransition from '../shared/transitions/FadeTransition.vue';
+import BigPaginator from '../shared/BigPaginator.vue';
 
 const searchQuery = ref<GetGameSearchParams>({
   query: undefined,
@@ -128,13 +130,8 @@ function onPageChange(event: PageState) {
         </div>
 
         <!-- Game grid -->
-        <Transition
-          mode="out-in"
-          enter-active-class="transition-opacity duration-200 ease-out"
-          enter-from-class="opacity-0"
-          leave-active-class="transition-opacity duration-150 ease-in"
-          leave-to-class="opacity-0"
-        >
+        <FadeTransition>
+
           <GameGrid :key="isPending ? 'skeleton' : `${searchQuery.page}-${searchQuery.pageSize}-${searchQuery.query}-${searchQuery.sortBy}-${searchQuery.descending}`">
             <template v-if="isPending">
               <SkeletonGameCard v-for="num in searchQuery.pageSize" :key="`skeleton-${num}`" />
@@ -143,19 +140,14 @@ function onPageChange(event: PageState) {
               <GameCard v-for="game in gamesData?.items" :key="game.id" :game="game" />
             </template>
           </GameGrid>
-        </Transition>
+        </FadeTransition>
 
         <!-- Paginator -->
-        <div class="mt-4">
-          <Paginator
-            :first="(searchQuery.page as number - 1) * (searchQuery.pageSize as number)"
-            :rows="searchQuery.pageSize as number"
-            :total-records="gamesData?.total as number ?? 0"
-            :rows-per-page-options="[12, 24, 48]"
-            template="FirstPageLink PrevPageLink CurrentPageReport NextPageLink LastPageLink JumpToPageInput RowsPerPageDropdown"
-            @page="onPageChange"
-          />
-        </div>
+        <BigPaginator 
+          v-model:page="searchQuery.page"
+          v-model:page-size="searchQuery.pageSize"
+          :total-records="gamesData?.total"
+        />
 
       </section>
     </div>

@@ -10,6 +10,8 @@ import EventItem from './EventItem.vue';
 import SkeletonEventItem from '@/features/shared/skeletons/SkeletonEventItem.vue';
 import { useSearchQuerySync } from '@/utils/saveSearch.ts';
 import SortButton from '../shared/SortButton.vue';
+import FadeTransition from '../shared/transitions/FadeTransition.vue';
+import BigPaginator from '../shared/BigPaginator.vue';
 
 const gridCols = 'grid grid-cols-[1rem_1fr_11rem_11rem_auto] items-center gap-4'
 
@@ -110,13 +112,8 @@ function onPageChange(event: PageState) {
 
         <!-- Event list -->
 
-        <Transition
-          mode="out-in"
-          enter-active-class="transition-opacity duration-200 ease-out"
-          enter-from-class="opacity-0"
-          leave-active-class="transition-opacity duration-150 ease-in"
-          leave-to-class="opacity-0"
-        >
+        <FadeTransition>
+
           <div 
             v-if="isPending" 
             key="skeleton" 
@@ -124,27 +121,22 @@ function onPageChange(event: PageState) {
           >
             <SkeletonEventItem v-for="i in searchQuery.pageSize" :key="`skeleton-${i}`" />
           </div>
-
+        
           <div v-else 
             :key="`${searchQuery.page}-${searchQuery.pageSize}-${searchQuery.query}-${searchQuery.sortBy}-${searchQuery.descending}`"
             class="flex flex-col gap-2"
           >
-            <EventItem v-for="event in eventsData?.items" :event="event" :key="event.id"></EventItem>
+          <EventItem v-for="event in eventsData?.items" :event="event" :key="event.id"></EventItem>
           </div>
-        </Transition>
+        </FadeTransition>
           
 
         <!-- Paginator -->
-        <div class="mt-4">
-          <Paginator
-            :first="(searchQuery.page as number - 1) * (searchQuery.pageSize as number)"
-            :rows="searchQuery.pageSize as number"
-            :total-records="eventsData?.total as number ?? 0"
-            :rows-per-page-options="[12, 24, 48]"
-            template="FirstPageLink PrevPageLink CurrentPageReport NextPageLink LastPageLink JumpToPageInput RowsPerPageDropdown"
-            @page="onPageChange"
-          />
-        </div>
+        <BigPaginator 
+          v-model:page="searchQuery.page"
+          v-model:page-size="searchQuery.pageSize"
+          :total-records="eventsData?.total"
+        />
 
       </section>
     </div>
