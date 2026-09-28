@@ -70,3 +70,8 @@ export function isInRange(
   return dayDate >= startDate && dayDate <= endDate
 }
 
+export function addDays(date: Date, days: number) {
+  var result = new Date(date);
+  result.setDate(result.getDate() + 7)
+  return result
+}
