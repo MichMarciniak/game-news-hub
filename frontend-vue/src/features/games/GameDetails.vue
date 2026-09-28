@@ -20,7 +20,11 @@ const game = computed(() => (gameResponse.value))
 
 function goToGame() {
   router.push({ name: 'game-detail', params: { id: game.value?.parentGameId } })
-  // console.log(game.value?.parentGameId)
+}
+
+function formatGameType(type?: string): string {
+  if (!type) return '';
+  return type.replace(/([a-z])([A-Z])/g, '$1 $2');
 }
 
 </script>
@@ -34,10 +38,13 @@ function goToGame() {
       </div>
       <div class="flex flex-col gap-2">
         <h2 class="text-2xl font-medium">{{ game?.title }}</h2>
-        <span class="text-muted-color-emphasis text-xl">release date placeholder</span>
+        <div class="flex gap-5">
+          <span class="text-muted-color">{{ formatGameType(game?.type) }}</span>
+          <Divider v-if="game?.parentGameId" layout="vertical"/>
+          <span v-if="game?.parentGameId" @click="goToGame" class="cursor-pointer self-start">Parent game name</span>
+        </div>
+        <span class="text-muted-color-emphasis text-xl">{{ game?.releaseDate }}</span>
         <span class="text-muted-color">{{ game?.summary }}</span>
-        <span class="text-muted-color">{{ game?.type }}</span>
-        <span v-if="game?.parentGameId" @click="goToGame" class="cursor-pointer self-start">Parent game name</span>
 
       </div>
     </div>
