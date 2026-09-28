@@ -22,9 +22,15 @@ public class GameDetailDto
     public List<GameListItemDto>? Addons { get; set; }
     public DateTimeOffset? ReleaseDate { get; set; }
 
-    public int? ParentGameId { get; set; }
+    public ParentGameDto? ParentGame { get; set; }
 
     public GameTypeString Type { get; set; }
+}
+
+public class ParentGameDto
+{
+    public int Id { get; set; }
+    public string Title { get; set; }
 }
 
 [JsonConverter(typeof(JsonStringEnumConverter))]

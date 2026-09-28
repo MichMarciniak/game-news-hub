@@ -16,9 +16,9 @@ public static class GameMappingExtension
             Genres = game.Genres.Select(g => g.ToDto()).ToList(),
             Addons = game.ChildGames.Select(g => g.ToListItemDto()).ToList(),
             PlatformGroups = platformGroupDtos,
-            ParentGameId = game.ParentGameId,
             ReleaseDate = game.ReleaseDate,
-            Type = (GameTypeString)game.Type
+            Type = (GameTypeString)game.Type,
+            ParentGame = game.ParentGame.ToParentGameDto()
         };
     }
 
@@ -29,6 +29,16 @@ public static class GameMappingExtension
             Id = game.Id,
             Title = game.Title,
             CoverUrl = game.CoverUrl
+        };
+    }
+
+    public static ParentGameDto? ToParentGameDto(this Game? game)
+    {
+        if (game == null) return null;
+        return new ParentGameDto
+        {
+            Id = game.Id,
+            Title = game.Title,
         };
     }
 }

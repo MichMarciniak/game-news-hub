@@ -98,6 +98,7 @@ public class GameService
         var game = await _context.Games
             .AsSingleQuery()
             .Include(g => g.ChildGames)
+            .Include(g => g.ParentGame)
             .Include(g => g.Platforms)
             .ThenInclude(pg => pg.PlatformGroup)
             .Include(g => g.Genres)

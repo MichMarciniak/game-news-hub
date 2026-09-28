@@ -19,7 +19,7 @@ const { data: gameResponse } = useGetGameGameId(gameId)
 const game = computed(() => (gameResponse.value))
 
 function goToGame() {
-  router.push({ name: 'game-detail', params: { id: game.value?.parentGameId } })
+  router.push({ name: 'game-detail', params: { id: game.value?.parentGame?.id } })
 }
 
 function formatGameType(type?: string): string {
@@ -40,8 +40,8 @@ function formatGameType(type?: string): string {
         <h2 class="text-2xl font-medium">{{ game?.title }}</h2>
         <div class="flex gap-5">
           <span class="text-muted-color">{{ formatGameType(game?.type) }}</span>
-          <Divider v-if="game?.parentGameId" layout="vertical"/>
-          <span v-if="game?.parentGameId" @click="goToGame" class="cursor-pointer self-start">Parent game name</span>
+          <Divider v-if="game?.parentGame" layout="vertical"/>
+          <span v-if="game?.parentGame" @click="goToGame" class="cursor-pointer self-start">{{ game.parentGame.title }}</span>
         </div>
         <span class="text-muted-color-emphasis text-xl">{{ game?.releaseDate }}</span>
         <span class="text-muted-color">{{ game?.summary }}</span>
