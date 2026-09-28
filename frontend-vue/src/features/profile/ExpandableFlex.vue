@@ -1,5 +1,8 @@
 <script setup lang="ts">
+import { OiAngleDown, OiAngleUp } from '@openvue/openicons-vue';
 import { ref } from 'vue';
+
+const ICON_SIZE = '2.5rem'
 
 defineProps<{
   title: string
@@ -14,8 +17,10 @@ function toggleOpen() {
 
 <template>
   <div class="flex flex-col my-2">
-    <div class="flex items-center gap-2 cursor-pointer" @click="toggleOpen">
+    <div class="flex items-center gap-2 cursor-pointer justify-between" @click="toggleOpen">
       <h2 class="text-xl">{{ title }}</h2>
+      <OiAngleUp v-if="open" :size="ICON_SIZE" />
+      <OiAngleDown v-else :size="ICON_SIZE" />
     </div>
     <Divider />
     <div class="expand-wrapper" :class="{ 'is-open': open }">
