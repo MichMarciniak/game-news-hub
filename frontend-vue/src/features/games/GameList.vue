@@ -11,6 +11,7 @@ import { keepPreviousData } from '@tanstack/vue-query';
 import FilterList from '@/features/games/FilterList.vue';
 import GameGrid from './GameGrid.vue';
 import { useSearchQuerySync } from '@/utils/saveSearch.ts';
+import SortButton from '../shared/SortButton.vue';
 
 const searchQuery = ref<GetGameSearchParams>({
   query: undefined,
@@ -78,15 +79,7 @@ function onPageChange(event: PageState) {
         placeholder="Sort by..."
         class="flex-2"
       />
-      <Button
-        class="h-[2.7rem]!"
-        variant="outlined"
-        :aria-label="searchQuery.descending ? 'Descending' : 'Ascending'"
-        @click="searchQuery.descending = !searchQuery.descending"
-      >
-        <OiArrowDown v-if="searchQuery.descending" title="descending"/>
-        <OiArrowUp v-else title="ascending"/>
-      </Button>
+      <SortButton v-model="searchQuery.descending"/>
     </div>
 
     <Drawer
@@ -130,16 +123,7 @@ function onPageChange(event: PageState) {
               option-label="label"
               option-value="value"
             />
-            <Button
-              size="large"
-              class="h-[2.7rem]!"
-              variant="outlined"
-              :aria-label="searchQuery.descending ? 'Descending' : 'Ascending'"
-              @click="searchQuery.descending = !searchQuery.descending"
-            >
-              <OiArrowDown v-if="searchQuery.descending" title="descending"/>
-              <OiArrowUp v-else title="ascending"/>
-            </Button>
+            <SortButton v-model="searchQuery.descending"/>
           </div> 
         </div>
 

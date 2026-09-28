@@ -9,6 +9,7 @@ import { OiArrowDown, OiArrowUp } from '@openvue/openicons-vue';
 import EventItem from './EventItem.vue';
 import SkeletonEventItem from '@/features/shared/skeletons/SkeletonEventItem.vue';
 import { useSearchQuerySync } from '@/utils/saveSearch.ts';
+import SortButton from '../shared/SortButton.vue';
 
 const gridCols = 'grid grid-cols-[1rem_1fr_11rem_11rem_auto] items-center gap-4'
 
@@ -68,15 +69,7 @@ function onPageChange(event: PageState) {
         placeholder="Sort by..."
         class="flex-2"
       ></Select>
-      <Button
-        class="h-[2.7rem]! aspect-square p-0!"
-        variant="outlined"
-        :aria-label="searchQuery.descending ? 'Descending' : 'Ascending'"
-        @click="searchQuery.descending = !searchQuery.descending"
-      >
-        <OiArrowDown v-if="searchQuery.descending" size="1.5rem"/>
-        <OiArrowUp v-else size="1.5rem"/>
-      </Button>
+      <SortButton v-model="searchQuery.descending"/>
     </div>
 
      <div class="flex gap-6 flex-1">
@@ -99,15 +92,7 @@ function onPageChange(event: PageState) {
               option-label="label"
               option-value="value"
             />
-            <Button
-              class="h-[2.7rem]! aspect-square p-0!"
-              variant="outlined"
-              :aria-label="searchQuery.descending ? 'Descending' : 'Ascending'"
-              @click="searchQuery.descending = !searchQuery.descending"
-            >
-              <OiArrowDown v-if="searchQuery.descending" size="1.5rem"/>
-              <OiArrowUp v-else size="1.5rem"/>
-            </Button>
+            <SortButton v-model="searchQuery.descending"/>
           </div> 
         </div>
 
