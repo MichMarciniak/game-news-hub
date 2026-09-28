@@ -11,7 +11,7 @@ import SkeletonEventItem from '@/features/shared/skeletons/SkeletonEventItem.vue
 import { useSearchQuerySync } from '@/utils/saveSearch.ts';
 import SortButton from '../shared/SortButton.vue';
 import FadeTransition from '../shared/transitions/FadeTransition.vue';
-import BigPaginator from '../shared/BigPaginator.vue';
+import MyPaginator from '../shared/MyPaginator.vue';
 
 const gridCols = 'grid grid-cols-[1rem_1fr_11rem_11rem_auto] items-center gap-4'
 
@@ -79,13 +79,13 @@ function onPageChange(event: PageState) {
       <section class="flex-1 flex flex-col">
         <div class="hidden md:flex justify-between items-center mb-4">
           <span>Found: {{ eventsData?.total ?? 0 }} events</span>
-            <Paginator
-              :first="(searchQuery.page as number - 1) * (searchQuery.pageSize as number)"
-              :rows="searchQuery.pageSize as number"
-              :total-records="eventsData?.total as number ?? 0"
-              template="FirstPageLink PrevPageLink CurrentPageReport NextPageLink LastPageLink"
-              @page="onPageChange"
-            />
+          <MyPaginator 
+            variant="simple"
+            v-model:page="searchQuery.page"
+            v-model:page-size="searchQuery.pageSize"
+            :total-records="eventsData?.total"
+            class="not-lg:hidden"
+          />
           <div class="flex items-center gap-2">
             <span>Sort: </span>
             <Select
@@ -131,13 +131,15 @@ function onPageChange(event: PageState) {
         </FadeTransition>
           
 
-        <!-- Paginator -->
-        <BigPaginator 
+        <div class="mt-4">        
+          <MyPaginator 
+          variant="default"
           v-model:page="searchQuery.page"
           v-model:page-size="searchQuery.pageSize"
           :total-records="eventsData?.total"
-        />
-
+          />
+        </div>
+          
       </section>
     </div>
   </div>

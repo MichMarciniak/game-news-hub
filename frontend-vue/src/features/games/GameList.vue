@@ -13,7 +13,7 @@ import GameGrid from './GameGrid.vue';
 import { useSearchQuerySync } from '@/utils/saveSearch.ts';
 import SortButton from '../shared/SortButton.vue';
 import FadeTransition from '../shared/transitions/FadeTransition.vue';
-import BigPaginator from '../shared/BigPaginator.vue';
+import MyPaginator from '../shared/MyPaginator.vue';
 
 const searchQuery = ref<GetGameSearchParams>({
   query: undefined,
@@ -45,11 +45,6 @@ watch(
   () => { searchQuery.value.page = 1 },
   { deep: true }
 )
-
-function onPageChange(event: PageState) {
-  searchQuery.value.page = event.page + 1
-  searchQuery.value.pageSize = event.rows
-}
 
 </script>
 
@@ -109,13 +104,12 @@ function onPageChange(event: PageState) {
       <section class="flex-1 flex flex-col">
         <div class="hidden md:flex justify-between items-center mb-4">
           <span>Found: <strong>{{ gamesData?.total ?? 0 }}</strong> games</span>
-          <Paginator
-            :first="(searchQuery.page as number - 1) * (searchQuery.pageSize as number)"
-            :rows="searchQuery.pageSize as number"
-            :total-records="gamesData?.total as number ?? 0"
-            template="FirstPageLink PrevPageLink CurrentPageReport NextPageLink LastPageLink"
+          <MyPaginator 
+            variant="simple"
+            v-model:page="searchQuery.page"
+            v-model:page-size="searchQuery.pageSize"
+            :total-records="gamesData?.total"
             class="not-lg:hidden"
-            @page="onPageChange"
           />
           <div class="flex items-center gap-2">
             <span>Sort: </span>
@@ -143,11 +137,14 @@ function onPageChange(event: PageState) {
         </FadeTransition>
 
         <!-- Paginator -->
-        <BigPaginator 
-          v-model:page="searchQuery.page"
-          v-model:page-size="searchQuery.pageSize"
-          :total-records="gamesData?.total"
-        />
+        <div class="mt-4">
+          <MyPaginator 
+            variant="default"
+            v-model:page="searchQuery.page"
+            v-model:page-size="searchQuery.pageSize"
+            :total-records="gamesData?.total"
+          />
+        </div>
 
       </section>
     </div>
