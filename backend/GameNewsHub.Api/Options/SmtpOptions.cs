@@ -1,13 +1,15 @@
-﻿namespace GameNewsHub.Api.Options;
+﻿using System.ComponentModel.DataAnnotations;
 
-public class SmtpOptions
+namespace GameNewsHub.Api.Options;
+
+public class SmtpOptions : IConfigSection
 {
-    public const string Section = "Smtp";
-    public string Host { get; set; }
-    public int Port { get; set; }
+    public static string SectionName => "Smtp";
+    [Required] public string Host { get; set; }
+    [Required] public int Port { get; set; }
     public string Username { get; set; }
     public string Password { get; set; }
-    public bool EnableSsl { get; set; }
-    public string FromEmail { get; set; }
-    public string FromName { get; set; }
+    [Required] public bool EnableSsl { get; set; }
+    [Required] public string FromEmail { get; set; }
+    [Required] public string FromName { get; set; }
 }

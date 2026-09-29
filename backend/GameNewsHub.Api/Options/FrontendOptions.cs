@@ -1,7 +1,9 @@
-﻿namespace GameNewsHub.Api.Options;
+﻿using System.ComponentModel.DataAnnotations;
 
-public class FrontendOptions
+namespace GameNewsHub.Api.Options;
+
+public class FrontendOptions : IConfigSection
 {
-    public const string SectionName = "Frontend";
-    public string Url { get; set; }
+    public static string SectionName => "Frontend";
+    [Required] public string Url { get; init; } = "";
 }

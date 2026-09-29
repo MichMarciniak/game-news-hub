@@ -1,7 +1,9 @@
-﻿namespace GameNewsHub.Api.Options;
+﻿using System.ComponentModel.DataAnnotations;
 
-public class SeqOptions
+namespace GameNewsHub.Api.Options;
+
+public class SeqOptions : IConfigSection 
 {
-    public const string Section = "Seq";
-    public string Url { get; set; }
+    public static string SectionName => "Seq";
+    [Required] public string Url { get; init; } = "";
 }

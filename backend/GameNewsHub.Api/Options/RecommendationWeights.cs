@@ -1,10 +1,12 @@
-﻿namespace GameNewsHub.Api.Options;
+﻿using System.ComponentModel.DataAnnotations;
 
-public class RecommendationWeights
+namespace GameNewsHub.Api.Options;
+
+public class RecommendationWeights : IConfigSection
 {
-    public const string SectionName = "RecommendationWeights";
-    public double FollowedEventBonus { get; set; }
-    public double FollowedGameBonus { get; set; }
-    public double FollowedPlatformBonus { get; set; }
-    public double GenreMatchMultiplier { get; set; }
+    public static string SectionName => "RecommendationWeights";
+    [Required] public double FollowedEventBonus { get; set; }
+    [Required] public double FollowedGameBonus { get; set; }
+    [Required] public double FollowedPlatformBonus { get; set; }
+    [Required] public double GenreMatchMultiplier { get; set; }
 }

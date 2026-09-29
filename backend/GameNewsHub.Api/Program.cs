@@ -18,64 +18,50 @@ using Microsoft.OpenApi;
 using Scalar.AspNetCore;
 
 var builder = WebApplication.CreateBuilder(args);
+var services = builder.Services;
+var config = builder.Configuration;
 const string FrontendCorsPolicy = "FrontendCorsPolicy";
 
-var connectionString = builder.Configuration.GetConnectionString("DefaultConnection");
+var connectionString = config.GetConnectionString("DefaultConnection");
 
 // OPTIONS from appsettings and secrets
-builder.Services.Configure<RecommendationWeights>(
-    builder.Configuration.GetSection(RecommendationWeights.SectionName));
+services.AddValidatedOptions<JwtTokenOptions>(config);
+services.AddValidatedOptions<SmtpOptions>(config);
+services.AddValidatedOptions<FollowServiceOptions>(config);
+services.AddValidatedOptions<RecommendationWeights>(config);
 
-builder.Services.Configure<JwtTokenOptions>(
-    builder.Configuration.GetSection(JwtTokenOptions.SectionName));
+var frontendOptions = services.AddValidatedOptions<FrontendOptions>(config);
+var seqOptions = services.AddValidatedOptions<SeqOptions>(config);
 
-builder.Services.Configure<SmtpOptions>(
-    builder.Configuration.GetSection(SmtpOptions.Section));
-
-builder.Services.Configure<FrontendOptions>(
-    builder.Configuration.GetSection(FrontendOptions.SectionName));
-
-builder.Services.Configure<FollowServiceOptions>(
-    builder.Configuration.GetSection(FollowServiceOptions.SectionName));
-
-var devAuth = builder.Configuration.GetSection("DevAuth").Get<bool>();
-
-var seqOptions = builder.Configuration.GetSection("Seq").Get<SeqOptions>();
-if (seqOptions == null)
-{
-    throw new Exception("Seq:Url is not configured");
-}
-
-var frontendOptions = builder.Configuration.GetSection(FrontendOptions.SectionName).Get<FrontendOptions>();
+var devAuth = config.GetValue<bool>("DevAuth");
 
 //DATABSE + IDENTITY
-builder.Services.AddDbContext<AppDbContext>(options =>
+services.AddDbContext<AppDbContext>(options =>
     options.UseNpgsql(connectionString)
 );
-builder.Services.AddIdentityCore<AppUser>()
+services.AddIdentityCore<AppUser>()
     .AddRoles<IdentityRole<int>>()
     .AddEntityFrameworkStores<AppDbContext>()
     .AddDefaultTokenProviders()
     .AddSignInManager();
 
-builder.Services.AddHttpContextAccessor();
+services.AddHttpContextAccessor();
 
 // bo .net jest tak piękny że nawet przy wczytywaniu tokenów
 // zamiast "sub" jest jakiś schema...
 JwtSecurityTokenHandler.DefaultInboundClaimTypeMap.Clear();
 
-
 // options narazie dla dev
-builder.Services.Configure<IdentityOptions>(IdentityConfig.ConfigIdentity);
+services.Configure<IdentityOptions>(IdentityConfig.ConfigIdentity);
 
 // CONFIG + SERVICES
-builder.Services.AddFeatureServices();
-builder.Services.AddBackgroundServices();
+services.AddFeatureServices();
+services.AddBackgroundServices();
 
 // OPENAPI
-builder.Services.AddAuthDocumentation();
+services.AddAuthDocumentation();
 
-builder.Services.AddOpenApi(options =>
+services.AddOpenApi(options =>
 {
     options.AddSchemaTransformer((schema, context, _) =>
     {
@@ -112,12 +98,12 @@ builder.Services.AddOpenApi(options =>
     });
 });
 
-builder.Services.AddControllers(options =>
+services.AddControllers(options =>
     {
         options.Filters.Add(new ProducesAttribute("application/json"));
     })
     .AddJsonOptions(opt => { opt.JsonSerializerOptions.Converters.Add(new JsonStringEnumConverter()); });
-builder.Services.AddCors(options =>
+services.AddCors(options =>
 {
     options.AddPolicy(FrontendCorsPolicy, policy =>
     {
@@ -132,10 +118,10 @@ builder.Services.AddCors(options =>
 // AUTHENTICATION - Dev mode or normal
 if (devAuth)
 {
-    builder.Services.AddAuthentication("DevScheme")
+    services.AddAuthentication("DevScheme")
         .AddScheme<AuthenticationSchemeOptions, AuthDevHandler>("DevScheme", null);
 
-    builder.Services.AddAuthorization(options =>
+    services.AddAuthorization(options =>
     {
         options.DefaultPolicy = new AuthorizationPolicyBuilder("DevScheme")
             .RequireAuthenticatedUser()
@@ -144,9 +130,9 @@ if (devAuth)
 }
 else
 {
-    var tokenOptions = builder.Configuration.GetSection(JwtTokenOptions.SectionName).Get<JwtTokenOptions>();
-    builder.Services.AddJwtAuthentication(tokenOptions!);
-    builder.Services.AddAuthorization();
+    var tokenOptions = config.GetSection(JwtTokenOptions.SectionName).Get<JwtTokenOptions>();
+    services.AddJwtAuthentication(tokenOptions!);
+    services.AddAuthorization();
 }
 
 builder.Host.AddAppLogging(seqOptions);

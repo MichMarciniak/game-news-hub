@@ -1,7 +1,9 @@
-﻿namespace GameNewsHub.Api.Options;
+﻿using System.ComponentModel.DataAnnotations;
 
-public class FollowServiceOptions
+namespace GameNewsHub.Api.Options;
+
+public class FollowServiceOptions : IConfigSection
 {
-    public const string SectionName = "FollowService";
-    public TimeSpan Timespan { get; set; }
+    public static string SectionName => "FollowService";
+    [Required] public TimeSpan Timespan { get; init; }
 }

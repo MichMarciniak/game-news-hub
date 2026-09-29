@@ -1,12 +1,14 @@
-﻿namespace GameNewsHub.Api.Options;
+﻿using System.ComponentModel.DataAnnotations;
 
-public class JwtTokenOptions
+namespace GameNewsHub.Api.Options;
+
+public class JwtTokenOptions : IConfigSection
 {
-    public const string SectionName = "Token";
-    public string SigningKey { get; set; }
-    public string Audience { get; set; }
-    public string Issuer { get; set; }
-    public TimeSpan AccessTokenLifetime { get; set; }
-    public TimeSpan AdminAccessTokenLifetime { get; set; }
-    public TimeSpan RefreshTokenLifetime { get; set; }
+    public static string SectionName => "Token";
+    [Required] public string SigningKey { get; set; }
+    [Required] public string Audience { get; set; }
+    [Required] public string Issuer { get; set; }
+    [Required] public TimeSpan AccessTokenLifetime { get; set; }
+    [Required] public TimeSpan AdminAccessTokenLifetime { get; set; }
+    [Required] public TimeSpan RefreshTokenLifetime { get; set; }
 }
