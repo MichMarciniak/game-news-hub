@@ -7,8 +7,8 @@ import { computed, ref } from 'vue';
 import { useGetEvent } from '@/api/generated/index.ts';
 
 const query = ref({
-  // from: new Date().toISOString(),
-  // to: addDays(new Date(), 7).toISOString()
+  from: new Date().toISOString(),
+  to: addDays(new Date(), 15).toISOString()
 });
 
 const { data: responseData, isPending } = useGetEvent(query);

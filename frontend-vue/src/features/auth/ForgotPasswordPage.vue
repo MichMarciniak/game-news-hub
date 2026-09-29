@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { usePostRequestPasswordReset } from '@/api/generated';
 import type { EmailDto } from '@/api/generated/models';
-import AuthView from '@/views/AuthView.vue';
+import AuthPageWrapper from '@/features/auth/AuthPageWrapper.vue';
 import { type FormSubmitEvent } from '@openvue/forms';
 import { zodResolver } from '@openvue/forms/resolvers/zod';
 import { useToast } from 'openvue';
@@ -41,7 +41,7 @@ function submit({valid, values}: FormSubmitEvent) {
 
 
 <template>
-  <AuthView>
+  <AuthPageWrapper>
     <template #title>Reset Password</template>
     <template #body>
       <p>hello there</p>
@@ -76,5 +76,5 @@ function submit({valid, values}: FormSubmitEvent) {
       </div>
       </Form>
     </template>
-  </AuthView>
+  </AuthPageWrapper>
 </template>

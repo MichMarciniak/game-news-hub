@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { usePostResetPassword } from '@/api/generated';
 import type { ProblemDetails, ResetPasswordDto } from '@/api/generated/models';
-import AuthView from '@/views/AuthView.vue';
+import AuthPageWrapper from '@/features/auth/AuthPageWrapper.vue';
 import type { FormSubmitEvent } from '@openvue/forms';
 import { zodResolver } from '@openvue/forms/resolvers/zod';
 import { AxiosError } from 'axios';
@@ -59,7 +59,7 @@ const onFormSubmit = async ({ valid, values }: FormSubmitEvent) => {
 
 
 <template>
-  <AuthView>
+  <AuthPageWrapper>
     <template #title>Reset Password</template>
     <template #body>
       <p>Enter your new password</p>
@@ -88,5 +88,5 @@ const onFormSubmit = async ({ valid, values }: FormSubmitEvent) => {
 
       </Form>
     </template>
-  </AuthView>
+  </AuthPageWrapper>
 </template>

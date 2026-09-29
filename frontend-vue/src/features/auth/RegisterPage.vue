@@ -8,7 +8,7 @@ import Button from 'openvue/button';
 import Message from 'openvue/message';
 import z from 'zod';
 import { usePostRegister } from '@/api/generated';
-import AuthView from '@/views/AuthView.vue';
+import AuthPageWrapper from '@/features/auth/AuthPageWrapper.vue';
 import { OiSpinner } from '@openvue/openicons-vue';
 import { useRouter } from 'vue-router';
 import type { ProblemDetails, RegisterDto } from '@/api/generated/models';
@@ -56,7 +56,7 @@ const onFormSubmit = async ({ valid, values }: FormSubmitEvent) => {
 </script>
 
 <template>
-  <AuthView>
+  <AuthPageWrapper>
     <template #title>Register</template>
 
     <template #body>
@@ -119,7 +119,7 @@ const onFormSubmit = async ({ valid, values }: FormSubmitEvent) => {
       </div>
 
     </template>
-  </AuthView>
+  </AuthPageWrapper>
 </template>
 
 <style lang="css" scoped>

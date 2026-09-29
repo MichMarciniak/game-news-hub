@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { usePostResendEmail } from '@/api/generated';
-import AuthView from '@/views/AuthView.vue';
+import AuthPageWrapper from '@/features/auth/AuthPageWrapper.vue';
 import { useToast } from 'openvue';
 import { ref } from 'vue';
 import { computed } from 'vue';
@@ -47,7 +47,7 @@ function resend() {
 </script>
 
 <template>
-  <AuthView>
+  <AuthPageWrapper>
     <template #title>Confirm Your Email</template>
 
     <template #body>
@@ -60,6 +60,6 @@ function resend() {
       </Button>
       
     </template>
-  </AuthView>
+  </AuthPageWrapper>
 
 </template>

@@ -1,7 +1,7 @@
 <script lang="ts" setup>
 import { usePostConfirmEmail } from '@/api/generated';
 import type { EmailConfirmDto } from '@/api/generated/models';
-import AuthView from '@/views/AuthView.vue';
+import AuthPageWrapper from '@/features/auth/AuthPageWrapper.vue';
 import { computed, onMounted, ref } from 'vue';
 import { useRoute } from 'vue-router';
 
@@ -47,7 +47,7 @@ onMounted(() => {
 </script>
 
 <template>
-  <AuthView >
+  <AuthPageWrapper >
     <template #title>{{ body.title }}</template>
 
     <template #body>
@@ -60,6 +60,6 @@ onMounted(() => {
       </div>
 
     </template>
-  </AuthView>
+  </AuthPageWrapper>
   
 </template>

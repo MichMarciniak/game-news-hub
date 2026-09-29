@@ -11,7 +11,7 @@ import z from 'zod';
 import { useToast } from 'openvue';
 import { useRoute, useRouter } from 'vue-router';
 import type { LoginDto } from '@/api/generated/models';
-import AuthView from '@/views/AuthView.vue';
+import AuthPageWrapper from '@/features/auth/AuthPageWrapper.vue';
 
 const authStore = useAuthStore();
 const router = useRouter()
@@ -52,7 +52,7 @@ const onFormSubmit = async ({ valid, values }: FormSubmitEvent) => {
 </script>
 
 <template>
-  <AuthView>
+  <AuthPageWrapper>
     <template #title>Login</template>
     <template #body>
       <Form 
@@ -107,5 +107,5 @@ const onFormSubmit = async ({ valid, values }: FormSubmitEvent) => {
       </div>
       
     </template>
-  </AuthView>
+  </AuthPageWrapper>
 </template>

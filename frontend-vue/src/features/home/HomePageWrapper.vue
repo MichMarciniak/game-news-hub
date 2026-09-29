@@ -1,6 +1,6 @@
 <script setup lang="ts">
-import LoggedIn from '@/features/home/LoggedIn.vue';
-import NotLoggedIn from '@/features/home/NotLoggedIn.vue';
+import LoggedInPage from '@/features/home/LoggedInPage.vue';
+import NotLoggedInPage from '@/features/home/NotLoggedInPage.vue';
 import { useAuthStore } from '@/stores/auth';
 import { storeToRefs } from 'pinia';
 
@@ -11,7 +11,7 @@ const {isAuthenticated} = storeToRefs(authStore)
 
 
 <template>
-  <LoggedIn v-if="isAuthenticated"></LoggedIn>
-  <NotLoggedIn v-else></NotLoggedIn>
+  <LoggedInPage v-if="isAuthenticated"></LoggedInPage>
+  <NotLoggedInPage v-else></NotLoggedInPage>
 
 </template>
