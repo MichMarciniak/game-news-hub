@@ -4,8 +4,8 @@ import { useFollowedPlatforms } from '@/composables/platformFollows';
 import { useAuthStore } from '@/stores/auth';
 import { computed } from 'vue';
 import { useRouter } from 'vue-router';
-import DefaultEvents from './DefaultEvents.vue';
-import RecommendedEvents from './RecommendedEvents.vue';
+import RecommendedList from '../events/list/RecommendedList.vue';
+import EventWeekList from '../events/list/EventWeekList.vue';
 
 const router = useRouter()
 
@@ -16,7 +16,7 @@ const {followedGenreIds} = useFollowedGenres()
 const notFollowedPlatformsOrGenres = computed(() => followedGenreIds.value.size === 0 || followedPlatformIds.value.size === 0)
 
 const gridCols = computed(() =>
-  notFollowedPlatformsOrGenres.value ? 'sm:grid-cols-3' : 'sm:grid-cols-2'
+  notFollowedPlatformsOrGenres.value ? 'lg:grid-cols-3' : 'sm:grid-cols-2'
 )
 
 </script>
@@ -28,10 +28,10 @@ const gridCols = computed(() =>
     <div class="grid grid-cols-1 gap-2 mt-2 flex-1"
           :class="gridCols">
       <!-- Recommended + followed? -->
-      <RecommendedEvents/>
+      <RecommendedList/>
       
       <!-- upcoming (default) -->
-      <DefaultEvents />
+      <EventWeekList />
       
       <!-- Follow platforms / genres -->
       <div v-if="notFollowedPlatformsOrGenres">

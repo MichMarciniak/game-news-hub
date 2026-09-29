@@ -2,9 +2,9 @@
 import type { EventListItemDto } from '@/api/generated/models';
 import { addDays, monthDayFormatter } from '@/utils/date';
 import { OiBan, OiTimes } from '@openvue/openicons-vue';
-import EventWeekItem from './EventWeekItem.vue';
 import { computed, ref } from 'vue';
 import { useGetEvent } from '@/api/generated/index.ts';
+import EventFullDateItem from './EventFullDateItem.vue';
 
 const query = ref({
   from: new Date().toISOString(),
@@ -51,7 +51,7 @@ const events = computed(() => {
     </template>
     <div class="flex flex-col items-center">
       <Divider class="max-w-[90%]" />
-      <div class="w-full mb-4">
+      <div class="flex flex-col items-center gap-5">
         <!-- 1. Ładowanie -->
         <template v-if="isPending">
           <Skeleton class="h-12 w-full my-2" />
@@ -59,13 +59,16 @@ const events = computed(() => {
         
         <!-- 2. Są wydarzenia -->
         <template v-else-if="events.length > 0">
-          <EventWeekItem v-for="e in events" :key="e.id" :event="e" />
+          <EventFullDateItem v-for="e in events" :key="e.id" :event="e" />
         </template>
         
         <!-- 3. Brak wydarzeń -->
-        <div v-else class="flex flex-col mx-auto items-center text-muted-color">
+        <!-- <div v-else class="flex flex-col mx-auto items-center text-muted-color">
           <OiTimes size="2rem" />
           <span class="text-xl">No events this week</span>
+        </div> -->
+        <div v-if="isPending || events?.length == 0">
+          <span class="text-muted-color">No recommended events.</span>
         </div>
       </div>
     </div>

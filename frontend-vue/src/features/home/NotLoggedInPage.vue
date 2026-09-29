@@ -1,5 +1,6 @@
 <script setup lang="ts">
-import EventWeekList from './EventWeekList.vue';
+import EventWeekList from '../events/list/EventWeekList.vue';
+
 
 </script>
 

@@ -4,6 +4,7 @@ import type { EventListItemDto } from '@/api/generated/models';
 import { monthDayFormatter } from '@/utils/date';
 import EventDayItem from './EventDayItem.vue';
 import { OiBan, OiTimes } from '@openvue/openicons-vue';
+import EventFullDateItem from '@/features/events/list/EventFullDateItem.vue';
 
 const props = defineProps<{
   events: EventListItemDto[],
@@ -22,7 +23,7 @@ const props = defineProps<{
       <Divider class="max-w-[90%]"/>
       <div class=" w-full mb-4">
         <template v-if="events">
-          <EventDayItem v-for="e in events" :key="e.id" :event="e"/>
+          <EventFullDateItem v-for="e in events" :key="e.id" :event="e"/>
         </template>
         <div v-else class="flex flex-col mx-auto items-center text-muted-color">
           <OiTimes size="2rem"/>
