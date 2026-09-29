@@ -10,6 +10,7 @@ withDefaults(defineProps<{
 <template>
   <Password
     :name="name"
+    :inputId="name"
     :placeholder="placeholder"
     toggleMask
     fluid

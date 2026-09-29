@@ -8,6 +8,7 @@ import type { FormSubmitEvent } from '@openvue/forms';
 import type { ChangePasswordDto, ProblemDetails } from '@/api/generated/models';
 import { useToast } from 'openvue';
 import type { AxiosError } from 'axios';
+import { changePasswordResolver } from './schemas.ts';
 
 const initialValues = ref({
   oldPassword: '',
@@ -19,12 +20,7 @@ const toast = useToast()
 const visible = ref(false)
 const errorMessage = ref('')
 
-const resolver = zodResolver(
-  z.object({
-    oldPassword: z.string().min(1, {message: 'Old password is required'}),
-    newPassword: z.string().min(8, {message: 'Minimum 8 characters'})
-  })
-)
+const resolver = changePasswordResolver
 
 const {mutate: changePassword, isError} = usePostChangePassword()
 
@@ -63,7 +59,7 @@ const onFormSubmit = async ({valid, values}: FormSubmitEvent) => {
       >
         <div>
           <FloatLabel variant="on">
-            <Password toggle-mask :feedback="false" name="oldPassword" fluid type="password"/>
+            <Password toggle-mask :feedback="false" name="oldPassword" id="oldPassword" fluid type="password"/>
             <label for="oldPassword">Current password</label>
           </FloatLabel>
         </div>

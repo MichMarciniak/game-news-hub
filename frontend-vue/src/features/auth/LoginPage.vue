@@ -1,17 +1,15 @@
 <script lang="ts" setup>
 import { ref } from 'vue';
 import { Form, type FormSubmitEvent } from '@openvue/forms';
-import { zodResolver } from '@openvue/forms/resolvers/zod';
-import InputText from 'openvue/inputtext';
 import Password from 'openvue/password';
 import Button from 'openvue/button';
 import Message from 'openvue/message';
 import { useAuthStore } from '@/stores/auth';
-import z from 'zod';
 import { useToast } from 'openvue';
 import { useRoute, useRouter } from 'vue-router';
 import type { LoginDto } from '@/api/generated/models';
 import AuthPageWrapper from '@/features/auth/AuthPageWrapper.vue';
+import { loginResolver } from './schemas';
 
 const authStore = useAuthStore();
 const router = useRouter()
@@ -26,14 +24,7 @@ const initialValues = ref({
 
 const errorMessage = ref('')
 
-// W formularzu logowania zazwyczaj wystarczy email i password
-// czy ref(zodResolver) potrzebny? Jak to działa? Tak było w docs dla openvue/Password
-const resolver = zodResolver(
-  z.object({
-    email: z.string().min(1, { message: 'Email is required.' }).email({ message: 'Invalid email.' }),
-    password: z.string().min(1, { message: 'Password is required' })
-  })
-);
+const resolver = loginResolver
 
 const onFormSubmit = async ({ valid, values }: FormSubmitEvent) => {
   if (!valid) return;
@@ -65,7 +56,7 @@ const onFormSubmit = async ({ valid, values }: FormSubmitEvent) => {
 
         <div class="flex flex-col gap-1">
           <FloatLabel variant="on">
-            <InputText name="email" type="text" placeholder="your@email.com" fluid />
+            <InputText name="email" id="email" type="text" placeholder="your@email.com" fluid />
             <label for="email">Email</label>
 
           </FloatLabel>
@@ -79,6 +70,7 @@ const onFormSubmit = async ({ valid, values }: FormSubmitEvent) => {
           <FloatLabel variant="on" >
             <Password
               name="password"
+              inputId="password"
               toggleMask
               fluid
               variant="filled"
@@ -95,6 +87,13 @@ const onFormSubmit = async ({ valid, values }: FormSubmitEvent) => {
           <RouterLink to="/forgot-password" class="text-xs text-primary hover:underline">
             Forgot password?
           </RouterLink>
+        </div>
+        <div class="flex flex-col">
+          <Transition name="fade">
+            <span v-if="errorMessage" class="text-red-500 text-sm">
+              {{ errorMessage }}
+            </span>
+          </Transition>
         </div>
         <Button type="submit" label="Login" severity="primary" class="mt-2" fluid />
       </Form>

@@ -10,6 +10,7 @@ import { computed, ref } from 'vue';
 import { useRoute, useRouter } from 'vue-router';
 import z from 'zod';
 import PasswordWithHints from './PasswordWithHints.vue';
+import { resetPasswordResolver } from './schemas.ts';
 
 const initialValues = ref({
   password: ''
@@ -22,11 +23,8 @@ const toast = useToast()
 const userId = computed(() => route.query.userId as string | number)
 const token = computed(() => route.query.token as string)
 
-const resolver = zodResolver(
-  z.object({
-    password: z.string().min(8, { message: 'Minimum 8 characters' }),
-  })
-)
+const resolver = resetPasswordResolver
+
 const errorMessage = ref('')
 
 const {mutate: resetPassword, isError} = usePostResetPassword()

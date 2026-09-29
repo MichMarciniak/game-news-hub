@@ -3,10 +3,9 @@ import { usePostRequestPasswordReset } from '@/api/generated';
 import type { EmailDto } from '@/api/generated/models';
 import AuthPageWrapper from '@/features/auth/AuthPageWrapper.vue';
 import { type FormSubmitEvent } from '@openvue/forms';
-import { zodResolver } from '@openvue/forms/resolvers/zod';
 import { useToast } from 'openvue';
 import { ref } from 'vue';
-import z from 'zod';
+import { resetPasswordRequestResolver } from './schemas';
 
 const initialValues = ref({
   email: ''
@@ -14,11 +13,7 @@ const initialValues = ref({
 
 const toast = useToast()
 
-const resolver = zodResolver(
-  z.object({
-    email: z.string().min(1, { message: 'Email is required.' }).email({ message: 'Invalid email.' }),
-  })
-);
+const resolver = resetPasswordRequestResolver
 
 const {mutate: sendReset, isPending} = usePostRequestPasswordReset()
 
@@ -56,6 +51,7 @@ function submit({valid, values}: FormSubmitEvent) {
           <FloatLabel variant="on" class="mt-5">
             <InputText fluid
               name="email"
+              id="email"
               type="text" 
               placeholder="your@email.com" 
               />

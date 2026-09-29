@@ -14,6 +14,7 @@ import { useRouter } from 'vue-router';
 import type { ProblemDetails, RegisterDto } from '@/api/generated/models';
 import type { AxiosError } from 'axios';
 import PasswordWithHints from './PasswordWithHints.vue';
+import { registerResolver } from './schemas.ts';
 
 const router = useRouter()
 
@@ -23,13 +24,7 @@ const initialValues = ref({
   password: 'asdasdasdasd'
 });
 
-const resolver = zodResolver(
-  z.object({
-    username: z.string().min(3, { message: 'Minimum 3 characters' }),
-    email: z.string().min(1, { message: 'Email is required.' }).email({ message: 'Invalid email.' }),
-    password: z.string().min(8, { message: 'Minimum 8 characters' })
-  })
-);
+const resolver = registerResolver
 
 const {mutate: register, isPending, isError} = usePostRegister()
 const errorMessage = ref('asd')
@@ -70,7 +65,7 @@ const onFormSubmit = async ({ valid, values }: FormSubmitEvent) => {
         <!-- Pole Username -->
         <div class="flex flex-col gap-1">
           <FloatLabel variant="on">
-            <InputText name="username" type="text" placeholder="yourusername" fluid />
+            <InputText name="username" id="username" type="text" placeholder="yourusername" fluid />
             <label for="username">Username</label>
           </FloatLabel>
           <Message v-if="$form.username?.invalid" severity="error" size="small" variant="simple">
@@ -81,7 +76,7 @@ const onFormSubmit = async ({ valid, values }: FormSubmitEvent) => {
         <!-- Pole Email -->
         <div class="flex flex-col gap-1">
           <FloatLabel variant="on">
-            <InputText name="email" type="text" placeholder="your@email.com" fluid />
+            <InputText name="email" id="email" type="text" placeholder="your@email.com" fluid />
             <label for="email">Email</label>
           </FloatLabel>
           <Message v-if="$form.email?.invalid" severity="error" size="small" variant="simple">
