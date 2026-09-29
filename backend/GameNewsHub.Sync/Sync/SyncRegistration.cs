@@ -12,7 +12,8 @@ public static class SyncRegistration
     {
         services.AddScoped<IEventWeightCalculator, EventWeightCalculator>();
 
-        services.AddScoped<IEventSyncService, EventSyncService>();
+        services.AddScoped<EventDiscoveryService>();
+        services.AddScoped<EventHydrationService>();
         services.AddScoped<IGameSyncService, GameSyncService>();
         services.AddScoped<IGenreSyncService, GenreSyncService>();
         services.AddScoped<IPlatformSyncService, PlatformSyncService>();

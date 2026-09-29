@@ -21,7 +21,11 @@ public record IgdbGameResponse
     public IgdbCoverResponse? Cover { get; set; }
 }
 
-public record GameIdContainer(int Id);
+public class GameIdContainer
+{
+    [JsonPropertyName("id")] public int IgdbId { get; set; }
+}
+
 
 public class IgdbGameTypeDto
 {

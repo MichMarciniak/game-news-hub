@@ -28,7 +28,7 @@ public class EventHydrationWorker : BackgroundService
 
                 using (var scope = _serviceProvider.CreateScope())
                 {
-                    var service = scope.ServiceProvider.GetRequiredService<IEventSyncService>();
+                    var service = scope.ServiceProvider.GetRequiredService<EventHydrationService>();
 
                     await service.HydrateEventsAsync();
                 }
