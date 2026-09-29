@@ -6,7 +6,6 @@ using GameNewsHub.Api.Configuration;
 using GameNewsHub.Api.Extensions;
 using GameNewsHub.Api.Features;
 using GameNewsHub.Api.Options;
-using GameNewsHub.Api.Seeder;
 using GameNewsHub.Api.Services;
 using GameNewsHub.Data;
 using GameNewsHub.Data.Entities;
@@ -158,16 +157,6 @@ var app = builder.Build();
 app.UseAppExceptionHandler();
 app.UseAppRequestLogging();
 
-
-// DB MIGRATION
-using (var scope = app.Services.CreateScope())
-{
-    var db = scope.ServiceProvider.GetRequiredService<AppDbContext>();
-    await db.Database.MigrateAsync();
-
-    var roleManager = scope.ServiceProvider.GetRequiredService<RoleManager<IdentityRole<int>>>();
-    await RoleSeeder.SeedAsync(roleManager);
-}
 
 if (app.Environment.IsDevelopment())
 {

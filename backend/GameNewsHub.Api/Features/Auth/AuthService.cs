@@ -7,6 +7,7 @@ using GameNewsHub.Api.Features.Shared.Email;
 using GameNewsHub.Api.Mappings;
 using GameNewsHub.Api.Options;
 using GameNewsHub.Contracts;
+using GameNewsHub.Data.Constants;
 using GameNewsHub.Data.Entities;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.UI.Services;

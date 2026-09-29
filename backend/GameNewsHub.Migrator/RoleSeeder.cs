@@ -1,7 +1,7 @@
-﻿using GameNewsHub.Api.Constants;
+﻿using GameNewsHub.Data.Constants;
 using Microsoft.AspNetCore.Identity;
 
-namespace GameNewsHub.Api.Seeder;
+namespace GameNewsHub.Migrator;
 
 public static class RoleSeeder
 {

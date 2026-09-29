@@ -1,4 +1,4 @@
-﻿namespace GameNewsHub.Api.Constants;
+﻿namespace GameNewsHub.Data.Constants;
 
 public static class Roles
 {

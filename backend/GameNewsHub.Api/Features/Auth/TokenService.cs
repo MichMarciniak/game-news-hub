@@ -3,6 +3,7 @@ using System.Security.Claims;
 using System.Text;
 using GameNewsHub.Api.Constants;
 using GameNewsHub.Api.Options;
+using GameNewsHub.Data.Constants;
 using GameNewsHub.Data.Entities;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.Options;
