@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { useGetGenreGenres, useGetPlatformGroups } from '@/api/generated';
+import { useGetGenres, useGetPlatformsGroups } from '@/api/generated';
 import PasswordChange from '@/features/auth/PasswordChange.vue';
 import ExpandableFlex from '@/features/profile/ExpandableFlex.vue';
 import GenreFollowCard from '@/features/profile/GenreFollowCard.vue';
@@ -15,8 +15,8 @@ const {logout, logoutAll} = useAuthStore()
 const authStore = useAuthStore();
 const {user, isAuthenticated } = storeToRefs(authStore)
 
-const {data: platforms} = useGetPlatformGroups()
-const {data: genres} = useGetGenreGenres()
+const {data: platforms} = useGetPlatformsGroups()
+const {data: genres} = useGetGenres()
 
 function onLogout(fn: Function) {
   fn()

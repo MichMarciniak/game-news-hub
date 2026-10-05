@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { useGetGenreGenres, useGetPlatformGroups } from '@/api/generated';
+import { useGetGenres, useGetPlatformsGroups } from '@/api/generated';
 
 export interface FilterOption {
   id: number | string,
@@ -15,11 +15,11 @@ const props = defineProps<{
 const selectedGenres = defineModel<Array<number | string>>('genres', {default: () => []})
 const selectedPlatforms = defineModel<Array<number | string>>('platforms', {default: () => []})
 
-const {data: genreData} = useGetGenreGenres({
+const {data: genreData} = useGetGenres({
   query: {staleTime: Infinity, gcTime: Infinity}
 })
 
-const {data: platformData} = useGetPlatformGroups({
+const {data: platformData} = useGetPlatformsGroups({
   query: {staleTime: Infinity, gcTime: Infinity}
 })
 

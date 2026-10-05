@@ -2,7 +2,7 @@
 import { computed } from 'vue'
 import { useFollowedEvents } from '@/composables/eventFollows'
 import { formatEventDate } from '@/utils/date'
-import { useGetEventEventId } from '@/api/generated'
+import { useGetEventsId } from '@/api/generated'
 import { useRoute } from 'vue-router'
 import { OiHeart, OiHeartFill, OiLink } from '@openvue/openicons-vue'
 import EventItemSimple from '@/features/events/EventItemSimple.vue'
@@ -14,7 +14,7 @@ import type { GameListItemDto } from '@/api/generated/models/gameListItemDto.ts'
 const route = useRoute()
 
 const eventId = computed(() => String(route.params.id))
-const { data: event, isPending } = useGetEventEventId(eventId)
+const { data: event, isPending } = useGetEventsId(eventId)
 
 const { followedEventIds, toggleFollowEvent } = useFollowedEvents()
 const isFollowed = computed(() => !!event.value && followedEventIds.value.has(String(event.value.id)))

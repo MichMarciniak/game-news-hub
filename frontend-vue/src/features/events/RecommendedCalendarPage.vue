@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { useGetRecommendationEvents } from '@/api/generated/index.ts';
+import { useGetRecommendationsEvents } from '@/api/generated/index.ts';
 import MonthCalendar from '@/features/events/calendar/MonthCalendar.vue';
 import type { EventListItemDto } from '@/api/generated/models/eventListItemDto.ts';
 import { computed, ref } from 'vue';
@@ -14,7 +14,7 @@ const rangeEnd = ref<Date>()
 const selectedDate = ref<Date>(new Date())
 const selectedDateEvents = ref<EventListItemDto[]>([])
 
-const {data: eventsData, isPending} = useGetRecommendationEvents(
+const {data: eventsData, isPending} = useGetRecommendationsEvents(
   computed(() => ({
     from: rangeStart.value?.toISOString(),
     to: rangeEnd.value?.toISOString()

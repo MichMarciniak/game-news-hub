@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { usePostRequestPasswordReset } from '@/api/generated';
+import { usePostAuthForgotPassword } from '@/api/generated';
 import type { EmailDto } from '@/api/generated/models';
 import AuthPageWrapper from '@/features/auth/AuthPageWrapper.vue';
 import { type FormSubmitEvent } from '@openvue/forms';
@@ -15,7 +15,7 @@ const toast = useToast()
 
 const resolver = resetPasswordRequestResolver
 
-const {mutate: sendReset, isPending} = usePostRequestPasswordReset()
+const {mutate: sendReset, isPending} = usePostAuthForgotPassword()
 
 function submit({valid, values}: FormSubmitEvent) {
   if (!valid) return

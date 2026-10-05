@@ -3,7 +3,7 @@ import type { EventListItemDto } from '@/api/generated/models';
 import { addDays, monthDayFormatter } from '@/utils/date';
 import { OiBan, OiTimes } from '@openvue/openicons-vue';
 import { computed, ref } from 'vue';
-import { useGetEvent } from '@/api/generated/index.ts';
+import { useGetEvents } from '@/api/generated/index.ts';
 import EventFullDateItem from './EventFullDateItem.vue';
 
 const query = ref({
@@ -11,7 +11,7 @@ const query = ref({
   to: addDays(new Date(), 15).toISOString()
 });
 
-const { data: responseData, isPending } = useGetEvent(query);
+const { data: responseData, isPending } = useGetEvents(query);
 
 // Bezpieczne wyciągnięcie tablicy (dostosuj .data jeśli API zwraca obiekt bezpośrednio)
 const eventsData = computed(() => {

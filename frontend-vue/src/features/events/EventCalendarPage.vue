@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { useGetEvent } from '@/api/generated/index.ts';
+import { useGetEvents } from '@/api/generated/index.ts';
 import MonthCalendar from '@/features/events/calendar/MonthCalendar.vue';
 import type { EventListItemDto } from '@/api/generated/models/eventListItemDto.ts';
 import { computed, ref } from 'vue';
@@ -14,7 +14,7 @@ const rangeEnd = ref<Date>()
 const selectedDate = ref<Date>(new Date())
 const selectedDateEvents = ref<EventListItemDto[]>([])
 
-const {data: eventsData, isPending} = useGetEvent(
+const {data: eventsData, isPending} = useGetEvents(
   computed(() => ({
     from: rangeStart.value?.toISOString(),
     to: rangeEnd.value?.toISOString()

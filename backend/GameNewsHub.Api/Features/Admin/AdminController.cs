@@ -25,26 +25,26 @@ public class AdminController : ControllerBase
     }
     
     
-    [HttpPatch("reassign/series")]
-    public async Task<IActionResult> ReassignSeries([FromQuery] int eventId, [FromQuery] int seriesId)
+    [HttpPatch("events/{id}/series")]
+    public async Task<IActionResult> ReassignSeries(int id, [FromQuery] int seriesId)
     {
         _logger.LogInformation(
             "Admin {AdminId} attempting to reassign event {EventId} to series {SeriesId}",
-            User.GetUserId(), eventId, seriesId);
+            User.GetUserId(), id, seriesId);
             
-        var result = await _eventService.ReassignEventToSeries(eventId, seriesId);
+        var result = await _eventService.ReassignEventToSeries(id, seriesId);
         return result.MatchFirst<IActionResult>(
             success => Ok(),
             err => this.ProblemErr(err));
     }
     
-    [HttpPatch("platform/reassign")]
-    public async Task<IActionResult> ReassignPlatformGroup([FromQuery] int platformId, [FromQuery] int groupId)
+    [HttpPatch("platforms/{id}/group")]
+    public async Task<IActionResult> ReassignPlatformGroup(int id, [FromQuery] int groupId)
     {
         _logger.LogInformation(
             "Admin {AdminId} reassigning platform {PlatformId} to group {PlatformGroupId}",
-            User.GetUserId(), platformId, groupId);
-        var result = await _platformService.ReassignPlatformGroup(platformId, groupId);
+            User.GetUserId(), id, groupId);
+        var result = await _platformService.ReassignPlatformGroup(id, groupId);
 
         return result.MatchFirst<IActionResult>(
             success => Ok(),

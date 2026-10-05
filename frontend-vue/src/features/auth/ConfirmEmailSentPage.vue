@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { usePostResendEmail } from '@/api/generated';
+import { usePostAuthResendEmail } from '@/api/generated';
 import AuthPageWrapper from '@/features/auth/AuthPageWrapper.vue';
 import { useToast } from 'openvue';
 import { ref } from 'vue';
@@ -10,7 +10,7 @@ const route = useRoute()
 const userEmail = computed(() => atob(route.query.email as string))
 const toast = useToast()
 
-const {mutate: resendConfirmation} = usePostResendEmail();
+const {mutate: resendConfirmation} = usePostAuthResendEmail();
 
 const COOLDOWN_SECONDS = 60
 const secondsLeft = ref(0)

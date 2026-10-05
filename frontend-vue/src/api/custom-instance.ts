@@ -29,14 +29,14 @@ AXIOS_INSTANCE.interceptors.response.use(
 
     // 1. Dodaj /login (lub ścieżkę do endpointu logowania w API) do wykluczeń
     const isAuthEndpoint = 
-      originalRequest.url.includes('/refresh') ||
-      originalRequest.url.includes('/logout') ||
-      originalRequest.url.includes('/login'); // <-- DODANO
+      originalRequest.url.includes('/auth/refresh') ||
+      originalRequest.url.includes('/auth/logout') ||
+      originalRequest.url.includes('/auth/login');
 
     if (error.response?.status === 401 && !originalRequest._retry && !isAuthEndpoint) {
       originalRequest._retry = true;
       try {
-        const { data } = await AXIOS_INSTANCE.post('/refresh');
+        const { data } = await AXIOS_INSTANCE.post('/auth/refresh');
         setAccessToken(data.accessToken);
         originalRequest.headers.Authorization = `Bearer ${data.accessToken}`;
         return AXIOS_INSTANCE(originalRequest);

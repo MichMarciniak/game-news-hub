@@ -1,7 +1,6 @@
 ﻿using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;
-using GameNewsHub.Api.Constants;
 using GameNewsHub.Api.Options;
 using GameNewsHub.Data.Constants;
 using GameNewsHub.Data.Entities;

@@ -1,5 +1,5 @@
 import { setAccessToken } from "@/api/custom-instance";
-import { getUsersMeProfile, postLogin, postRefresh, usePostLogin, usePostLogout, usePostLogoutAll } from "@/api/generated";
+import { postAuthRefresh, usePostAuthLogin, usePostAuthLogout, usePostAuthLogoutAll } from "@/api/generated";
 import { type LoginDto, type ProfileDto } from "@/api/generated/models";
 import { defineStore } from "pinia";
 import { computed, ref } from "vue";
@@ -13,15 +13,15 @@ export const useAuthStore = defineStore('auth', () => {
   const isAuthenticated = computed(() => !!token.value)
   const isAdmin = computed(() => user.value?.isAdmin)
 
-  const {mutateAsync: loginMutate} = usePostLogin()
-  const {mutate: logoutMutate} = usePostLogout()
-  const {mutate: logoutAllMutate} = usePostLogoutAll()
+  const {mutateAsync: loginMutate} = usePostAuthLogin()
+  const {mutate: logoutMutate} = usePostAuthLogout()
+  const {mutate: logoutAllMutate} = usePostAuthLogoutAll()
 
   const initialize = async () => {
     if (isInitialized.value) return // dodatkowe zabezpieczenie, na wypadek podwójnego wywołania
 
     try {
-      const data = await postRefresh()
+      const data = await postAuthRefresh()
       setAccessToken(data.accessToken as string)
       token.value = data.accessToken as string
       user.value = data.user as ProfileDto

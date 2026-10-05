@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { useGetEventSearch } from '@/api/generated';
+import { useGetEventsSearch } from '@/api/generated';
 import { EventSortBy, type GetEventSearchParams, } from '@/api/generated/models';
 import type { PageState } from 'openvue';
 import { ref, watch } from 'vue';
@@ -32,7 +32,7 @@ const sortOptions = [
   {label: 'Date', value: EventSortBy.Date}
 ]
 
-const {data: eventsData, isPending} = useGetEventSearch(searchQuery, {
+const {data: eventsData, isPending} = useGetEventsSearch(searchQuery, {
   query: {
     placeholderData: keepPreviousData
   }

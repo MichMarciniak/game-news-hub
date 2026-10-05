@@ -1,4 +1,4 @@
-import { getGetUsersMePlatformsFollowedQueryKey, useDeletePlatformGroupsGroupIdFollow, useGetUsersMePlatformsFollowed, usePostPlatformGroupsGroupIdFollow,  } from "@/api/generated";
+import { getGetUsersMeFollowedPlatformGroupsQueryKey, useDeletePlatformsGroupsIdFollow, useGetUsersMeFollowedPlatformGroups, usePostPlatformsGroupsIdFollow } from "@/api/generated";
 import { useAuthStore } from "@/stores/auth";
 import { useQueryClient } from "@tanstack/vue-query";
 import { computed } from "vue";
@@ -9,22 +9,22 @@ export function useFollowedPlatforms() {
   const auth = useAuthStore();
   const enabled = computed(() => auth.isAuthenticated)
 
-  const {data: platformsData } = useGetUsersMePlatformsFollowed({query: {enabled}})
+  const {data: platformsData } = useGetUsersMeFollowedPlatformGroups({query: {enabled}})
 
   const followedPlatformIds = computed(() => new Set(platformsData.value?.map(g => String(g.id)) ?? []))
 
-  const followPlatformMutation = usePostPlatformGroupsGroupIdFollow({
+  const followPlatformMutation = usePostPlatformsGroupsIdFollow({
     mutation:{
       onSuccess: () => {
-        queryClient.invalidateQueries({queryKey: getGetUsersMePlatformsFollowedQueryKey() })
+        queryClient.invalidateQueries({queryKey: getGetUsersMeFollowedPlatformGroupsQueryKey() })
       }
     }
   })
 
-  const unfollowPlatformMutation = useDeletePlatformGroupsGroupIdFollow({
+  const unfollowPlatformMutation = useDeletePlatformsGroupsIdFollow({
     mutation: {
       onSuccess: () => {
-        queryClient.invalidateQueries({queryKey: getGetUsersMePlatformsFollowedQueryKey() })
+        queryClient.invalidateQueries({queryKey: getGetUsersMeFollowedPlatformGroupsQueryKey() })
       }
     }
   })
@@ -32,9 +32,9 @@ export function useFollowedPlatforms() {
   const toggleFollowPlatform = (platformId: string | number) => {
     const idStr = String(platformId)
     if (followedPlatformIds.value.has(idStr)) {
-      unfollowPlatformMutation.mutate({groupId: idStr})
+      unfollowPlatformMutation.mutate({id: idStr})
     } else {
-      followPlatformMutation.mutate({groupId: idStr})
+      followPlatformMutation.mutate({id: idStr})
     }
   }
 

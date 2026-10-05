@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { getGetPlatformGroupsFullQueryKey, useGetPlatformGroups, useGetPlatformGroupsFull, usePatchAdminPlatformReassign } from '@/api/generated';
+import { getGetPlatformsGroupsFullQueryKey, useGetPlatformsGroups, useGetPlatformsGroupsFull, usePatchAdminPlatformsIdGroup } from '@/api/generated';
 import { useQueryClient } from '@tanstack/vue-query';
 import { useToast } from 'openvue';
 import { ref } from 'vue';
@@ -11,10 +11,10 @@ const selectPlatformId = ref<string | number | null>(null)
 
 const queryClient = useQueryClient()
 
-const {data: platformGroupsFull} = useGetPlatformGroupsFull()
+const {data: platformGroupsFull} = useGetPlatformsGroupsFull()
 
-const {data: platformGroups} = useGetPlatformGroups()
-const {mutate: reassignPlatform} = usePatchAdminPlatformReassign()
+const {data: platformGroups} = useGetPlatformsGroups()
+const {mutate: reassignPlatform} = usePatchAdminPlatformsIdGroup()
 
 function onSelect(id: number | string) {
   selectGroupId.value = id
@@ -27,15 +27,17 @@ function onSelectPlatform(id: number | string) {
 function onReassign() {
   if (!selectGroupId.value || !selectPlatformId.value) return
 
-  reassignPlatform({params: 
+  reassignPlatform({
+    id: selectPlatformId.value,
+    params: 
     {
       groupId: selectGroupId.value, 
-      platformId: selectPlatformId.value
+      
     }
   }, {
     onSuccess: () => {
       queryClient.invalidateQueries({ 
-        queryKey: getGetPlatformGroupsFullQueryKey() 
+        queryKey: getGetPlatformsGroupsFullQueryKey() 
       })
 
       selectGroupId.value = null

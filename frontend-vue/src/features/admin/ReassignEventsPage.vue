@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { getGetAdminSeriesSearchInfiniteQueryKey, useGetAdminSeriesSearchInfinite, useGetEventSearchInfinite, usePatchAdminReassignSeries } from '@/api/generated';
+import { getGetAdminSeriesSearchInfiniteQueryKey, useGetAdminSeriesSearchInfinite, useGetEventsSearchInfinite, usePatchAdminEventsIdSeries } from '@/api/generated';
 import { keepPreviousData, useQueryClient } from '@tanstack/vue-query';
 import { computed, ref } from 'vue';
 import DebouncedInput from '../shared/DebouncedInput.vue';
@@ -24,7 +24,7 @@ const {
   fetchNextPage: fetchMoreEvents,
   hasNextPage: hasMoreEvents,
   isFetchingNextPage: loadingMoreEvents  
-} = useGetEventSearchInfinite(
+} = useGetEventsSearchInfinite(
     computed(() => ({query: eventQuery.value, pageSize: SERIES_PAGE_SIZE})),
     {
       query: { 
@@ -62,7 +62,7 @@ const {
 const series = computed(() => seriesPages.value?.pages.flatMap(p => p.items) ?? []);
 
 
-const {mutate: reassignEventToSeries} = usePatchAdminReassignSeries()
+const {mutate: reassignEventToSeries} = usePatchAdminEventsIdSeries()
 
 
 function onSelectEvent(id: number | string) {
@@ -100,9 +100,9 @@ function reassignSeries() {
     accept: () => {
       reassignEventToSeries(
         {
+          id: Number(targetEvent?.id),
           params: 
           {
-            eventId: targetEvent?.id,
             seriesId: newSeries?.id
           }
         }, 

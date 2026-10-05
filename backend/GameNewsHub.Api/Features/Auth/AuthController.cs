@@ -11,6 +11,7 @@ using Microsoft.Extensions.Options;
 namespace GameNewsHub.Api.Features.Auth;
 
 [ApiController]
+[Route("[controller]")]
 public class AuthController : ControllerBase
 {
     private readonly AuthService _service;
@@ -128,7 +129,7 @@ public class AuthController : ControllerBase
             error => this.ProblemErr(error));
     }
 
-    [HttpPost("request-password-reset")]
+    [HttpPost("forgot-password")]
     public async Task<IActionResult> RequestPasswordReset(EmailDto request)
     {
         var result = await _service.RequestPasswordReset(request.Email);

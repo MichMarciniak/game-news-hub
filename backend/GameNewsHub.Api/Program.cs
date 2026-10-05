@@ -115,6 +115,11 @@ services.AddCors(options =>
     });
 });
 
+services.Configure<RouteOptions>(opt =>
+{
+    opt.LowercaseUrls = true;
+});
+
 // AUTHENTICATION - Dev mode or normal
 if (devAuth)
 {

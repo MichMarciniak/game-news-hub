@@ -7,7 +7,7 @@ using Microsoft.AspNetCore.Mvc;
 namespace GameNewsHub.Api.Features.Genres;
 
 [ApiController]
-[Route("[controller]")]
+[Route("genres")]
 public class GenreController : ControllerBase
 {
     private readonly FollowGenreService _followService;
@@ -19,30 +19,30 @@ public class GenreController : ControllerBase
         _followService = followGenreService;
     }
 
-    [HttpGet("genres")]
+    [HttpGet]
     public async Task<ActionResult<List<GenreDto>>> GetGenres()
     {
         var genres = await _service.GetGenreListAsync();
         return Ok(genres);
     }
 
-    [HttpPost("{genreId}/follow")]
+    [HttpPost("{id}/follow")]
     [Authorize]
-    public async Task<IActionResult> FollowGenre(int genreId)
+    public async Task<IActionResult> FollowGenre(int id)
     {
         var userId = User.GetUserId();
-        var result = await _followService.Follow(userId, genreId);
+        var result = await _followService.Follow(userId, id);
         return result.MatchFirst<IActionResult>(
             success => Ok(),
             err => this.ProblemErr(err));
     }
 
-    [HttpDelete("{genreId}/follow")]
+    [HttpDelete("{id}/follow")]
     [Authorize]
-    public async Task<IActionResult> UnfollowGenre(int genreId)
+    public async Task<IActionResult> UnfollowGenre(int id)
     {
         var userId = User.GetUserId();
-        var result = await _followService.Unfollow(userId, genreId);
+        var result = await _followService.Unfollow(userId, id);
         return result.MatchFirst<IActionResult>(
             success => NoContent(),
             err => this.ProblemErr(err));

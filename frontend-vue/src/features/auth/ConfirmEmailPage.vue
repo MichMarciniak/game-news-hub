@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import { usePostConfirmEmail } from '@/api/generated';
+import { usePostAuthConfirmEmail } from '@/api/generated';
 import type { EmailConfirmDto } from '@/api/generated/models';
 import AuthPageWrapper from '@/features/auth/AuthPageWrapper.vue';
 import { computed, onMounted, ref } from 'vue';
@@ -16,7 +16,7 @@ const body = ref({
   detail: '',
   redirect: ''
 })
-const {mutate: confirm} = usePostConfirmEmail()
+const {mutate: confirm} = usePostAuthConfirmEmail()
 
 function onView() {
   const data = {

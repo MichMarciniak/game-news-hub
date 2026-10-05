@@ -7,7 +7,7 @@ namespace GameNewsHub.Api.Features.Recommendations;
 
 [Authorize]
 [ApiController]
-[Route("[controller]")]
+[Route("recommendations")]
 public class RecommendationController : ControllerBase
 {
     private readonly RecommendationService _service;

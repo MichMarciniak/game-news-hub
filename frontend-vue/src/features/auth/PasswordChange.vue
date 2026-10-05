@@ -3,7 +3,7 @@ import { ref } from 'vue';
 import PasswordWithHints from './PasswordWithHints.vue';
 import { zodResolver } from '@openvue/forms/resolvers/zod';
 import z from 'zod';
-import { usePostChangePassword } from '@/api/generated';
+import { usePostAuthChangePassword } from '@/api/generated';
 import type { FormSubmitEvent } from '@openvue/forms';
 import type { ChangePasswordDto, ProblemDetails } from '@/api/generated/models';
 import { useToast } from 'openvue';
@@ -22,7 +22,7 @@ const errorMessage = ref('')
 
 const resolver = changePasswordResolver
 
-const {mutate: changePassword, isError} = usePostChangePassword()
+const {mutate: changePassword, isError} = usePostAuthChangePassword()
 
 const onFormSubmit = async ({valid, values}: FormSubmitEvent) => {
   if (!valid) return

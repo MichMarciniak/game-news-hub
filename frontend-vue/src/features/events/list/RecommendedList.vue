@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { useGetRecommendationEvents } from '@/api/generated';
+import { useGetRecommendationsEvents } from '@/api/generated';
 import { addDays } from '@/utils/date';
 import { ref } from 'vue';
 import EventFullDateItem from './EventFullDateItem.vue';
@@ -10,7 +10,7 @@ const query = ref({
   to: addDays(new Date(), 7).toISOString()
 })
 
-const {data: events, isPending} = useGetRecommendationEvents(query)
+const {data: events, isPending} = useGetRecommendationsEvents(query)
 
 
 </script>

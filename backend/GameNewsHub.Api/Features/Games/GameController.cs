@@ -7,7 +7,7 @@ using Microsoft.AspNetCore.Mvc;
 namespace GameNewsHub.Api.Features.Games;
 
 [ApiController]
-[Route("[controller]")]
+[Route("games")]
 public class GameController : ControllerBase
 {
     private readonly FollowGameService _followService;
@@ -17,13 +17,6 @@ public class GameController : ControllerBase
     {
         _service = service;
         _followService = followGameService;
-    }
-
-    [HttpGet("list")]
-    public async Task<ActionResult<List<GameListItemDto>>> GetGamesList()
-    {
-        var games = await _service.GetGamesListAsync();
-        return Ok(games);
     }
 
     [HttpGet("search")]
@@ -39,41 +32,41 @@ public class GameController : ControllerBase
         return Ok(games);
     }
 
-    [HttpGet("{gameId}")]
-    public async Task<ActionResult<GameDetailDto>> GetGameDetails(int gameId)
+    [HttpGet("{id}")]
+    public async Task<ActionResult<GameDetailDto>> GetGameDetails(int id)
     {
-        var result = await _service.GetGameDetailsAsync(gameId);
+        var result = await _service.GetGameDetailsAsync(id);
         return result.MatchFirst(
             details => Ok(details),
             err => this.ProblemErr(err));
     }
 
-    [HttpGet("{gameId}/addons")]
-    public async Task<ActionResult<GameDetailDto>> GetGameAddons(int gameId)
+    [HttpGet("{id}/addons")]
+    public async Task<ActionResult<GameDetailDto>> GetGameAddons(int id)
     {
-        var result = await _service.GetGameAddons(gameId);
+        var result = await _service.GetGameAddons(id);
         return result.MatchFirst(
             details => Ok(details),
             err => this.ProblemErr(err));
     }
 
-    [HttpPost("{gameId}/follow")]
+    [HttpPost("{id}/follow")]
     [Authorize]
-    public async Task<IActionResult> FollowGame(int gameId)
+    public async Task<IActionResult> FollowGame(int id)
     {
         var userId = User.GetUserId();
-        var result = await _followService.Follow(userId, gameId);
+        var result = await _followService.Follow(userId, id);
         return result.MatchFirst<IActionResult>(
             success => Ok(),
             err => this.ProblemErr(err));
     }
 
-    [HttpDelete("{gameId}/follow")]
+    [HttpDelete("{id}/follow")]
     [Authorize]
-    public async Task<IActionResult> UnfollowGame(int gameId)
+    public async Task<IActionResult> UnfollowGame(int id)
     {
         var userId = User.GetUserId();
-        var result = await _followService.Unfollow(userId, gameId);
+        var result = await _followService.Unfollow(userId, id);
         return result.MatchFirst<IActionResult>(
             success => NoContent(),
             err => this.ProblemErr(err));

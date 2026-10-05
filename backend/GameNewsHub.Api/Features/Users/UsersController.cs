@@ -7,7 +7,7 @@ using Microsoft.AspNetCore.Mvc;
 namespace GameNewsHub.Api.Features.Users;
 
 [ApiController]
-[Route("[controller]")]
+[Route("users")]
 [Authorize]
 public class UsersController : ControllerBase
 {
@@ -29,7 +29,7 @@ public class UsersController : ControllerBase
             
     }
 
-    [HttpGet("me/games/followed")]
+    [HttpGet("me/followed-games")]
     public async Task<ActionResult<List<GameListItemDto>>> GetFollowedGames()
     {
         var userId = User.GetUserId();
@@ -39,7 +39,7 @@ public class UsersController : ControllerBase
             err => this.ProblemErr(err));
     }
 
-    [HttpGet("me/events/followed")]
+    [HttpGet("me/followed-events")]
     public async Task<ActionResult<List<EventListItemDto>>> GetFollowedEvents()
     {
         var userId = User.GetUserId();
@@ -49,7 +49,7 @@ public class UsersController : ControllerBase
             err => this.ProblemErr(err));
     }
 
-    [HttpGet("me/genres/followed")]
+    [HttpGet("me/followed-genres")]
     public async Task<ActionResult<List<GenreDto>>> GetFollowedGenres()
     {
         var userId = User.GetUserId();
@@ -59,7 +59,7 @@ public class UsersController : ControllerBase
             err => this.ProblemErr(err));
     }
 
-    [HttpGet("me/platforms/followed")]
+    [HttpGet("me/followed-platform-groups")]
     public async Task<ActionResult<List<PlatformGroupDto>>> GetFollowedPlatformGroups()
     {
         var userId = User.GetUserId();
@@ -69,7 +69,7 @@ public class UsersController : ControllerBase
             err => this.ProblemErr(err));
     }
 
-    [HttpGet("me/profile")]
+    [HttpGet("me")]
     public async Task<ActionResult<ProfileDto>> GetProfile()
     {
         var userId = User.GetUserId();
@@ -79,7 +79,7 @@ public class UsersController : ControllerBase
             err => this.ProblemErr(err));
     }
     
-    [HttpGet("me/profile-full")]
+    [HttpGet("me/full")]
     public async Task<ActionResult<ProfileDto>> GetFullProfile()
     {
         var userId = User.GetUserId();

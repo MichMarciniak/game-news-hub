@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { useGetGameSearch } from '@/api/generated';
+import { useGetGamesSearch } from '@/api/generated';
 import { GameSortBy, type GetGameSearchParams } from '@/api/generated/models';
 import type { PageState } from 'openvue';
 import { ref, watch } from 'vue';
@@ -34,7 +34,7 @@ const sortOptions = [
 ]
 
 const isMobileOpen = ref<boolean>(false)
-const {data: gamesData, isPending} = useGetGameSearch(searchQuery, {
+const {data: gamesData, isPending} = useGetGamesSearch(searchQuery, {
   query: {
     placeholderData: keepPreviousData
   }

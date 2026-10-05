@@ -1,6 +1,6 @@
 
 <script lang="ts" setup>
-import { useGetGameGameId } from '@/api/generated';
+import { useGetGamesId } from '@/api/generated';
 import { computed } from 'vue';
 import GenreCard from '../genres/GenreCard.vue';
 import PlatformGroupCard from '../platforms/PlatformGroupCard.vue';
@@ -15,7 +15,7 @@ const router = useRouter()
 
 const gameId = computed(() => String(route.params.id))
 
-const { data: gameResponse } = useGetGameGameId(gameId)
+const { data: gameResponse } = useGetGamesId(gameId)
 const game = computed(() => (gameResponse.value))
 
 function goToGame() {

@@ -7,7 +7,7 @@ using Microsoft.AspNetCore.Mvc;
 namespace GameNewsHub.Api.Features.Events;
 
 [ApiController]
-[Route("[controller]")]
+[Route("events")]
 public class EventController : ControllerBase
 {
     private readonly FollowEventService _followService;
@@ -35,10 +35,10 @@ public class EventController : ControllerBase
     }
 
 
-    [HttpGet("{eventId}")]
-    public async Task<ActionResult<EventDetailDto>> GetEvent(int eventId)
+    [HttpGet("{id}")]
+    public async Task<ActionResult<EventDetailDto>> GetEvent(int id)
     {
-        var result = await _service.GetEventDetails(eventId);
+        var result = await _service.GetEventDetails(id);
         return result.MatchFirst(
             detail => Ok(detail),
             err => this.ProblemErr(err));
@@ -53,23 +53,23 @@ public class EventController : ControllerBase
         return Ok(events);
     }
 
-    [HttpPost("{eventId}/follow")]
+    [HttpPost("{id}/follow")]
     [Authorize]
-    public async Task<IActionResult> FollowEvent(int eventId)
+    public async Task<IActionResult> FollowEvent(int id)
     {
         var userId = User.GetUserId();
-        var result = await _followService.Follow(userId, eventId);
+        var result = await _followService.Follow(userId, id);
         return result.MatchFirst<IActionResult>(
             success => Ok(),
             err => this.ProblemErr(err));
     }
 
-    [HttpDelete("{eventId}/follow")]
+    [HttpDelete("{id}/follow")]
     [Authorize]
-    public async Task<IActionResult> UnfollowEvent(int eventId)
+    public async Task<IActionResult> UnfollowEvent(int id)
     {
         var userId = User.GetUserId();
-        var result = await _followService.Unfollow(userId, eventId);
+        var result = await _followService.Unfollow(userId, id);
         return result.MatchFirst<IActionResult>(
             success => Ok(),
             err => this.ProblemErr(err));

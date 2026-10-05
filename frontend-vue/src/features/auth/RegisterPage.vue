@@ -7,7 +7,7 @@ import Password from 'openvue/password';
 import Button from 'openvue/button';
 import Message from 'openvue/message';
 import z from 'zod';
-import { usePostRegister } from '@/api/generated';
+import { usePostAuthRegister } from '@/api/generated';
 import AuthPageWrapper from '@/features/auth/AuthPageWrapper.vue';
 import { OiSpinner } from '@openvue/openicons-vue';
 import { useRouter } from 'vue-router';
@@ -26,7 +26,7 @@ const initialValues = ref({
 
 const resolver = registerResolver
 
-const {mutate: register, isPending, isError} = usePostRegister()
+const {mutate: register, isPending, isError} = usePostAuthRegister()
 const errorMessage = ref('asd')
 
 const onFormSubmit = async ({ valid, values }: FormSubmitEvent) => {

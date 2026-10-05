@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { useGetEvent } from '@/api/generated';
+import { useGetEvents } from '@/api/generated';
 import { addDays } from '@/utils/date';
 import { ref } from 'vue';
 import EventFullDateItem from './EventFullDateItem.vue';
@@ -9,7 +9,7 @@ const query = ref({
   to: addDays(new Date(), 7).toISOString()
 })
 
-const {data: events, isPending} = useGetEvent(query)
+const {data: events, isPending} = useGetEvents(query)
 
 </script>
 

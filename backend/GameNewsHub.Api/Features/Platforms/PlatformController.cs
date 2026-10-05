@@ -7,7 +7,7 @@ using Microsoft.AspNetCore.Mvc;
 namespace GameNewsHub.Api.Features.Platforms;
 
 [ApiController]
-[Route("[controller]")]
+[Route("platforms")]
 public class PlatformController : ControllerBase
 {
     private readonly PlatformService _service;
@@ -35,24 +35,24 @@ public class PlatformController : ControllerBase
     
     
 
-    [HttpPost("groups/{groupId}/follow")]
+    [HttpPost("groups/{id}/follow")]
     [Authorize]
-    public async Task<IActionResult> FollowGroup(int groupId)
+    public async Task<IActionResult> FollowGroup(int id)
     {
         var userId = User.GetUserId();
-        var result = await _service.FollowPlatformGroup(userId, groupId);
+        var result = await _service.FollowPlatformGroup(userId, id);
 
         return result.MatchFirst<IActionResult>(
             success => Ok(),
             err => this.ProblemErr(err));
     }
 
-    [HttpDelete("groups/{groupId}/follow")]
+    [HttpDelete("groups/{id}/follow")]
     [Authorize]
-    public async Task<IActionResult> UnfollowGroup(int groupId)
+    public async Task<IActionResult> UnfollowGroup(int id)
     {
         var userId = User.GetUserId();
-        var result = await _service.UnfollowPlatformGroup(userId, groupId);
+        var result = await _service.UnfollowPlatformGroup(userId, id);
 
         return result.MatchFirst<IActionResult>(
             success => Ok(),

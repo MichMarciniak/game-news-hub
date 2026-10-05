@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { usePostResetPassword } from '@/api/generated';
+import { usePostAuthResetPassword } from '@/api/generated';
 import type { ProblemDetails, ResetPasswordDto } from '@/api/generated/models';
 import AuthPageWrapper from '@/features/auth/AuthPageWrapper.vue';
 import type { FormSubmitEvent } from '@openvue/forms';
@@ -27,7 +27,7 @@ const resolver = resetPasswordResolver
 
 const errorMessage = ref('')
 
-const {mutate: resetPassword, isError} = usePostResetPassword()
+const {mutate: resetPassword, isError} = usePostAuthResetPassword()
 
 const onFormSubmit = async ({ valid, values }: FormSubmitEvent) => {
   if (!valid) return
