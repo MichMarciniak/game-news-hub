@@ -13,12 +13,12 @@
             "state": {
               "type": "markdown",
               "state": {
-                "file": "Arch/Przegląd systemu.md",
+                "file": "todo.md",
                 "mode": "source",
                 "source": false
               },
               "icon": "lucide-file",
-              "title": "Przegląd systemu"
+              "title": "todo"
             }
           }
         ]
@@ -186,23 +186,25 @@
       "bases:Stwórz nową bazę danych": false
     }
   },
-  "active": "c0803f6556359e97",
+  "active": "fef2451e5da0e1d5",
   "lastOpenFiles": [
-    "Arch/Przegląd systemu.md",
-    "Arch/Podział projektów.md",
-    "cos tam.md",
+    "Komponenty/Sync z igdb.md",
+    "Komponenty/Logi.md",
+    "Komponenty/_template.md",
     "todo.md",
+    "Decyzje/03 - Logowanie admina.md",
+    "Komponenty/Wyszukiwanie.md",
+    "Komponenty/Rekomendacje.md",
+    "Arch/Przegląd systemu.md",
+    "cos tam.md",
+    "Arch/Podział projektów.md",
     "Decyzje/09 - Frontend w Vue.md",
     "Decyzje/08 - Cykliczne liczenie popularności.md",
     "Decyzje/_template.md",
     "Komponenty/Cykliczność eventów (serie).md",
     "Komponenty/Emaile.md",
     "Komponenty/Grupowanie platform.md",
-    "Komponenty/Logi.md",
     "Komponenty/Parent game i dlc.md",
-    "Komponenty/Sync z igdb.md",
-    "Komponenty/Wyszukiwanie.md",
-    "Komponenty/_template.md",
     "Dane zewnętrzne/Sync.md",
     "Komponenty/Zliczanie obserwacji.md",
     "Komponenty/Autoryzacja.md",
@@ -214,8 +216,6 @@
     "Decyzje/04 - Grupowanie platform.md",
     "Decyzje/05 - Serie eventów.md",
     "Decyzje/02 - Auth.md",
-    "Decyzje/03 - Logowanie admina.md",
-    "Decyzje/09 - Brak HATEOAS.md",
     "Komponenty/Sync",
     "Dane zewnętrzne",
     "Komponenty",

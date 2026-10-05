@@ -16,6 +16,11 @@ Rozszerzenia PostgreSQL:
 
 `FollowerCount` - kolumna gier i eventów do popularności
 
+### Wszystkie ustawienia
+- Query - string
+- Sortowanie: alfabetycznie, relevance, popularność, data(E)
+- Filtry: grupy platform, gatunki
+
 
 ## Przepływ
 ### Wyszukiwanie tekstowe
