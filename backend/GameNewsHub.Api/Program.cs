@@ -25,7 +25,6 @@ const string FrontendCorsPolicy = "FrontendCorsPolicy";
 var connectionString = config.GetConnectionString("DefaultConnection");
 
 // OPTIONS from appsettings and secrets
-services.AddValidatedOptions<JwtTokenOptions>(config);
 services.AddValidatedOptions<SmtpOptions>(config);
 services.AddValidatedOptions<FollowServiceOptions>(config);
 services.AddValidatedOptions<RecommendationWeights>(config);
@@ -39,17 +38,11 @@ var devAuth = config.GetValue<bool>("DevAuth");
 services.AddDbContext<AppDbContext>(options =>
     options.UseNpgsql(connectionString)
 );
-services.AddIdentityCore<AppUser>()
-    .AddRoles<IdentityRole<int>>()
+services.AddIdentity<AppUser, IdentityRole<int>>()
     .AddEntityFrameworkStores<AppDbContext>()
-    .AddDefaultTokenProviders()
-    .AddSignInManager();
+    .AddDefaultTokenProviders();
 
 services.AddHttpContextAccessor();
-
-// bo .net jest tak piękny że nawet przy wczytywaniu tokenów
-// zamiast "sub" jest jakiś schema...
-JwtSecurityTokenHandler.DefaultInboundClaimTypeMap.Clear();
 
 // options narazie dla dev
 services.Configure<IdentityOptions>(IdentityConfig.ConfigIdentity);
@@ -59,7 +52,6 @@ services.AddFeatureServices();
 services.AddBackgroundServices();
 
 // OPENAPI
-services.AddAuthDocumentation();
 
 services.AddOpenApi(options =>
 {
@@ -135,8 +127,7 @@ if (devAuth)
 }
 else
 {
-    var tokenOptions = config.GetSection(JwtTokenOptions.SectionName).Get<JwtTokenOptions>();
-    services.AddJwtAuthentication(tokenOptions!);
+    services.AddCookieAuth();
     services.AddAuthorization();
 }
 

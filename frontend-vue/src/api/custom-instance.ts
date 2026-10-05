@@ -21,41 +21,30 @@ AXIOS_INSTANCE.interceptors.request.use((config) => {
   return config;
 });
 
+let onUnauthorized: (() => void) | null = null;
+export const setUnauthorizedHandler = (handler: () => void) => {
+  onUnauthorized = handler;
+}
+
+const SILENT_401 = ['/auth/login', '/auth/me', '/auth/logout']
+
 // Response Interceptor: Catch 401 & Refresh Token
 AXIOS_INSTANCE.interceptors.response.use(
   (response) => response,
   async (error) => {
-    const originalRequest = error.config;
+    const url: string = error.config.url ?? '';
+    const isSilent = SILENT_401.some((path) => url.includes(path));
 
-    // 1. Dodaj /login (lub ścieżkę do endpointu logowania w API) do wykluczeń
-    const isAuthEndpoint = 
-      originalRequest.url.includes('/auth/refresh') ||
-      originalRequest.url.includes('/auth/logout') ||
-      originalRequest.url.includes('/auth/login');
+    if (error.response.status === 401 && !isSilent) {
+      onUnauthorized?.();
 
-    if (error.response?.status === 401 && !originalRequest._retry && !isAuthEndpoint) {
-      originalRequest._retry = true;
-      try {
-        const { data } = await AXIOS_INSTANCE.post('/auth/refresh');
-        setAccessToken(data.accessToken);
-        originalRequest.headers.Authorization = `Bearer ${data.accessToken}`;
-        return AXIOS_INSTANCE(originalRequest);
-      } catch (refreshError) {
-        setAccessToken(null);
-
-        // 2. Pobierz czystą ścieżkę, dbając o to, by nie nadpisać istniejącego redirectPath
-        const currentRoute = router.currentRoute.value;
-        const targetRedirect = (currentRoute.query.redirectPath as string) || currentRoute.fullPath;
-
-        // Przekieruj na /login tylko wtedy, gdy użytkownik już na nim nie przebywa
-        if (currentRoute.path !== '/login') {
-          router.push({
-            path: '/login',
-            query: { redirectPath: targetRedirect }
-          });
-        }
-
-        return Promise.reject(refreshError);
+      const route = router.currentRoute.value;
+      if (route.path !== '/login') {
+        const targetRedirect = (route.query.redirectPath as string) || route.fullPath;
+        router.push({
+          path: '/login',
+          query: { redirectPath: targetRedirect }
+        });
       }
     }
     return Promise.reject(error);
@@ -72,21 +61,3 @@ export const customInstance = <T>(
     ...options,
   }).then((res) => res.data as T);
 };
-
-// export const customInstance = <T>(
-//   config: AxiosRequestConfig | string,
-//   options?: AxiosRequestConfig
-// ): Promise<T> => {
-//   // Convert string URLs (e.g. "/Game/7583") into an Axios config object
-//   const requestConfig: AxiosRequestConfig =
-//     typeof config === 'string' ? { url: config } : config;
-
-//   return AXIOS_INSTANCE({
-//     ...requestConfig,
-//     ...options,
-//     headers: {
-//       ...requestConfig?.headers,
-//       ...options?.headers,
-//     },
-//   }).then(({ data }) => data as T);
-// };

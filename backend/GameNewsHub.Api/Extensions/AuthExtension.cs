@@ -3,6 +3,7 @@ using System.Text;
 using GameNewsHub.Api.Options;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi;
 
@@ -53,41 +54,31 @@ public static class AuthExtension
         return services;
     }
 
-    public static IServiceCollection AddJwtAuthentication(this IServiceCollection services, JwtTokenOptions options)
+    public static IServiceCollection AddCookieAuth(this IServiceCollection services)
     {
-        var key = Encoding.ASCII.GetBytes(options.SigningKey);
-
-        if (key.Length == 0) throw new Exception("Token:SigningKey is required");
-
-        services.AddAuthentication(opt =>
+        services.ConfigureApplicationCookie(o =>
+        {
+            o.Cookie.Name = "app.auth";
+            o.Cookie.HttpOnly = true;
+            o.Cookie.SecurePolicy = CookieSecurePolicy.SameAsRequest; //TODO always
+            o.Cookie.SameSite = SameSiteMode.Lax; //TODO strict
+            o.ExpireTimeSpan = TimeSpan.FromDays(14);
+            o.SlidingExpiration = true;
+            o.Events.OnRedirectToLogin = ctx =>
             {
-                opt.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
-                opt.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
-            })
-            .AddJwtBearer(opt =>
+                ctx.Response.StatusCode = 401;
+                return Task.CompletedTask;
+            };
+            o.Events.OnRedirectToAccessDenied = ctx =>
             {
-                opt.TokenValidationParameters = new TokenValidationParameters
-                {
-                    ValidateIssuerSigningKey = true,
-                    IssuerSigningKey = new SymmetricSecurityKey(key),
-                    ValidateIssuer = true,
-                    ValidateAudience = true,
-                    ValidIssuer = options.Issuer,
-                    ValidAudience = options.Audience,
-                    ClockSkew = TimeSpan.FromSeconds(30)
-                };
+                ctx.Response.StatusCode = 403;
+                return Task.CompletedTask;
+            };
+        });
 
-                opt.Events = new JwtBearerEvents
-                {
-                    OnTokenValidated = context =>
-                    {
-                        var tokenType = context.Principal?.FindFirstValue("token_type");
-                        if (tokenType != "access") context.Fail("Invalid token type");
-
-                        return Task.CompletedTask;
-                    }
-                };
-            });
+        // jak szybko działa wyloguj ze wszystkich urządzeń
+        services.Configure<SecurityStampValidatorOptions>(o =>
+            o.ValidationInterval = TimeSpan.FromMinutes(1));
 
         return services;
     }

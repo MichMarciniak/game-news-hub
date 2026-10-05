@@ -28,9 +28,9 @@ function goToGame() {
 
 <template>
   <div class="relative cursor-pointer transition-all duration-150 hover:ring-2 hover:ring-primary rounded-lg overflow-hidden" @click="goToGame">
-    <!-- <img :src="props.game.coverUrl as string" alt="asd" /> -->
+    <img v-if="props.game.coverUrl" :src="props.game.coverUrl" alt="asd" /> 
     
-    <Image :src="TRANSPARENT_IMAGE"/>
+    <Image v-else :src="TRANSPARENT_IMAGE"/>
     <FollowHeart 
       :is-followed="isFollowed"
       :size="'1.8rem'"

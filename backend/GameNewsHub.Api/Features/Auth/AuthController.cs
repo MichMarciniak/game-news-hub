@@ -15,12 +15,10 @@ namespace GameNewsHub.Api.Features.Auth;
 public class AuthController : ControllerBase
 {
     private readonly AuthService _service;
-    private readonly JwtTokenOptions _tokenOptions;
 
-    public AuthController(AuthService service, IOptions<JwtTokenOptions> tokenOptions)
+    public AuthController(AuthService service)
     {
         _service = service;
-        _tokenOptions = tokenOptions.Value;
     }
 
     [HttpGet("test")]
@@ -42,62 +40,19 @@ public class AuthController : ControllerBase
     }
 
     [HttpPost("login")]
-    public async Task<ActionResult<LoginResponse>> Login(LoginDto request)
+    public async Task<ActionResult<ProfileDto>> Login(LoginDto request)
     {
         var result = await _service.Login(request);
         return result.Match(
-            value=>
-            {
-                Response.Cookies.Append("refreshToken", value.Tokens.RefreshToken, new CookieOptions
-                {
-                    HttpOnly = true,
-                    Secure = true,
-                    SameSite = SameSiteMode.Lax, //TODO change to strict
-                    Expires = DateTimeOffset.UtcNow.Add(_tokenOptions.RefreshTokenLifetime)
-                });
-                return Ok(new LoginResponse
-                {
-                    AccessToken = value.Tokens.AccessToken,
-                    User = value.User,
-                });
-            },
-            errors => this.ProblemErr(errors)
-        );
-    }
-
-    [HttpPost("refresh")]
-    public async Task<ActionResult<LoginResponse>> Refresh()
-    {
-        var refreshToken = Request.Cookies["refreshToken"];
-        if (string.IsNullOrEmpty(refreshToken)) return Unauthorized();
-
-        var result = await _service.RefreshToken(refreshToken);
-
-        return result.MatchFirst(
-            value=>
-            {
-                Response.Cookies.Append("refreshToken", value.Tokens.RefreshToken, new CookieOptions
-                {
-                    HttpOnly = true,
-                    Secure = true,
-                    SameSite = SameSiteMode.Lax, //TODO change to strict
-                    Expires = DateTimeOffset.UtcNow.Add(_tokenOptions.RefreshTokenLifetime)
-                });
-                return Ok(new LoginResponse
-                {
-                    AccessToken = value.Tokens.AccessToken,
-                    User = value.User
-                });
-            },
+            value => Ok(value),
             errors => this.ProblemErr(errors)
         );
     }
 
     [HttpPost("logout")]
-    [Authorize]
-    public IActionResult Logout()
+    public async Task<IActionResult> Logout()
     {
-        Response.Cookies.Delete("refreshToken");
+        await _service.Logout();
         return NoContent();
     }
 
@@ -107,7 +62,6 @@ public class AuthController : ControllerBase
     {
         var userId = User.GetUserId();
         await _service.LogoutFull(userId);
-        Response.Cookies.Delete("refreshToken");
         return NoContent();
     }
 

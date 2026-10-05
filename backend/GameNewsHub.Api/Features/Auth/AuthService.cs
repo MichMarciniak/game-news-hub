@@ -22,18 +22,16 @@ public class AuthService
     private readonly RoleManager<IdentityRole<int>> _roleManager;
     private readonly SignInManager<AppUser> _signInManager;
     private readonly EmailTemplateService _templateService;
-    private readonly TokenService _tokenService;
     private readonly UserManager<AppUser> _userManager;
     private readonly ILogger<AuthService> _logger;
 
     public AuthService(UserManager<AppUser> userManager, SignInManager<AppUser> signInManager, IEmailSender emailSender,
-        TokenService tokenService, IOptions<FrontendOptions> frontendOptions, EmailTemplateService templateService,
+        IOptions<FrontendOptions> frontendOptions, EmailTemplateService templateService,
         RoleManager<IdentityRole<int>> roleManager, ILogger<AuthService> logger)
     {
         _userManager = userManager;
         _signInManager = signInManager;
         _emailSender = emailSender;
-        _tokenService = tokenService;
         _frontendOptions = frontendOptions.Value;
         _templateService = templateService;
         _roleManager = roleManager;
@@ -78,7 +76,7 @@ public class AuthService
     }
 
     // zwraca access i refresh
-    public async Task<ErrorOr<LoginResult>> Login(LoginDto loginDto)
+    public async Task<ErrorOr<ProfileDto>> Login(LoginDto loginDto)
     {
         var user = await _userManager.FindByEmailAsync(loginDto.Email);
         if (user == null)
@@ -125,29 +123,21 @@ public class AuthService
             return Error.Unauthorized("Auth.EmailNotConfirmed", "Confirm email before logging in");
         }
 
-        var accessToken = await _tokenService.GenerateAccessToken(user);
-        var refreshToken = _tokenService.GenerateRefreshToken(user);
+        await _signInManager.SignInAsync(user, isPersistent: true);
 
         var isAdmin = await _userManager.IsInRoleAsync(user, Roles.Admin);
 
         _logger.LogInformation(
             "User {UserId} logged in",
             user.Id);
-        var tokens = new TokenResult
-        {
-            AccessToken = accessToken,
-            RefreshToken = refreshToken
-        };
-        var res = new LoginResult
-        {
-            Tokens = tokens,
-            User = user.ToDto(isAdmin)
-        };
-        return res;
+        return user.ToDto(isAdmin);
     }
 
-    // usuwa access i refresh token
-    // ustawia nowy stamp w userze
+    public async Task Logout()
+    {
+        await _signInManager.SignOutAsync();
+    }
+
     public async Task<ErrorOr<Success>> LogoutFull(int userId)
     {
         var user = await _userManager.FindByIdAsync(userId.ToString());
@@ -155,6 +145,7 @@ public class AuthService
             return Result.Success;
 
         await _userManager.UpdateSecurityStampAsync(user);
+        await _signInManager.SignOutAsync();
         _logger.LogInformation(
             "User {UserId} logged out from all sessions",
             user.Id);
@@ -207,57 +198,6 @@ public class AuthService
 
         return Result.Success;
     }
-
-    public async Task<ErrorOr<LoginResult>> RefreshToken(string refreshToken)
-    {
-        var principal = _tokenService.ValidateRefreshToken(refreshToken);
-        if (principal == null)
-        {
-            _logger.LogWarning(
-                "Refresh failed: token failed validation (malformed, expired, bad signature)");
-            return Error.Unauthorized("Auth.InvalidRefreshToken", "Refresh token is invalid");
-        }
-
-        var userId = principal.FindFirstValue(JwtRegisteredClaimNames.Sub);
-        if (userId == null)
-        {
-            _logger.LogWarning(
-                "Refresh failed: token is invalid");
-            return Error.Unauthorized("Auth.InvalidRefreshToken", "Refresh token is invalid");
-        }
-
-        var user = await _userManager.FindByIdAsync(userId);
-        if (user == null)
-        {
-            _logger.LogWarning(
-                "Refresh failed: User {UserId} not found",
-                userId);
-            return Error.Unauthorized("Auth.InvalidRefreshToken", "Refresh token is invalid");
-        }
-
-        var stampInToken = principal.FindFirstValue("security_stamp");
-        if (stampInToken != user.SecurityStamp)
-        {
-            _logger.LogWarning(
-                "Refresh rejected: invalid security_stamp for User {UserId}",
-                userId);
-            return Error.Unauthorized("Auth.TokenRevoked", "Session expired. Log in again");
-        }
-
-        var newAccessToken = await _tokenService.GenerateAccessToken(user);
-        var newRefreshToken =
-            _tokenService.GenerateRefreshToken(user); // rotacja - nowy refresh przy kazdym odswiezeniu
-
-        var isAdmin = await _userManager.IsInRoleAsync(user, Roles.Admin);
-        
-        var tokens = new TokenResult { AccessToken = newAccessToken, RefreshToken = newRefreshToken };
-        return new LoginResult
-        {
-            Tokens = tokens,
-            User = user.ToDto(isAdmin)
-        };
-    }
-
 
     public async Task<ErrorOr<Success>> ResendConfirmation(string email)
     {
@@ -317,7 +257,7 @@ public class AuthService
         }
 
         // unieważnia refresh token
-        await _userManager.UpdateSecurityStampAsync(user);
+        //await _userManager.UpdateSecurityStampAsync(user); //reset password powinno unieważniać
         _logger.LogInformation("Password reset completed for User {UserId}", user.Id);
 
         return Result.Success;
@@ -339,10 +279,12 @@ public class AuthService
                 .ToList();
         }
 
-        await _userManager.UpdateSecurityStampAsync(user);
+        //await _userManager.UpdateSecurityStampAsync(user); //change password powinno to aktualizować
         await SendPasswordChangedNotificationEmail(user);
         
         _logger.LogInformation("Password changed for User {UserId}", user.Id);
+
+        await _signInManager.RefreshSignInAsync(user);
 
         return Result.Success;
     }
