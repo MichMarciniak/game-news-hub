@@ -1,10 +1,12 @@
+using System.ComponentModel.DataAnnotations;
+
 namespace GameNewsHub.Sync.Options;
 
-public class ApiOptions
+public class ApiOptions : IConfigSection
 {
-    public const string SectionName = "Api";
-    public string BaseUrl { get; set; }
-    public string TokenUrl { get; set; }
-    public string ClientId { get; set; }
-    public string ClientSecret { get; set; }
+    public static string SectionName => "Api";
+    [Required] public string BaseUrl { get; set; }
+    [Required] public string TokenUrl { get; set; }
+    [Required] public string ClientId { get; set; }
+    [Required] public string ClientSecret { get; set; }
 }

@@ -50,10 +50,6 @@ public class IgdbAuthService
 
             _logger.LogInformation("Refreshed Twitch access token.");
 
-            // TODO delete this later, for now it's fine
-            _logger.LogInformation(data.AccessToken);
-            _logger.LogInformation(_cachedToken);
-
             return _cachedToken;
         }
         finally

@@ -12,17 +12,23 @@ public static class LoggingExtensions
 {
     public static IHostBuilder AddAppLogging(this IHostBuilder host, SeqOptions seqOptions )
     {
-        host.UseSerilog((ctx, cfg) => cfg
-            .MinimumLevel.Information()
-            .MinimumLevel.Override("Microsoft.AspNetCore", LogEventLevel.Warning)
-            .Enrich.FromLogContext()
-            .Enrich.WithMachineName()
-            .Enrich.WithEnvironmentName()
-            .WriteTo.Console()
-            .WriteTo.File("logs/log-.txt",
-                rollingInterval: RollingInterval.Day,
-                retainedFileCountLimit: 14)
-            .WriteTo.Seq(seqOptions.Url));
+        host.UseSerilog((ctx, cfg) =>
+        {
+            var appName = ctx.HostingEnvironment.ApplicationName;
+            cfg
+                .MinimumLevel.Information()
+                .MinimumLevel.Override("Microsoft", LogEventLevel.Warning)
+                .MinimumLevel.Override("System", LogEventLevel.Warning)
+                .Enrich.FromLogContext()
+                .Enrich.WithMachineName()
+                .Enrich.WithEnvironmentName()
+                .Enrich.WithProperty("Application", appName)
+                .WriteTo.Console()
+                .WriteTo.File($"../logs/{appName}-.txt",
+                    rollingInterval: RollingInterval.Day,
+                    retainedFileCountLimit: 14)
+                .WriteTo.Seq(seqOptions.Url);
+        });
 
         return host;
     }

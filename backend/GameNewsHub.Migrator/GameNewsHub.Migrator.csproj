@@ -16,10 +16,17 @@
 
     <ItemGroup>
       <PackageReference Include="Microsoft.Extensions.Hosting" Version="10.0.12" />
+      <PackageReference Include="Serilog.Enrichers.Environment" Version="3.0.1" />
+      <PackageReference Include="Serilog.Extensions.Hosting" Version="10.0.0" />
+      <PackageReference Include="Serilog.Sinks.Console" Version="6.1.1" />
+      <PackageReference Include="Serilog.Sinks.Seq" Version="9.1.0" />
     </ItemGroup>
 
     <ItemGroup>
       <ProjectReference Include="..\GameNewsHub.Data\GameNewsHub.Data.csproj" />
     </ItemGroup>
-
+    <ItemGroup>
+        <None Update="appsettings.json" CopyToOutputDirectory="Always" />
+        <None Update="appsettings.Development.json" CopyToOutputDirectory="Always" />
+    </ItemGroup>
 </Project>
