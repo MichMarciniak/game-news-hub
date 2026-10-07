@@ -101,29 +101,23 @@ public class EventService
         IQueryable<Event> dbQuery = _context.Events.AsQueryable();
 
         var hasQuery = !string.IsNullOrWhiteSpace(query);
-        var cleanQuery = string.Empty;
-
+        var cleanQuery = query?.Trim();
+        string like = "", exact = "", prefix = "", wordStart = "";
         if (hasQuery)
         {
-            cleanQuery = query!.Trim();
-            dbQuery = dbQuery
-                .Where(e => EF.Functions.ILike(e.Name, $"%{cleanQuery}%"));
+            exact = cleanQuery;
+            prefix = cleanQuery + "%";
+            wordStart = "% " + cleanQuery + "%";
+            like = "%" + cleanQuery + "%";
+            
+            dbQuery = dbQuery.Where(g =>
+                EF.Functions.ILike(g.Name, like) ||
+                EF.Functions.TrigramsAreWordSimilar(g.Name, cleanQuery));
         }
-
         var total = await dbQuery.CountAsync();
 
-        if (total == 0)
-        {
-            return new SearchDto<EventListItemDto>
-            {
-                Total = 0,
-                Items = new()
-            };
-        }
-        
         IQueryable<Event> sortedQuery;
-
-        if (!hasQuery)
+        if (!hasQuery) 
         {
             sortedQuery = dbQuery.ApplySorting(sortBy ?? EventSortBy.Date, descending);
         }
@@ -133,16 +127,20 @@ public class EventService
         }
         else
         {
-            sortedQuery = dbQuery 
-                .OrderByDescending(e => EF.Functions.ILike(e.Name, $"%{cleanQuery}%"))
-                .ThenByDescending(e => EF.Functions.TrigramsSimilarity(e.Name, cleanQuery))
-                .ThenBy(e => EF.Functions.FuzzyStringMatchLevenshteinLessEqual(e.Name, cleanQuery, 5));
+            sortedQuery = dbQuery
+                .OrderBy(g =>
+                    EF.Functions.ILike(g.Name, exact) ? 0 :
+                    EF.Functions.ILike(g.Name, prefix) ? 1 :
+                    EF.Functions.ILike(g.Name, wordStart) ? 2 :
+                    EF.Functions.ILike(g.Name, like) ? 3 : 4)
+                .ThenByDescending(g => EF.Functions.TrigramsWordSimilarity(cleanQuery, g.Name))
+                .ThenByDescending(g => g.FollowerCount);
         }
 
         var items = await sortedQuery
             .Skip((page - 1) * pageSize)
             .Take(pageSize)
-            .Select(e => e.ToListItemDto())
+            .Select(g => g.ToListItemDto())
             .ToListAsync();
 
         return new SearchDto<EventListItemDto>
@@ -151,6 +149,7 @@ public class EventService
             Items = items
         };
     }
+
 
     public async Task<SearchDto<AdminSeriesDto>> GetAdminSeries(string? query, int page, int pageSize)
     {

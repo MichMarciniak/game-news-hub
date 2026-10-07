@@ -1,5 +1,5 @@
 ## Cel
-Wyszukiwanie gier i eventów po nazwie, odporne na literówki, z filtrowaniem (platformy, gatunki, data, typ) i sortowaniem (trafność, popularność, data, alfabetycznie)
+Wyszukiwanie gier i eventów po nazwie, odporne na literówki, z filtrowaniem i sortowaniem.
 
 ## Główne elementy
 `Api/Features/Events`
@@ -7,12 +7,9 @@ Wyszukiwanie gier i eventów po nazwie, odporne na literówki, z filtrowaniem (p
 `Api/Features/Games`
 - `GameService` - 
 
-`Api/Options`
-- `SearchOptions` - [[#Konfiguracja]] stałych progów
 
 Rozszerzenia PostgreSQL:
 - `pg_trgm` - similarity
-- `fuzzystrmatch` - levenshtein
 
 `FollowerCount` - kolumna gier i eventów do popularności
 
@@ -20,68 +17,67 @@ Rozszerzenia PostgreSQL:
 - Query - string
 - Sortowanie: alfabetycznie, relevance, popularność, data(E)
 - Filtry: grupy platform, gatunki
-
+- Paginacja: page, pageSize
 
 ## Przepływ
-### Wyszukiwanie tekstowe
-1. Zapytanie użytkownika (`/search` query param)
-2. Zapytanie SQL łączy:
-	1. `ExactContains` - dokładny match
-	2. `LevenshteinLessEqual` - literówki
-	3. `TrigramsSimilarity` - próg 30%, łapie inną kolejność słów
-3. Sortowanie: `ExactContains` -> `Distance` -> `Similarity` -> `FollowerCount`
-4. Paginacja (`Skip`/`Take`) na posortowanym, przefiltrowanym wyniku
+### Gry
+1. Walidacja i przygotowanie paginacji
+2. Baza zapytanie i filtrowanie wstępne - tylko GameType=Main
+3. ([[todo]] Filtrowanie platform i gatunków)
+4. (if query) oczyszczenie i przekazanie do zapytania
+5. zliczenie wszystkich wyników
+6. Sortowanie:
+	1. Domyślne - Tytuł
+	2. Tytuł - po tytule, alfabetycznie
+	3. Popularność - po liczbach polubień (lokalnie w bazie)
+	4. Dopasowanie (Relevance): [[#Relevance sort]]
+7. Paginacja
+8. Rzutowanie do Dto
+9. Zwraca SearchDto zawierający wyniki i liczbę znalezionych (krok 4)
 
-### Filtrowanie
+### Wydarzenia
+1. Walidacja i przygotowanie paginacji
+2. (if query) oczyszczenie i przekazanie do zapytania
+3. zliczenie wszystkich wyników
+4. Sortowanie:
+	1. Domyślne - Data
+	2. Data - po StartTime
+	3. Popularność - liczba polubień (obserwacji)
+	4. Dopasowanie (Relevance): [[#Relevance sort]]
+5. Paginacja
+6. Rzutowanie do Dto
+7. SearchDto - wyniki, liczba znalezionych
+
+## Relevance sort
+5 warunków - od najważniejszego do najmniej:
+1. exact match - query jest takie same jak nazwa wydarzenia
+2. prefix - nazwa wydarzenia zaczyna się od query (`query*`)
+3. wordStart - słowo w nazwie się od tego zaczyna (`* query*`)
+4. like - nazwa zawiera gdzieś query (`*query*`)
+5. similarity - [[Trójgramy]]
+6. popularność - liczba obserwacji
+
+
+## Filtrowanie
 [[todo]]
 
 ## Konfiguracja
 ### Baza danych
 #### Rozszerzenia
-```
+```sql
 CREATE EXTENSION IF NOT EXISTS pg_trgm;
-CREATE EXTENSION IF NOT EXISTS fuzzystrmatch;
+-- CREATE EXTENSION IF NOT EXISTS fuzzystrmatch; -- Już nie używane
 ```
 #### Indeksy
+[[Trójgramy#Index]]
 ```
 CREATE INDEX ix_games_title_trgm ON "Games" USING GIN ("Title" gin_trgm_ops);
 ```
 
+
 ### Zmienne
 `appsettings.Development.json : Search`:
 - [[todo]]
-
-
-## Ograniczenia
-Do poklikania i potestowania [[todo]] ale jak będzie frontend żeby było łatwiej
-
-<details>
-<summary>Gry z filtrowaniem przez ILIKE</summary>
-<ul>
- <li>"The Witcher 3: Wild Hunt"
- <li>"Switcheroo"
- <li>"The Witcher 3: Wild Hunt Remastered"
-</ul>
-
-</details>
-
-<details>
-<summary>Gry z filtrowaniem przez % (similarity ~> 0.3)</summary>
-<ul>
- <li>"The Witcher 3: Wild Hunt"
- <li>"Switcheroo"
- <li>"Witchy Tower"
- <li>"Dog Witch"
- <li>"Witchspire"
- <li>"Tiny Witch"
- <li>"Witchbrook"
- <li>"Warding Witches"
- <li>"The Witches' Whisk"
- <li>"Garden of Witches"
-</ul>
-
-</details>
-
 
 
 

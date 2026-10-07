@@ -8,3 +8,5 @@
 - zaznaczanie daty w kalendarzu - jakiś efekt wizualny
 
 - niektóre gry nie mają parentGame nawet jak mają parentGameIgdbId
+- czemu po wyszukaniu za kazdym razem jest request na /users/me/followed/games? (przy wyszukiwaniu gier)
+- 

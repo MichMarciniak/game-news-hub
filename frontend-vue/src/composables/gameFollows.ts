@@ -9,7 +9,7 @@ export function useFollowedGames() {
   const auth = useAuthStore();
   const enabled = computed(() => auth.isAuthenticated)
 
-  const {data: gamesData } = useGetUsersMeFollowedGames({query: {enabled}})
+  const {data: gamesData } = useGetUsersMeFollowedGames({query: {enabled, staleTime: Infinity}})
 
   const followedGameIds = computed(() => new Set(gamesData.value?.map(g => String(g.id)) ?? []))
 

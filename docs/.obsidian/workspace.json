@@ -46,7 +46,7 @@
                 "searchQuery": ""
               },
               "icon": "lucide-folder-closed",
-              "title": "Przeglądarka plików"
+              "title": "Pliki"
             }
           },
           {
@@ -188,22 +188,23 @@
   },
   "active": "fef2451e5da0e1d5",
   "lastOpenFiles": [
+    "Komponenty/Wyszukiwanie.md",
+    "Teoria/Trójgramy.md",
     "Decyzje/10 - Migracja z JWT na cookie auth.md",
-    "Decyzje/08 - Cykliczne liczenie popularności.md",
-    "Decyzje/04 - Grupowanie platform.md",
     "Decyzje/01 - Baza danych.md",
     "Decyzje/02 - Auth.md",
+    "todo.md",
+    "Decyzje/08 - Cykliczne liczenie popularności.md",
+    "Decyzje/04 - Grupowanie platform.md",
     "Decyzje/_template.md",
     "Decyzje/03 - Logowanie admina.md",
     "Decyzje/09 - Frontend w Vue.md",
     "Notatki/Część główna.md",
     "Notatki/Wstęp.md",
-    "todo.md",
     "Notatki",
     "Komponenty/Sync z igdb.md",
     "Komponenty/Logi.md",
     "Komponenty/_template.md",
-    "Komponenty/Wyszukiwanie.md",
     "Komponenty/Rekomendacje.md",
     "Arch/Przegląd systemu.md",
     "cos tam.md",
@@ -214,7 +215,6 @@
     "Komponenty/Parent game i dlc.md",
     "Dane zewnętrzne/Sync.md",
     "Komponenty/Zliczanie obserwacji.md",
-    "Komponenty/Autoryzacja.md",
     "Teoria",
     "Testy",
     "Komponenty/Sync",

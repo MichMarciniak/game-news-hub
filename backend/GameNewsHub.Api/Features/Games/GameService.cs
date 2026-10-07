@@ -34,35 +34,31 @@ public class GameService
         GameSortBy? sortBy, bool descending)
     {
         page = Math.Max(page, 1);
-        pageSize = Math.Max(pageSize, 1);
+        pageSize = Math.Clamp(pageSize, 1, 100);
 
         IQueryable<Game> filteredQuery = _context.Games
             .Where(g => GameTypePolicy.MainTypes.Contains(g.Type));
-        
-        var hasQuery = !string.IsNullOrWhiteSpace(query);
-        var cleanQuery = string.Empty;
 
+        var cleanQuery = query?.Trim();
+        var hasQuery = !string.IsNullOrWhiteSpace(query);
+
+        string like = "", exact = "", prefix = "", wordStart = "";
         if (hasQuery)
         {
-            cleanQuery = query!.Trim();
-            filteredQuery = filteredQuery
-                .Where(g => EF.Functions.TrigramsAreSimilar(g.Title, cleanQuery));
+            exact = cleanQuery;
+            prefix = cleanQuery + "%";
+            wordStart = "% " + cleanQuery + "%";
+            like = "%" + cleanQuery + "%";
+            
+            filteredQuery = filteredQuery.Where(g =>
+                EF.Functions.ILike(g.Title, like) ||
+                EF.Functions.TrigramsAreWordSimilar(g.Title, cleanQuery));
         }
 
         var total = await filteredQuery.CountAsync();
 
-        if (total == 0)
-        {
-            return new SearchDto<GameListItemDto>
-            {
-                Total = 0,
-                Items = new List<GameListItemDto>()
-            };
-        }
-
         IQueryable<Game> sortedQuery;
-
-        if (!hasQuery) // nie powinno być bo w kontrolerze jest defaultowo Relevance? ale sie nie znam
+        if (!hasQuery) 
         {
             sortedQuery = filteredQuery.ApplySorting(sortBy ?? GameSortBy.Name, descending);
         }
@@ -73,9 +69,13 @@ public class GameService
         else
         {
             sortedQuery = filteredQuery
-                .OrderByDescending(g => EF.Functions.ILike(g.Title, $"%{cleanQuery}%"))
-                .ThenByDescending(g => EF.Functions.TrigramsSimilarity(g.Title, cleanQuery))
-                .ThenBy(g => EF.Functions.FuzzyStringMatchLevenshteinLessEqual(g.Title, cleanQuery, 3));
+                .OrderBy(g =>
+                    EF.Functions.ILike(g.Title, exact) ? 0 :
+                    EF.Functions.ILike(g.Title, prefix) ? 1 :
+                    EF.Functions.ILike(g.Title, wordStart) ? 2 :
+                    EF.Functions.ILike(g.Title, like) ? 3 : 4)
+                .ThenByDescending(g => EF.Functions.TrigramsWordSimilarity(cleanQuery, g.Title))
+                .ThenByDescending(g => g.FollowerCount);
         }
 
         var items = await sortedQuery

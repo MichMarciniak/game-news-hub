@@ -6,7 +6,7 @@ PostgreSQL
 
 ## Powód
 1. Potrzebowałem relacyjnej bazy danych
-2. Postgres ma funkcje: `similarity` z `pg_trgm` oraz `levenshtein` z `fuzzystrmatch`
+2. Postgres ma funkcje: `similarity` z `pg_trgm` ~~oraz `levenshtein` z `fuzzystrmatch`
 
 ## Konsekwencje
 - Dostęp do funkcji postgresa

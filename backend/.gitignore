@@ -14,3 +14,5 @@ sqlite.db-shm
 sqlite.db-wal
 
 .dockerignore
+
+logs

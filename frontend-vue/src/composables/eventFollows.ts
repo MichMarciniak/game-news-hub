@@ -9,7 +9,7 @@ export function useFollowedEvents() {
   const auth = useAuthStore();
   const enabled = computed(() => auth.isAuthenticated)
 
-  const {data: eventsData} = useGetUsersMeFollowedEvents({query:{enabled}})
+  const {data: eventsData} = useGetUsersMeFollowedEvents({query:{enabled, staleTime: Infinity}})
   
   const followedEventIds = computed(() => new Set(eventsData.value?.map(e => String(e.id)) ?? []))
 
