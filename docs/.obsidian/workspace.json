@@ -13,12 +13,12 @@
             "state": {
               "type": "markdown",
               "state": {
-                "file": "todo.md",
+                "file": "Komponenty/Rekomendacje.md",
                 "mode": "source",
                 "source": false
               },
               "icon": "lucide-file",
-              "title": "todo"
+              "title": "Rekomendacje"
             }
           }
         ]
@@ -186,21 +186,23 @@
       "bases:Stwórz nową bazę danych": false
     }
   },
-  "active": "c0803f6556359e97",
+  "active": "61cd390f3fa6c353",
   "lastOpenFiles": [
+    "Komponenty/Parent game i dlc.md",
+    "Komponenty/Rekomendacje.md",
+    "Dane zewnętrzne/Sync.md",
+    "Decyzje/04 - Grupowanie platform.md",
+    "Decyzje/03 - Logowanie admina.md",
+    "Decyzje/02 - Auth.md",
+    "todo.md",
     "Bez nazwy.base",
     "Bez nazwy 1.base",
-    "todo.md",
-    "Dane zewnętrzne/Sync.md",
     "Arch/Warstra Contracts i DTO.md",
     "Arch/Podział projektów.md",
     "Arch/Przegląd systemu.md",
     "Teoria/Trójgramy.md",
     "Notatki/rekomendacje.md",
     "Decyzje/01 - Baza danych.md",
-    "Decyzje/02 - Auth.md",
-    "Decyzje/03 - Logowanie admina.md",
-    "Decyzje/04 - Grupowanie platform.md",
     "Decyzje/05 - Serie eventów.md",
     "Decyzje/06 - Serie nie przechowują nazwy.md",
     "Decyzje/07 - Przechowywanie regexów w bazie.md",
@@ -216,7 +218,6 @@
     "Notatki",
     "Komponenty/Sync z igdb.md",
     "Komponenty/Logi.md",
-    "Komponenty/_template.md",
     "Teoria",
     "Testy",
     "Komponenty/Sync",

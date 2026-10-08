@@ -1,3 +1,4 @@
+> obecna implementacja jest testowa i słaba
 ## Cel
 
 
@@ -9,13 +10,7 @@
 ```
 
 ## Przepływ
-### v1 "Flagi"
-
-
-### v2 Wektory
-
-
-### v3 embeddingi / collaborative filtering
+-
 
 ## Konfiguracja
 
