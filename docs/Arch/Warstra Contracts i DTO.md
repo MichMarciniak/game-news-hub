@@ -1,6 +1,7 @@
+> czy mi to potrzebne?
 ## Zasady
 Ten projekt ma być tylko zawierać modele danych, bez żadnych referencji
-Enumy też tam są napisane (powielone, ale wymagane jeśli projekt ma być czysty) - testy są w `Tests.Unit/EnumMappingTests`
+Enumy też tam są napisane.
 Mappery znajdują się w projekcie Api, bo łączy projekt Data i Contracts.
 Czasem też potrzebna jest dodatkowa logika do zmapowania encji na DTO.
 

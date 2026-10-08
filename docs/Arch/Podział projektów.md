@@ -14,5 +14,5 @@
 
 
 ## Dlaczego Sync osobny
-Api odpowiada za główną logikę aplikacji, interakcję z użytkownikiem itp. Sync jedynie komunikuje się z igdb i bazą danych - cyklicznie pobiera i zapisuje dane do bazy, nie potrzebuje endpointów, nie potrzebuje dużo zasobów
+Api odpowiada za główną logikę aplikacji, interakcję z użytkownikiem itp. Sync jedynie komunikuje się z igdb i bazą danych - cyklicznie pobiera i zapisuje dane do bazy, nie potrzebuje endpointów, nie potrzebuje dużo zasobów?
 Dzięki temu, Api można może działać bez Sync, i możliwe będzie włączenie kilku Api, a 1 Sync wystarczy.

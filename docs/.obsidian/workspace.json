@@ -11,10 +11,14 @@
             "id": "61cd390f3fa6c353",
             "type": "leaf",
             "state": {
-              "type": "empty",
-              "state": {},
+              "type": "markdown",
+              "state": {
+                "file": "todo.md",
+                "mode": "source",
+                "source": false
+              },
               "icon": "lucide-file",
-              "title": "Nowa karta"
+              "title": "todo"
             }
           }
         ]
@@ -182,16 +186,17 @@
       "bases:Stwórz nową bazę danych": false
     }
   },
-  "active": "61cd390f3fa6c353",
+  "active": "c0803f6556359e97",
   "lastOpenFiles": [
-    "Bez nazwy 1.base",
     "Bez nazwy.base",
+    "Bez nazwy 1.base",
     "todo.md",
     "Dane zewnętrzne/Sync.md",
+    "Arch/Warstra Contracts i DTO.md",
+    "Arch/Podział projektów.md",
+    "Arch/Przegląd systemu.md",
     "Teoria/Trójgramy.md",
     "Notatki/rekomendacje.md",
-    "Arch/Przegląd systemu.md",
-    "Arch/Podział projektów.md",
     "Decyzje/01 - Baza danych.md",
     "Decyzje/02 - Auth.md",
     "Decyzje/03 - Logowanie admina.md",
@@ -212,13 +217,11 @@
     "Komponenty/Sync z igdb.md",
     "Komponenty/Logi.md",
     "Komponenty/_template.md",
-    "Komponenty/Rekomendacje.md",
     "Teoria",
     "Testy",
     "Komponenty/Sync",
     "Dane zewnętrzne",
     "Komponenty",
-    "Decyzje",
-    "Arch"
+    "Decyzje"
   ]
 }

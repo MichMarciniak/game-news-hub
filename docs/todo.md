@@ -4,7 +4,7 @@
 - gry: featured in events...
 - zaznaczanie daty w kalendarzu - jakiś efekt wizualny
 - niektóre gry nie mają parentGame nawet jak mają parentGameIgdbId
-- rekomendacje
+- rekomendacje - obecny jest do wyrzucenia (testowy)
 - uzupełnić `docs/`
 ### maybe do
 - sync button w admin panelu? - np. jak błąd przy pobieraniu z igdb albo coś zaktualizują
