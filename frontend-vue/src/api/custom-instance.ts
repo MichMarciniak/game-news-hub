@@ -26,7 +26,7 @@ export const setUnauthorizedHandler = (handler: () => void) => {
   onUnauthorized = handler;
 }
 
-const SILENT_401 = ['/auth/login', '/auth/me', '/auth/logout']
+const SILENT_401 = ['/auth/login', '/users/me', '/auth/logout', 'auth/confirm-email', 'auth/register']
 
 // Response Interceptor: Catch 401 & Refresh Token
 AXIOS_INSTANCE.interceptors.response.use(

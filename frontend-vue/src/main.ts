@@ -44,13 +44,6 @@ initTheme()
 
 const authStore = useAuthStore()
 
-router.beforeEach((to, from) => {
-    const {isAuthenticated} = storeToRefs(authStore)
-    if (!isAuthenticated) {
-        return false
-    }
-})
-
 authStore.initialize().finally(() => {
     app.mount('#app')
 })

@@ -9,6 +9,7 @@ export function useFollowedGames() {
   const auth = useAuthStore();
   const enabled = computed(() => auth.isAuthenticated)
 
+  // w gamesearch jest skeleton or gameCard - przez to jest refetch za każdym searchem - dlatego infinity
   const {data: gamesData } = useGetUsersMeFollowedGames({query: {enabled, staleTime: Infinity}})
 
   const followedGameIds = computed(() => new Set(gamesData.value?.map(g => String(g.id)) ?? []))
