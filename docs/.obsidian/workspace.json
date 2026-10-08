@@ -4,21 +4,17 @@
     "type": "split",
     "children": [
       {
-        "id": "aec0f5042544af0b",
+        "id": "01af00c3e7f9a9ef",
         "type": "tabs",
         "children": [
           {
-            "id": "fef2451e5da0e1d5",
+            "id": "61cd390f3fa6c353",
             "type": "leaf",
             "state": {
-              "type": "markdown",
-              "state": {
-                "file": "todo.md",
-                "mode": "source",
-                "source": false
-              },
+              "type": "empty",
+              "state": {},
               "icon": "lucide-file",
-              "title": "todo"
+              "title": "Nowa karta"
             }
           }
         ]
@@ -186,35 +182,37 @@
       "bases:Stwórz nową bazę danych": false
     }
   },
-  "active": "fef2451e5da0e1d5",
+  "active": "61cd390f3fa6c353",
   "lastOpenFiles": [
-    "Komponenty/Wyszukiwanie.md",
+    "Bez nazwy 1.base",
+    "Bez nazwy.base",
+    "todo.md",
+    "Dane zewnętrzne/Sync.md",
     "Teoria/Trójgramy.md",
-    "Decyzje/10 - Migracja z JWT na cookie auth.md",
+    "Notatki/rekomendacje.md",
+    "Arch/Przegląd systemu.md",
+    "Arch/Podział projektów.md",
     "Decyzje/01 - Baza danych.md",
     "Decyzje/02 - Auth.md",
-    "todo.md",
-    "Decyzje/08 - Cykliczne liczenie popularności.md",
-    "Decyzje/04 - Grupowanie platform.md",
-    "Decyzje/_template.md",
     "Decyzje/03 - Logowanie admina.md",
+    "Decyzje/04 - Grupowanie platform.md",
+    "Decyzje/05 - Serie eventów.md",
+    "Decyzje/06 - Serie nie przechowują nazwy.md",
+    "Decyzje/07 - Przechowywanie regexów w bazie.md",
     "Decyzje/09 - Frontend w Vue.md",
+    "Decyzje/10 - Migracja z JWT na cookie auth.md",
+    "Decyzje/08 - Cykliczne liczenie popularności.md",
+    "Komponenty/Zliczanie obserwacji.md",
+    "Komponenty/Wyszukiwanie.md",
     "Notatki/Część główna.md",
     "Notatki/Wstęp.md",
+    "Recommender_systems_handbook.pdf",
+    "Decyzje/_template.md",
     "Notatki",
     "Komponenty/Sync z igdb.md",
     "Komponenty/Logi.md",
     "Komponenty/_template.md",
     "Komponenty/Rekomendacje.md",
-    "Arch/Przegląd systemu.md",
-    "cos tam.md",
-    "Arch/Podział projektów.md",
-    "Komponenty/Cykliczność eventów (serie).md",
-    "Komponenty/Emaile.md",
-    "Komponenty/Grupowanie platform.md",
-    "Komponenty/Parent game i dlc.md",
-    "Dane zewnętrzne/Sync.md",
-    "Komponenty/Zliczanie obserwacji.md",
     "Teoria",
     "Testy",
     "Komponenty/Sync",

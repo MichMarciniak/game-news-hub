@@ -7,7 +7,8 @@
 | Sync              | Pobieranie danych z igdb api                       | Data                           |
 | Tests.Integration | Testy aplikacji wymagające bazy danych             | Api, Contracts, <br>Data, Sync |
 | Tests.Unit        | Testy jednostkowe prostych funkcji                 | Api, Contracts, Data, Sync     |
-
+|                   |                                                    |                                |
+[[todo]]
 ## Diagram
 
 

@@ -6,7 +6,7 @@ Główny problem: wydarzenia branżowe dostają przypisane gry w IGDB dopiero po
 ```mermaid
 graph TD
 	IGDB[IGDB API] --> |sync| Sync[GameNewsHub.Sync<br/>Worker Service]
-	Sync --> |zapis| DB[(PostgreSQL<br/>pg_trgm, fuzzystrmatch)]	
+	Sync --> |zapis| DB[(PostgreSQL<br/>pg_trgm)]	
 	Api[GameNewsHub.Api] --> |odczyt/zapis| DB
 	Contracts[GameNewsHub.Contracts<br/>DTO] -.-> |referencja| Api
 	Data[GameNewshub.Data<br/>encje EF Core] -.-> |referencja| Api
