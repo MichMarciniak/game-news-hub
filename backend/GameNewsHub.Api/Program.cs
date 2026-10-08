@@ -140,7 +140,7 @@ app.UseAppExceptionHandler();
 app.UseAppRequestLogging();
 
 
-if (app.Environment.IsDevelopment())
+if (app.Environment.IsDevelopment() || app.Environment.IsEnvironment("localPc"))
 {
     app.MapOpenApi();
     app.MapScalarApiReference();

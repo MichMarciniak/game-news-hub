@@ -28,5 +28,8 @@
     <ItemGroup>
         <None Update="appsettings.json" CopyToOutputDirectory="Always" />
         <None Update="appsettings.Development.json" CopyToOutputDirectory="Always" />
+        <None Update="appsettings.localPc.json">
+          <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+        </None>
     </ItemGroup>
 </Project>

@@ -18,6 +18,28 @@
         "IgdbMode": "Bulk",
         "SyncDaysRange": "600"
       }
+    },
+    "Standard:LocalPc": {
+      "commandName": "Project",
+      "dotnetRunMessages": true,
+      "environmentVariables": {
+        "DOTNET_ENVIRONMENT": "Development",
+        "IgdbMode": "Standard",
+        "SyncDaysRange": "30",
+        "ConnectionStrings__DefaultConnection": "Host=debpc;Port=5432;Database=mydb;Username=myuser;Password=mypassword",
+        "Seq__Url": "http://debpc:5341"
+      }
+    },
+    "Bulk:LocalPc": {
+      "commandName": "Project",
+      "dotnetRunMessages": true,
+      "environmentVariables": {
+        "DOTNET_ENVIRONMENT": "Development",
+        "IgdbMode": "Bulk",
+        "SyncDaysRange": "600",
+        "ConnectionStrings__DefaultConnection": "Host=debpc;Port=5432;Database=mydb;Username=myuser;Password=mypassword",
+        "Seq__Url": "http://debpc:5341"
+      }
     }
   }
 }

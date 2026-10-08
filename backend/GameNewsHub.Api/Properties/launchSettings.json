@@ -10,6 +10,15 @@
         "ASPNETCORE_ENVIRONMENT": "Development"
       }
     },
+    "localPc": {
+      "commandName": "Project",
+      "dotnetRunMessages": true,
+      "launchBrowser": false,
+      "applicationUrl": "http://localhost:5190",
+      "environmentVariables": {
+        "ASPNETCORE_ENVIRONMENT": "localPc"
+      }
+    },
     "devAuth": {
       "commandName": "Project",
       "dotnetRunMessages": true,
