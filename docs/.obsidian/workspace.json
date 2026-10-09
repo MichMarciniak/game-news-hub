@@ -13,12 +13,12 @@
             "state": {
               "type": "markdown",
               "state": {
-                "file": "Komponenty/Rekomendacje.md",
+                "file": "Funkcjonalności.md",
                 "mode": "source",
                 "source": false
               },
               "icon": "lucide-file",
-              "title": "Rekomendacje"
+              "title": "Funkcjonalności"
             }
           }
         ]
@@ -83,7 +83,7 @@
       }
     ],
     "direction": "horizontal",
-    "width": 270.3000183105469
+    "width": 200
   },
   "right": {
     "id": "f261a2b3283c8760",
@@ -188,8 +188,9 @@
   },
   "active": "61cd390f3fa6c353",
   "lastOpenFiles": [
-    "Komponenty/Parent game i dlc.md",
     "Komponenty/Rekomendacje.md",
+    "Funkcjonalności.md",
+    "Komponenty/Parent game i dlc.md",
     "Dane zewnętrzne/Sync.md",
     "Decyzje/04 - Grupowanie platform.md",
     "Decyzje/03 - Logowanie admina.md",
@@ -217,7 +218,6 @@
     "Decyzje/_template.md",
     "Notatki",
     "Komponenty/Sync z igdb.md",
-    "Komponenty/Logi.md",
     "Teoria",
     "Testy",
     "Komponenty/Sync",
