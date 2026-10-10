@@ -139,7 +139,6 @@ var app = builder.Build();
 app.UseAppExceptionHandler();
 app.UseAppRequestLogging();
 
-
 if (app.Environment.IsDevelopment() || app.Environment.IsEnvironment("localPc"))
 {
     app.MapOpenApi();
@@ -147,14 +146,19 @@ if (app.Environment.IsDevelopment() || app.Environment.IsEnvironment("localPc"))
     app.UseSwaggerUI(opt =>
         opt.SwaggerEndpoint("/openapi/v1.json", "GameNews Api")
     );
-
-    app.Lifetime.ApplicationStarted.Register(() =>
-    {
-        Console.ForegroundColor = ConsoleColor.Cyan;
-        Console.WriteLine("\n Scalar API: http://localhost:5190/scalar");
-        Console.ResetColor();
-    });
 }
+
+app.Lifetime.ApplicationStarted.Register(() =>
+{
+    var urlList = app.Urls;
+    string urls = urlList.Count > 0 ? String.Join(" ", urlList) : "no urls";
+    var scalarUrls = urlList.Count > 0 ? String.Join(" ", urlList.Select(u => $"{u}/scalar")) : "";
+
+    Console.ForegroundColor = ConsoleColor.Cyan;
+    Console.WriteLine($"API URLs: {urls}");
+    Console.WriteLine($"Scalar UI: {scalarUrls}");
+    Console.ResetColor();
+});
 
 // app.UseHttpsRedirection();
 app.UseCors(FrontendCorsPolicy);
@@ -165,6 +169,5 @@ app.UseAuthorization();
 
 app.MapControllers();
 
-
-
 app.Run();
+
