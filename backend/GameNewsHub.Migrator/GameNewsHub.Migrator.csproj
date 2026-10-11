@@ -24,6 +24,7 @@
 
     <ItemGroup>
       <ProjectReference Include="..\GameNewsHub.Data\GameNewsHub.Data.csproj" />
+      <ProjectReference Include="..\GameNewsHub.Hosting\GameNewsHub.Hosting.csproj" />
     </ItemGroup>
     <ItemGroup>
         <None Update="appsettings.json" CopyToOutputDirectory="Always" />

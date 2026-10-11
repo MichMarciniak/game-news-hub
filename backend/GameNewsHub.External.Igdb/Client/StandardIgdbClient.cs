@@ -1,10 +1,13 @@
-using GameNewsHub.Sync.Dtos;
+using GameNewsHub.External.Igdb.Auth;
+using GameNewsHub.External.Igdb.Dtos;
+using Microsoft.Extensions.Logging;
 
-namespace GameNewsHub.Sync.External;
+namespace GameNewsHub.External.Igdb.Client;
 
-public class StandardIgdbClient : BaseIgdbClient, IIgdbClient
+public class StandardIgdbClient : IgdbClientBase, IIgdbClient
 {
-    public StandardIgdbClient(HttpClient httpClient, IgdbAuthService authService, ILogger<BaseIgdbClient> logger) :
+    
+    public StandardIgdbClient(HttpClient httpClient, IgdbAuthService authService, ILogger<IgdbClientBase> logger) :
         base(httpClient, authService, logger)
     {
     }

@@ -1,4 +1,3 @@
-using System.IdentityModel.Tokens.Jwt;
 using System.Text.Json;
 using System.Text.Json.Nodes;
 using System.Text.Json.Serialization;
@@ -9,6 +8,9 @@ using GameNewsHub.Api.Options;
 using GameNewsHub.Api.Services;
 using GameNewsHub.Data;
 using GameNewsHub.Data.Entities;
+using GameNewsHub.Hosting.Configuration;
+using GameNewsHub.Hosting.Logging;
+using GameNewsHub.Hosting.Options;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
@@ -22,13 +24,12 @@ var services = builder.Services;
 var config = builder.Configuration;
 const string FrontendCorsPolicy = "FrontendCorsPolicy";
 
-var connectionString = config.GetConnectionString("DefaultConnection");
-
 // OPTIONS from appsettings and secrets
 services.AddValidatedOptions<SmtpOptions>(config);
 services.AddValidatedOptions<FollowServiceOptions>(config);
 services.AddValidatedOptions<RecommendationWeights>(config);
 
+var dbOptions = services.AddValidatedOptions<DatabaseOptions>(config);
 var frontendOptions = services.AddValidatedOptions<FrontendOptions>(config);
 var seqOptions = services.AddValidatedOptions<SeqOptions>(config);
 
@@ -36,7 +37,7 @@ var devAuth = config.GetValue<bool>("DevAuth");
 
 //DATABSE + IDENTITY
 services.AddDbContext<AppDbContext>(options =>
-    options.UseNpgsql(connectionString)
+    options.UseNpgsql(dbOptions.DefaultConnection)
 );
 services.AddIdentity<AppUser, IdentityRole<int>>()
     .AddEntityFrameworkStores<AppDbContext>()
@@ -131,7 +132,7 @@ else
     services.AddAuthorization();
 }
 
-builder.Host.AddAppLogging(seqOptions);
+builder.AddAppLogging(seqOptions);
 
 var app = builder.Build();
 

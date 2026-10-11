@@ -1,6 +1,6 @@
-using GameNewsHub.Sync.Dtos;
+using GameNewsHub.External.Igdb.Dtos;
 
-namespace GameNewsHub.Sync.External;
+namespace GameNewsHub.External.Igdb.Client;
 
 public interface IIgdbClient
 {

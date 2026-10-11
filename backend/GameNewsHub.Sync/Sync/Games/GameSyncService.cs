@@ -1,7 +1,7 @@
-using GameNewsHub.Data;
+using GameNewsHub.Data; 
 using GameNewsHub.Data.Entities;
-using GameNewsHub.Sync.Dtos;
-using GameNewsHub.Sync.External;
+using GameNewsHub.External.Igdb.Client;
+using GameNewsHub.External.Igdb.Dtos;
 using GameNewsHub.Sync.Sync.Genres;
 using GameNewsHub.Sync.Sync.Platforms;
 using Microsoft.EntityFrameworkCore;
@@ -88,7 +88,7 @@ public class GameSyncService : IGameSyncService
 
         var allGenres = externalGames
             .SelectMany(g => g.Genres ?? Enumerable.Empty<IgdbGenreResponse>())
-            .DistinctBy(g => g.IgdbId) // ????????????????????????????????????/
+            .DistinctBy(g => g.IgdbId) 
             .ToList();
         var genres = await _genreService.GetOrCreateBatchAsync(allGenres);
 

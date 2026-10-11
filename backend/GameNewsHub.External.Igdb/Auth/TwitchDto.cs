@@ -1,6 +1,6 @@
 using System.Text.Json.Serialization;
 
-namespace GameNewsHub.Sync.External;
+namespace GameNewsHub.External.Igdb.Auth;
 
 public record TwitchToken
 {

@@ -1,6 +1,6 @@
 using GameNewsHub.Data;
 using GameNewsHub.Data.Entities;
-using GameNewsHub.Sync.Dtos;
+using GameNewsHub.External.Igdb.Dtos;
 using Microsoft.EntityFrameworkCore;
 
 namespace GameNewsHub.Sync.Sync.Platforms;

@@ -1,4 +1,5 @@
 ﻿using System.ComponentModel.DataAnnotations;
+using GameNewsHub.Hosting.Configuration;
 
 namespace GameNewsHub.Api.Options;
 

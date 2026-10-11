@@ -1,5 +1,5 @@
 using GameNewsHub.Data.Entities;
-using GameNewsHub.Sync.Dtos;
+using GameNewsHub.External.Igdb.Dtos;
 
 namespace GameNewsHub.Sync.Sync.Platforms;
 

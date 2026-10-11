@@ -1,15 +1,14 @@
 ﻿using GameNewsHub.Data;
 using GameNewsHub.Data.Entities;
+using GameNewsHub.Hosting.Configuration;
+using GameNewsHub.Hosting.Logging;
+using GameNewsHub.Hosting.Options;
 using GameNewsHub.Migrator;
-using GameNewsHub.Migrator.Options;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
-using Serilog;
-using Serilog.Events;
 
 var builder = Host.CreateApplicationBuilder(args);
 
@@ -17,38 +16,20 @@ var config = builder.Configuration;
 var services = builder.Services;
 
 var seqOptions = services.AddValidatedOptions<SeqOptions>(config);
+var dbOptions = services.AddValidatedOptions<DatabaseOptions>(config);
 
 builder.Services.AddDbContext<AppDbContext>(o =>
-    o.UseNpgsql(builder.Configuration.GetConnectionString("DefaultConnection"))
-    );
-
+    o.UseNpgsql(dbOptions.DefaultConnection)
+);
 
 builder.Services.AddIdentityCore<AppUser>()
     .AddRoles<IdentityRole<int>>()
     .AddEntityFrameworkStores<AppDbContext>();
-    
 
-services.AddSerilog((ctx, cfg) =>
-{
-    var appName = builder.Environment.ApplicationName;
-    
-    cfg
-        .MinimumLevel.Information()
-        .MinimumLevel.Override("Microsoft", LogEventLevel.Warning)
-        .MinimumLevel.Override("System", LogEventLevel.Warning)
-        .Enrich.FromLogContext()
-        .Enrich.WithMachineName()
-        .Enrich.WithEnvironmentName()
-        .Enrich.WithProperty("Application", appName)
-        .WriteTo.Console()
-        .WriteTo.File($"../logs/{appName}-.txt",
-            rollingInterval: RollingInterval.Day,
-            retainedFileCountLimit: 14)
-        .WriteTo.Seq(seqOptions.Url);
-});
+builder.AddAppLogging(seqOptions);
     
 using var host = builder.Build();
-var logger =  host.Services.GetRequiredService<ILogger<Program>>();
+var logger = host.Services.GetRequiredService<ILogger<Program>>();
 
 try
 {

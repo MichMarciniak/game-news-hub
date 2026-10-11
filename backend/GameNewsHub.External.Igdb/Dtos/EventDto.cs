@@ -1,6 +1,6 @@
 using System.Text.Json.Serialization;
 
-namespace GameNewsHub.Sync.Dtos;
+namespace GameNewsHub.External.Igdb.Dtos;
 
 public record IgdbEventResponse
 {

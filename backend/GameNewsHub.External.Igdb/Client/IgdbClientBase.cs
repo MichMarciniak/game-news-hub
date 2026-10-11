@@ -1,15 +1,17 @@
 ﻿using System.Net.Http.Json;
-using GameNewsHub.Sync.Dtos;
+using GameNewsHub.External.Igdb.Auth;
+using GameNewsHub.External.Igdb.Dtos;
+using Microsoft.Extensions.Logging;
 
-namespace GameNewsHub.Sync.External;
+namespace GameNewsHub.External.Igdb.Client;
 
-public abstract class BaseIgdbClient : IIgdbClient
+public abstract class IgdbClientBase : IIgdbClient
 {
     protected readonly IgdbAuthService AuthService;
     protected readonly HttpClient HttpClient;
-    protected readonly ILogger<BaseIgdbClient> Logger;
+    protected readonly ILogger<IgdbClientBase> Logger;
 
-    protected BaseIgdbClient(HttpClient httpClient, IgdbAuthService authService, ILogger<BaseIgdbClient> logger)
+    protected IgdbClientBase(HttpClient httpClient, IgdbAuthService authService, ILogger<IgdbClientBase> logger)
     {
         HttpClient = httpClient;
         AuthService = authService;

@@ -1,13 +1,9 @@
-﻿using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations;
+using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.DependencyInjection;
 
-namespace GameNewsHub.Sync.Options;
-
-public interface IConfigSection
-{
-    static abstract string SectionName { get; }
-}
-
-public static class OptionsExtensions
+namespace GameNewsHub.Hosting.Configuration;
+public static class OptionValidation
 {
     public static T AddValidatedOptions<T>(this IServiceCollection services, IConfiguration config)
         where T : class, IConfigSection
@@ -15,7 +11,7 @@ public static class OptionsExtensions
         var section = config.GetSection(T.SectionName);
 
         var options = section.Get<T>()
-          ?? throw new InvalidOperationException($"Missing configuration section '{T.SectionName}'");
+                      ?? throw new InvalidOperationException($"Missing configuration section '{T.SectionName}'");
         
         Validator.ValidateObject(options, new ValidationContext(options), validateAllProperties: true);
 

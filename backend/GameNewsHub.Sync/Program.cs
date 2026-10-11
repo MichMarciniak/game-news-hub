@@ -1,50 +1,30 @@
 using GameNewsHub.Data;
-using GameNewsHub.Sync;
-using GameNewsHub.Sync.Options;
+using GameNewsHub.External.Igdb;
+using GameNewsHub.External.Igdb.Options;
+using GameNewsHub.Hosting.Configuration;
+using GameNewsHub.Hosting.Logging;
+using GameNewsHub.Hosting.Options;
 using GameNewsHub.Sync.Seeder;
 using GameNewsHub.Sync.Sync;
 using Microsoft.EntityFrameworkCore;
-using Serilog;
-using Serilog.Events;
 
 var builder = Host.CreateApplicationBuilder(args);
 
 var config = builder.Configuration;
 var services = builder.Services;
 
-var connectionString = builder.Configuration.GetConnectionString("DefaultConnection");
-
+var dbOptions = services.AddValidatedOptions<DatabaseOptions>(config);
 var seqOptions = services.AddValidatedOptions<SeqOptions>(config);
+var igdbOptions = services.AddValidatedOptions<IgdbOptions>(config);
 
 services.AddDbContext<AppDbContext>(options =>
-    options.UseNpgsql(connectionString)
+    options.UseNpgsql(dbOptions.DefaultConnection)
 );
 
-services.Configure<ApiOptions>(
-    config.GetSection(ApiOptions.SectionName));
-
-services.AddIgdbServices(builder.Configuration);
+services.AddIgdbServices(igdbOptions);
 services.AddSyncServices();
 
-
-services.AddSerilog((ctx, cfg) =>
-{
-    var appName = builder.Environment.ApplicationName;
-    
-    cfg
-        .MinimumLevel.Information()
-        .MinimumLevel.Override("Microsoft", LogEventLevel.Warning)
-        .MinimumLevel.Override("System", LogEventLevel.Warning)
-        .Enrich.FromLogContext()
-        .Enrich.WithMachineName()
-        .Enrich.WithEnvironmentName()
-        .Enrich.WithProperty("Application", appName)
-        .WriteTo.Console()
-        .WriteTo.File($"../logs/{appName}-.txt",
-            rollingInterval: RollingInterval.Day,
-            retainedFileCountLimit: 14)
-        .WriteTo.Seq(seqOptions.Url);
-});
+builder.AddAppLogging(seqOptions);
 
 var host = builder.Build();
 

@@ -1,20 +1,21 @@
 using System.Net.Http.Json;
-using GameNewsHub.Sync.Options;
+using GameNewsHub.External.Igdb.Options;
+using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 
-namespace GameNewsHub.Sync.External;
+namespace GameNewsHub.External.Igdb.Auth;
 
 public class IgdbAuthService
 {
     private readonly HttpClient _httpClient;
     private readonly ILogger<IgdbAuthService> _logger;
-    private readonly ApiOptions _options;
+    private readonly IgdbOptions _options;
     private readonly SemaphoreSlim _semaphore = new(1, 1);
 
     private volatile string? _cachedToken;
     private DateTime _expiresAt;
 
-    public IgdbAuthService(IOptions<ApiOptions> config, HttpClient client, ILogger<IgdbAuthService> logger)
+    public IgdbAuthService(IOptions<IgdbOptions> config, HttpClient client, ILogger<IgdbAuthService> logger)
     {
         _options = config.Value;
         _httpClient = client;

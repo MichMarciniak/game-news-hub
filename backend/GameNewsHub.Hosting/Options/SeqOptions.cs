@@ -1,6 +1,7 @@
 ﻿using System.ComponentModel.DataAnnotations;
+using GameNewsHub.Hosting.Configuration;
 
-namespace GameNewsHub.Migrator.Options;
+namespace GameNewsHub.Hosting.Options;
 
 public class SeqOptions : IConfigSection 
 {
