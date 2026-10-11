@@ -13,12 +13,12 @@
             "state": {
               "type": "markdown",
               "state": {
-                "file": "Arch/Podział projektów.md",
+                "file": "todo.md",
                 "mode": "source",
                 "source": false
               },
               "icon": "lucide-file",
-              "title": "Podział projektów"
+              "title": "todo"
             }
           }
         ]
@@ -190,15 +190,10 @@
   },
   "active": "587a4362b5f662ad",
   "lastOpenFiles": [
-    "Arch/Podział projektów.md",
-    "Dane zewnętrzne/Igdb.md",
-    ".obsidian/core-plugins.json",
-    ".obsidian/appearance.json",
-    ".obsidian/app.json",
-    ".obsidian/workspace.json",
     "Teoria/Trójgramy.md",
     "Notatki/rekomendacje.md",
     "Dane zewnętrzne/Sync.md",
+    "Dane zewnętrzne/Igdb.md",
     "Decyzje/_template.md",
     "Decyzje/10 - Migracja z JWT na cookie auth.md",
     "Decyzje/09 - Frontend w Vue.md",
@@ -212,6 +207,7 @@
     "Decyzje/01 - Baza danych.md",
     "Arch/Warstra Contracts i DTO.md",
     "Arch/Przegląd systemu.md",
+    "Arch/Podział projektów.md",
     "Komponenty/_template.md",
     "Komponenty/Zliczanie obserwacji.md",
     "Komponenty/Wyszukiwanie.md",
@@ -225,6 +221,10 @@
     "Komponenty",
     "Decyzje",
     "Dane zewnętrzne",
-    "Arch"
+    "Arch",
+    ".obsidian/workspace.json",
+    ".obsidian/community-plugins.json",
+    ".obsidian",
+    ".obsidian/core-plugins.json"
   ]
 }

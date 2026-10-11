@@ -14,7 +14,7 @@
       "dotnetRunMessages": true,
       "environmentVariables": {
         "DOTNET_ENVIRONMENT": "Development",
-        "SyncRange__Days": "100"
+        "SyncRange__Days": "200"
       }
     },
     "Standard:LocalPc": {

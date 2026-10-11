@@ -158,14 +158,23 @@ public class GameSyncService : IGameSyncService
 
         if (!parentIgdbIds.Any()) return;
 
-        var parentGames = await GetOrCreateGamesAsync(parentIgdbIds, visited);
+        await GetOrCreateGamesAsync(parentIgdbIds, visited);
+
+        // pobierz bezposrednio z bazy, wtedy zawsze bedzie parent jak jest parentigdbid
+        var parentsById = await _context.Games
+            .Where(p => parentIgdbIds.Contains(p.IgdbId))
+            .ToDictionaryAsync(p => p.IgdbId);
 
         foreach (var g in newGames.Where(g => g.ParentGameIgdbId.HasValue))
         {
-            var parent = parentGames.FirstOrDefault(p => p.IgdbId == g.ParentGameIgdbId.Value);
-            if (parent != null)
+            if (parentsById.TryGetValue(g.ParentGameIgdbId!.Value, out var parent))
             {
                 g.ParentGame = parent;
+            }
+            else
+            {
+                _logger.LogWarning("Parent game {ParentIgdbId} for game {GameIgdbId} not found",
+                    g.ParentGameIgdbId, g.IgdbId);
             }
         }
 

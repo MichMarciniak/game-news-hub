@@ -3,7 +3,6 @@
 - gry: filtrowanie przy wyszukiwaniu - backend
 - gry: featured in events...
 - zaznaczanie daty w kalendarzu - jakiś efekt wizualny
-- niektóre gry nie mają parentGame nawet jak mają parentGameIgdbId
 - rekomendacje - obecny jest do wyrzucenia (testowy)
 - uzupełnić `docs/`
 ### maybe do
