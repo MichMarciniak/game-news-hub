@@ -1,6 +1,5 @@
 ﻿using Bogus;
 using GameNewsHub.Data.Entities;
-using GameNewsHub.Sync.Sync.Events;
 
 namespace GameNewsHub.Tests.Integration.TestData.Events;
 

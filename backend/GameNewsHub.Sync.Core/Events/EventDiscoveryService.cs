@@ -1,10 +1,15 @@
 using GameNewsHub.Data;
 using GameNewsHub.Data.Entities;
 using GameNewsHub.External.Igdb.Client;
-using GameNewsHub.Sync.Sync.Games;
+using GameNewsHub.External.Igdb.Dtos;
+using GameNewsHub.Sync.Core.Events.Calculators;
+using GameNewsHub.Sync.Core.Events.Normalizers;
+using GameNewsHub.Sync.Core.Games;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Options;
 
-namespace GameNewsHub.Sync.Sync.Events;
+namespace GameNewsHub.Sync.Core.Events;
 
 public class EventDiscoveryService
 {
@@ -19,21 +24,18 @@ public class EventDiscoveryService
         AppDbContext context,
         ILogger<EventDiscoveryService> logger,
         IGameSyncService gameSyncService,
-        IEventWeightCalculator calculator,
-        IConfiguration config)
+        IEventWeightCalculator calculator
+        )
     {
         _client = client;
         _context = context;
         _logger = logger;
         _gameSyncService = gameSyncService;
         _calculator = calculator;
-        _syncDays = config.GetValue("SyncDaysRange", 30);
     }
 
-    public async Task DiscoverNewEventsAsync()
+    public async Task DiscoverNewEventsAsync(long from, long to)
     {
-        var from = DateTimeOffset.UtcNow.AddDays(-_syncDays).ToUnixTimeSeconds();
-        var to = DateTimeOffset.UtcNow.AddDays(10).ToUnixTimeSeconds();
         var externalEvents = await _client.GetEventsFromIgdb(from, to);
 
         var incomingIds = externalEvents.Select(e => e.IgdbId).ToList();
@@ -48,29 +50,43 @@ public class EventDiscoveryService
             .ToList();
         if (!newExternalEvents.Any()) return;
 
-        var newEvents = newExternalEvents.Select(e =>
-        {
-            var evt = new Event
-            {
-                IgdbId = e.IgdbId,
-                Name = e.Name,
-                StartTime = DateTimeOffset.FromUnixTimeSeconds(e.StartTime),
-                EndTime = e.EndTime.HasValue ? DateTimeOffset.FromUnixTimeSeconds(e.EndTime.Value) : null,
-                Description = e.Description,
-                Status = EventSyncStatus.Pending,
-                LiveStreamUrl = e.LiveStreamUrl ?? string.Empty,
-            };
-            var normalized = EventNameNormalizer.Normalize(evt.Name);
-            evt.NormalizedName = string.IsNullOrWhiteSpace(normalized) ? evt.Name : normalized;
-            return evt;
-        }).ToList();
+        var newEvents = newExternalEvents.Select(MapToEntity).ToList();
 
         var names = newEvents.Select(e => e.NormalizedName).Distinct().ToArray();
-
         var resolution = await ResolveSeriesAsync(names);
 
+        AssignEventSeries(newEvents, resolution);
+        
+        _context.Events.AddRange(newEvents);
+        await _context.SaveChangesAsync();
+        
+        _logger.LogInformation($"Added {newEvents.Count} new events");
+    }
+
+    private Event MapToEntity(IgdbDiscoverEventDto dto)
+    {
+        var name = dto.Name.Trim();
+        var normalized = EventNameNormalizer.Normalize(name);
+        var normalizedFinal = string.IsNullOrWhiteSpace(normalized) ? dto.Name : normalized;
+        
+        return new Event
+        {
+            IgdbId = dto.IgdbId,
+            Name = dto.Name,
+            NormalizedName = normalizedFinal,
+            StartTime = DateTimeOffset.FromUnixTimeSeconds(dto.StartTime),
+            EndTime = dto.EndTime.HasValue ? DateTimeOffset.FromUnixTimeSeconds(dto.EndTime.Value) : null,
+            Description = dto.Description ?? string.Empty,
+            LiveStreamUrl = dto.LiveStreamUrl ?? string.Empty,
+            Status = EventSyncStatus.Pending,
+        };
+        
+    }
+    private void AssignEventSeries(List<Event> events, SeriesResolution resolution)
+    {
         var newSeriesCache = new Dictionary<string, EventSeries>();
-        foreach (var evt in newEvents)
+
+        foreach (var evt in events)
         {
             if (resolution.ExistingSeriesIds.TryGetValue(evt.NormalizedName, out var id))
             {
@@ -80,14 +96,12 @@ public class EventDiscoveryService
             {
                 var key = resolution.NewSeriesKeys[evt.NormalizedName];
                 if (!newSeriesCache.TryGetValue(key, out var series))
+                {
                     newSeriesCache[key] = series = new EventSeries();
+                }
                 evt.Series = series;
             }
         }
-
-        _context.Events.AddRange(newEvents);
-        await _context.SaveChangesAsync();
-        _logger.LogInformation($"Added {newEvents.Count} new events");
     }
 
     private sealed record SeriesResolution(

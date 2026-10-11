@@ -3,7 +3,7 @@ using GameNewsHub.Data.Entities;
 using GameNewsHub.External.Igdb.Dtos;
 using Microsoft.EntityFrameworkCore;
 
-namespace GameNewsHub.Sync.Sync.Platforms;
+namespace GameNewsHub.Sync.Core.Platforms;
 
 public class PlatformSyncService : IPlatformSyncService
 {
@@ -14,9 +14,9 @@ public class PlatformSyncService : IPlatformSyncService
         _context = context;
     }
 
-    public async Task<ICollection<Platform>> GetOrCreateBatchAsync(IEnumerable<IgdbPlatformResponse> platformDtos)
+    public async Task<List<Platform>> GetOrCreateBatchAsync(List<IgdbPlatformResponse> platformDtos)
     {
-        if (platformDtos == null || !platformDtos.Any()) return new List<Platform>();
+        if (!platformDtos.Any()) return new List<Platform>();
 
         var ids = platformDtos.Select(p => p.IgdbId).ToList();
 

@@ -1,0 +1,15 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+    <PropertyGroup>
+        <TargetFramework>net10.0</TargetFramework>
+        <ImplicitUsings>enable</ImplicitUsings>
+        <Nullable>enable</Nullable>
+    </PropertyGroup>
+
+    <ItemGroup>
+      <ProjectReference Include="..\GameNewsHub.Data\GameNewsHub.Data.csproj" />
+      <ProjectReference Include="..\GameNewsHub.External.Igdb\GameNewsHub.External.Igdb.csproj" />
+      <ProjectReference Include="..\GameNewsHub.External.Steam\GameNewsHub.External.Steam.csproj" />
+    </ItemGroup>
+
+</Project>

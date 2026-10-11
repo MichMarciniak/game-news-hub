@@ -1,6 +1,6 @@
 namespace GameNewsHub.External.Igdb.Dtos;
 
-public record IgdbCoverResponse
+public record IgdbCoverDto 
 {
     public string Url { get; set; } = string.Empty;
 }

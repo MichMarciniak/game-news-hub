@@ -5,6 +5,10 @@
 | Contracts         | Definicje DTO wysyłane przez api                   | -                              |
 | Data              | Definicje encji i konfiguracji bazy danych         | -                              |
 | Sync              | Pobieranie danych z igdb api                       | Data                           |
+| Sync.Core         | Logika zapisu danych do bazy z response external   | Hosting, External.*            |
+| External.Igdb     | Komunikacja z igdb api                             | Hosting                        |
+| External.Steam    | Komunikacja z steam api ([[todo]])                 | Hosting                        |
+| Hosting           | Powtarzające się elementy między projektami        | -                              |
 | Tests.Integration | Testy aplikacji wymagające bazy danych             | Api, Contracts, <br>Data, Sync |
 | Tests.Unit        | Testy jednostkowe prostych funkcji                 | Api, Contracts, Data, Sync     |
 |                   |                                                    |                                |

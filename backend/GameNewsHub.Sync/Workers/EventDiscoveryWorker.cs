@@ -1,19 +1,27 @@
-using GameNewsHub.Sync.Sync.Events;
+using GameNewsHub.Sync.Core.Events;
+using GameNewsHub.Sync.Options;
+using Microsoft.Extensions.Options;
 
-namespace GameNewsHub.Sync.Sync.Workers;
+namespace GameNewsHub.Sync.Workers;
 
 public class EventDiscoveryWorker : BackgroundService
 {
-    private static readonly SemaphoreSlim _semaphore = new(1, 1);
+    private static readonly SemaphoreSlim Semaphore = new(1, 1);
     private readonly TimeSpan _checkInterval = TimeSpan.FromDays(1);
 
     private readonly ILogger<EventDiscoveryWorker> _logger;
     private readonly IServiceProvider _serviceProvider;
+    private readonly int _days;
 
-    public EventDiscoveryWorker(ILogger<EventDiscoveryWorker> logger, IServiceProvider serviceProvider)
+    public EventDiscoveryWorker(
+        ILogger<EventDiscoveryWorker> logger,
+        IServiceProvider serviceProvider,
+        IOptions<SyncRangeOptions> syncOptions)
     {
         _logger = logger;
         _serviceProvider = serviceProvider;
+        _days = syncOptions.Value.Days;
+        
     }
 
     protected override async Task ExecuteAsync(CancellationToken stoppingToken)
@@ -23,7 +31,7 @@ public class EventDiscoveryWorker : BackgroundService
         _logger.LogInformation("EventDiscoveryWorker is starting.");
         while (!stoppingToken.IsCancellationRequested)
         {
-            await _semaphore.WaitAsync(stoppingToken);
+            await Semaphore.WaitAsync(stoppingToken);
             try
             {
                 _logger.LogInformation($"Starting event discovery at: {DateTimeOffset.Now}");
@@ -32,7 +40,10 @@ public class EventDiscoveryWorker : BackgroundService
                 {
                     var service = scope.ServiceProvider.GetRequiredService<EventDiscoveryService>();
 
-                    await service.DiscoverNewEventsAsync();
+                    var from = DateTimeOffset.UtcNow.AddDays(-_days).ToUnixTimeSeconds();
+                    var to = DateTimeOffset.UtcNow.AddDays(30).ToUnixTimeSeconds();
+
+                    await service.DiscoverNewEventsAsync(from, to);
                 }
 
                 _logger.LogInformation("Discovery completed.");
@@ -43,7 +54,7 @@ public class EventDiscoveryWorker : BackgroundService
             }
             finally
             {
-                _semaphore.Release();
+                Semaphore.Release();
             }
 
             await Task.Delay(_checkInterval, stoppingToken);

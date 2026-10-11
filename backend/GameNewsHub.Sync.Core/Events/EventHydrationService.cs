@@ -2,47 +2,57 @@
 using GameNewsHub.Data.Entities;
 using GameNewsHub.External.Igdb.Client;
 using GameNewsHub.External.Igdb.Dtos;
-using GameNewsHub.Sync.Sync.Games;
+using GameNewsHub.Sync.Core.Events.Calculators;
+using GameNewsHub.Sync.Core.Games;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Logging;
 
-namespace GameNewsHub.Sync.Sync.Events;
+namespace GameNewsHub.Sync.Core.Events;
 
 public class EventHydrationService
 {
-    
+
     private readonly IEventWeightCalculator _calculator;
     private readonly IIgdbClient _client;
     private readonly AppDbContext _context;
     private readonly IGameSyncService _gameSyncService;
     private readonly ILogger<EventHydrationService> _logger;
-    private readonly int _syncDays;
 
     public EventHydrationService(IIgdbClient client,
         AppDbContext context,
         ILogger<EventHydrationService> logger,
         IGameSyncService gameSyncService,
-        IEventWeightCalculator calculator,
-        IConfiguration config)
+        IEventWeightCalculator calculator
+    )
     {
         _client = client;
         _context = context;
         _logger = logger;
         _gameSyncService = gameSyncService;
         _calculator = calculator;
-        _syncDays = config.GetValue("SyncDaysRange", 30);
     }
-    
-    public async Task HydrateEventsAsync()
-    {
-        /*
-         * szuka w bazie zakończone eventy, ze statusem NoData
-         * wysyła do clienta, który pobiera dane
-         * jeśli dany event ma dane, to aktualizuje bazę i status na Ready?
-         *
-         */
 
-        var igdbIds = await GetEventIdsAsync();
-        if (!igdbIds.Any()) return;
+    public async Task HydratePendingEventsAsync(int daysBack = 30)
+    {
+        var timeThreshold = DateTimeOffset.UtcNow.AddDays(-daysBack);
+
+        var igdbIds = await _context.Events
+            .Where(e => e.Status != EventSyncStatus.Ready)
+            .Where(e => e.StartTime > timeThreshold)
+            .Select(e => e.IgdbId)
+            .ToListAsync();
+
+        await HydrateByIgdbIdsAsync(igdbIds);
+    }
+
+    public async Task ForceHydrateEventsAsync(List<int> igdbIds)
+    {
+        await HydrateByIgdbIdsAsync(igdbIds);
+    }
+
+    private async Task HydrateByIgdbIdsAsync(List<int> igdbIds)
+    {
+        if (igdbIds == null || !igdbIds.Any()) return;
 
         var apiEvents = await _client.UpdateEventsFromIgdb(igdbIds);
         if (!apiEvents.Any()) return;
@@ -57,29 +67,22 @@ public class EventHydrationService
 
         foreach (var evt in events)
         {
-            ApplyApiData(evt, apiById[evt.IgdbId], gamesMap);
+            if (apiById.TryGetValue(evt.IgdbId, out var apiData))
+            {
+                ApplyApiData(evt, apiData, gamesMap);
+            }
         }
 
         await _context.SaveChangesAsync();
+        _logger.LogInformation("Successfully hydrated {Count} events", events.Count);
     }
 
-    private async Task<List<int>> GetEventIdsAsync()
-    {
-        var timeThreshold = DateTimeOffset.UtcNow.AddDays(-_syncDays);
-        
-        return await _context.Events
-            .Where(e => e.Status != EventSyncStatus.Ready)
-            .Where(e => e.StartTime > timeThreshold)
-            .Select(e => e.IgdbId)
-            .ToListAsync();
-    }
-
-    private async Task<Dictionary<int, Game>> LoadGamesAsync(IEnumerable<IgdbEventResponse> apiEvents)
+    private async Task<Dictionary<int, Game>> LoadGamesAsync(List<IgdbFullEventDto> apiEvents)
     {
 
         var gameIds = apiEvents
             .Where(r => r.Games != null)
-            .SelectMany(r => r.Games)
+            .SelectMany(r => r.Games!)
             .Select(g => g.IgdbId)
             .Distinct()
             .ToList();
@@ -90,10 +93,10 @@ public class EventHydrationService
         return games.ToDictionary(g => g.IgdbId);
     }
 
-    private void ApplyApiData(Event evt, IgdbEventResponse apiData, Dictionary<int, Game> gamesMap)
+    private void ApplyApiData(Event evt, IgdbFullEventDto apiData, Dictionary<int, Game> gamesMap)
     {
         evt.Name = apiData.Name;
-        evt.Description = apiData.Description;
+        evt.Description = apiData.Description ?? string.Empty;
         evt.StartTime = DateTimeOffset.FromUnixTimeSeconds(apiData.StartTime);
         evt.EndTime = apiData.EndTime.HasValue
             ? DateTimeOffset.FromUnixTimeSeconds(apiData.EndTime.Value)
@@ -112,7 +115,7 @@ public class EventHydrationService
         SetStatus(evt, EventSyncStatus.Ready);
     }
 
-    private static List<Game> ResolveGames(IgdbEventResponse apiData, Dictionary<int, Game> gamesMap)
+    private static List<Game> ResolveGames(IgdbFullEventDto apiData, Dictionary<int, Game> gamesMap)
     {
         return apiData.Games?
                 .Select(g => gamesMap.GetValueOrDefault(g.IgdbId))

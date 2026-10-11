@@ -4,8 +4,10 @@ using GameNewsHub.External.Igdb.Options;
 using GameNewsHub.Hosting.Configuration;
 using GameNewsHub.Hosting.Logging;
 using GameNewsHub.Hosting.Options;
+using GameNewsHub.Sync.Core;
+using GameNewsHub.Sync.Options;
 using GameNewsHub.Sync.Seeder;
-using GameNewsHub.Sync.Sync;
+using GameNewsHub.Sync.Workers;
 using Microsoft.EntityFrameworkCore;
 
 var builder = Host.CreateApplicationBuilder(args);
@@ -13,6 +15,7 @@ var builder = Host.CreateApplicationBuilder(args);
 var config = builder.Configuration;
 var services = builder.Services;
 
+services.AddValidatedOptions<SyncRangeOptions>(config);
 var dbOptions = services.AddValidatedOptions<DatabaseOptions>(config);
 var seqOptions = services.AddValidatedOptions<SeqOptions>(config);
 var igdbOptions = services.AddValidatedOptions<IgdbOptions>(config);
@@ -22,7 +25,8 @@ services.AddDbContext<AppDbContext>(options =>
 );
 
 services.AddIgdbServices(igdbOptions);
-services.AddSyncServices();
+services.AddSyncCoreIgdbServices();
+services.AddSyncBackgroundWorkers();
 
 builder.AddAppLogging(seqOptions);
 

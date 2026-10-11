@@ -1,6 +1,6 @@
 using GameNewsHub.Data.Entities;
 
-namespace GameNewsHub.Sync.Sync.Events;
+namespace GameNewsHub.Sync.Core.Events.Calculators;
 
 public interface IEventWeightCalculator
 {

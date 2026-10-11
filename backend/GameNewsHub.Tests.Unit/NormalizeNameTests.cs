@@ -1,7 +1,6 @@
 ﻿using System.Text.Json;
 using System.Text.Json.Serialization;
 using FluentAssertions;
-using GameNewsHub.Sync.Sync.Events;
 
 namespace GameNewsHub.Tests.Unit;
 

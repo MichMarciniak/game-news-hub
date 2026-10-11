@@ -1,6 +1,6 @@
 ﻿using System.Text.RegularExpressions;
 
-namespace GameNewsHub.Sync.Sync.Events;
+namespace GameNewsHub.Sync.Core.Events.Normalizers;
 
 public static class EventNameNormalizer
 {

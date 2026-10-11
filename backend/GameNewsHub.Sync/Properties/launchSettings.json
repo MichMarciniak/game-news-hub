@@ -6,8 +6,7 @@
       "dotnetRunMessages": true,
       "environmentVariables": {
         "DOTNET_ENVIRONMENT": "Development",
-        "IgdbMode": "Standard",
-        "SyncDaysRange": "30"
+        "SyncRange__Days": "30"
       }
     },
     "Bulk": {
@@ -15,8 +14,7 @@
       "dotnetRunMessages": true,
       "environmentVariables": {
         "DOTNET_ENVIRONMENT": "Development",
-        "IgdbMode": "Bulk",
-        "SyncDaysRange": "600"
+        "SyncRange__Days": "100"
       }
     },
     "Standard:LocalPc": {
@@ -24,8 +22,7 @@
       "dotnetRunMessages": true,
       "environmentVariables": {
         "DOTNET_ENVIRONMENT": "Development",
-        "IgdbMode": "Standard",
-        "SyncDaysRange": "30",
+        "SyncRange__Days": "30",
         "ConnectionStrings__DefaultConnection": "Host=debpc;Port=5432;Database=mydb;Username=myuser;Password=mypassword",
         "Seq__Url": "http://debpc:5341"
       }
@@ -35,8 +32,7 @@
       "dotnetRunMessages": true,
       "environmentVariables": {
         "DOTNET_ENVIRONMENT": "Development",
-        "IgdbMode": "Bulk",
-        "SyncDaysRange": "600",
+        "SyncRange__Days": "100",
         "ConnectionStrings__DefaultConnection": "Host=debpc;Port=5432;Database=mydb;Username=myuser;Password=mypassword",
         "Seq__Url": "http://debpc:5341"
       }
