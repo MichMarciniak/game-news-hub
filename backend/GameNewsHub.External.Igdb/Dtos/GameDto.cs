@@ -12,6 +12,7 @@ public record IgdbGameDto
     [JsonPropertyName("game_type")] public IgdbGameTypeDto? GameType { get; set; }
     [JsonPropertyName("parent_game")] public int? ParentGame { get; set; }
     [JsonPropertyName("release_dates")] public List<ReleaseDate>? ReleaseDates { get; set; }
+    [JsonPropertyName("websites")] public List<Website>? Websites { get; set; }
     public IgdbCoverDto? Cover { get; set; }
 }
 
@@ -31,4 +32,10 @@ public class IgdbGameTypeDto
 public class ReleaseDate
 {
     public long Date { get; set; }
+}
+
+public class Website
+{
+    public int Type { get; set; }
+    public string Url { get; set; } = string.Empty;
 }

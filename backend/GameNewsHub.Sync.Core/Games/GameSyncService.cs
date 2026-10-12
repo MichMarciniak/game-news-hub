@@ -1,3 +1,4 @@
+using System.Text.RegularExpressions;
 using GameNewsHub.Data;
 using GameNewsHub.Data.Entities;
 using GameNewsHub.External.Igdb.Client;
@@ -110,7 +111,8 @@ public class GameSyncService : IGameSyncService
             ParentGameIgdbId = dto.ParentGame,
             Genres = MapGenres(dto.Genres, genres),
             ReleaseDate = GetMinReleaseDate(dto.ReleaseDates),
-            Platforms = MapPlatforms(dto.Platforms, platforms)
+            Platforms = MapPlatforms(dto.Platforms, platforms),
+            SteamAppId = GetSteamAppId(dto)
         };
     }
 
@@ -146,6 +148,24 @@ public class GameSyncService : IGameSyncService
         if (dtos == null) return new List<Platform>();
         var ids = dtos.Select(d => d.IgdbId).ToHashSet();
         return platforms.Where(p => ids.Contains(p.IgdbId)).ToList();
+    }
+
+    private int? GetSteamAppId(IgdbGameDto dto)
+    {
+        // 13 = steam
+        if (dto.Websites == null) return null;
+        
+        var url = dto.Websites.Where(w => w.Type == 13).Select(w => w.Url).FirstOrDefault();
+        if (url == null) return null;
+
+        Match match = Regex.Match(url, @"/app/(\d+)");
+
+        if (match.Success && int.TryParse(match.Groups[1].Value, out var appId))
+        {
+            return appId;
+        }
+
+        return null;
     }
 
     private async Task LinkParentGamesAsync(List<Game> newGames, HashSet<int> visited)

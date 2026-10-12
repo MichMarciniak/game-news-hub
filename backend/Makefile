@@ -18,9 +18,9 @@ mig:
 	dotnet ef migrations add $(NAME) --project $(PROJECT) --startup-project $(STARTUP)
     
 update:
-	dotnet ef database update --project $(NAME) --startup-project $(STARTUP)
+	dotnet ef database update --project $(PROJECT) --startup-project $(STARTUP)
     
 drop:
-	dotnet ef database drop --project $(NAME) --startup-project $(STARTUP)
+	dotnet ef database drop --project $(PROJECT) --startup-project $(STARTUP)
     
 reset: drop update
