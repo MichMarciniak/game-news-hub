@@ -6,4 +6,8 @@
         <Nullable>enable</Nullable>
     </PropertyGroup>
 
+    <ItemGroup>
+      <ProjectReference Include="..\GameNewsHub.Hosting\GameNewsHub.Hosting.csproj" />
+    </ItemGroup>
+
 </Project>

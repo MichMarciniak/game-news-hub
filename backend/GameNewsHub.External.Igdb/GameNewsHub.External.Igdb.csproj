@@ -20,8 +20,4 @@
       <ProjectReference Include="..\GameNewsHub.Hosting\GameNewsHub.Hosting.csproj" />
     </ItemGroup>
 
-    <ItemGroup>
-      <Folder Include="Options\" />
-    </ItemGroup>
-
 </Project>
