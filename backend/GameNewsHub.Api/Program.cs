@@ -8,6 +8,8 @@ using GameNewsHub.Api.Options;
 using GameNewsHub.Api.Services;
 using GameNewsHub.Data;
 using GameNewsHub.Data.Entities;
+using GameNewsHub.External.Steam;
+using GameNewsHub.External.Steam.Options;
 using GameNewsHub.Hosting.Configuration;
 using GameNewsHub.Hosting.Logging;
 using GameNewsHub.Hosting.Options;
@@ -28,6 +30,7 @@ const string FrontendCorsPolicy = "FrontendCorsPolicy";
 services.AddValidatedOptions<SmtpOptions>(config);
 services.AddValidatedOptions<FollowServiceOptions>(config);
 services.AddValidatedOptions<RecommendationWeights>(config);
+services.AddValidatedOptions<SteamOptions>(config);
 
 var dbOptions = services.AddValidatedOptions<DatabaseOptions>(config);
 var frontendOptions = services.AddValidatedOptions<FrontendOptions>(config);
@@ -49,6 +52,7 @@ services.AddHttpContextAccessor();
 services.Configure<IdentityOptions>(IdentityConfig.ConfigIdentity);
 
 // CONFIG + SERVICES
+services.AddSteamServices();
 services.AddFeatureServices();
 services.AddBackgroundServices();
 

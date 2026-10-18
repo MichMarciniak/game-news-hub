@@ -3,6 +3,7 @@ using GameNewsHub.External.Steam.Dtos;
 using GameNewsHub.External.Steam.Options;
 using Microsoft.AspNetCore.WebUtilities;
 using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Options;
 
 namespace GameNewsHub.External.Steam.Client;
 
@@ -15,12 +16,12 @@ public class SteamClient
     public SteamClient(
         HttpClient httpClient,
         ILogger<SteamClient> logger,
-        SteamOptions steamOptions
+        IOptions<SteamOptions> steamOptions
         )
     {
         _httpClient = httpClient;
         _logger = logger;
-        _steamOptions = steamOptions;
+        _steamOptions = steamOptions.Value;
     }
     public async Task<OwnedGameList?> GetSteamOwnedGames(ulong steamUserId)
     {
@@ -36,6 +37,7 @@ public class SteamClient
         var baseUrl = "IPlayerService/GetOwnedGames/v0001";
         var url = QueryHelpers.AddQueryString(baseUrl, parameters!);
 
+        _logger.LogInformation("Sending steam request for user id: {steamUserId}", steamUserId);
         var response = await _httpClient.GetAsync(url);
         if (!response.IsSuccessStatusCode)
         {
@@ -44,8 +46,8 @@ public class SteamClient
             throw new HttpRequestException($"Steam api error");
         }
 
-        var result = await response.Content.ReadFromJsonAsync<OwnedGameList>();
-        return result;
+        var result = await response.Content.ReadFromJsonAsync<SteamGamesResponse>();
+        return result.Response;
     }
     
 }

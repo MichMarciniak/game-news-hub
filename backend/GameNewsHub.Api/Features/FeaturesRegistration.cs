@@ -5,6 +5,7 @@ using GameNewsHub.Api.Features.Genres;
 using GameNewsHub.Api.Features.Platforms;
 using GameNewsHub.Api.Features.Recommendations;
 using GameNewsHub.Api.Features.Shared.Email;
+using GameNewsHub.Api.Features.Steam;
 using GameNewsHub.Api.Features.Users;
 
 namespace GameNewsHub.Api.Features;
@@ -21,6 +22,7 @@ public static class FeaturesRegistration
         services.AddPlatformServices();
         services.AddAuthServices();
         services.AddEmailServices();
+        services.AddSteamServices();
         return services;
     }
 }

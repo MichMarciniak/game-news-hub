@@ -29,6 +29,7 @@
     <ItemGroup>
         <ProjectReference Include="..\GameNewsHub.Contracts\GameNewsHub.Contracts.csproj"/>
         <ProjectReference Include="..\GameNewsHub.Data\GameNewsHub.Data.csproj"/>
+        <ProjectReference Include="..\GameNewsHub.External.Steam\GameNewsHub.External.Steam.csproj" />
         <ProjectReference Include="..\GameNewsHub.Hosting\GameNewsHub.Hosting.csproj" />
     </ItemGroup>
 
