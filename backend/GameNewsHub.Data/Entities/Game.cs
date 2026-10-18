@@ -21,5 +21,5 @@ public class Game
     public int FollowerCount { get; set; } = 0;
 
     public int IgdbId { get; set; }
-    public int? SteamAppId{ get; set; }
+    public ulong? SteamAppId{ get; set; }
 }

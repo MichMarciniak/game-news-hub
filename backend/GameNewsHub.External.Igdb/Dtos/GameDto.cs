@@ -12,7 +12,7 @@ public record IgdbGameDto
     [JsonPropertyName("game_type")] public IgdbGameTypeDto? GameType { get; set; }
     [JsonPropertyName("parent_game")] public int? ParentGame { get; set; }
     [JsonPropertyName("release_dates")] public List<ReleaseDate>? ReleaseDates { get; set; }
-    [JsonPropertyName("websites")] public List<Website>? Websites { get; set; }
+    [JsonPropertyName("external_games")] public List<ExternalGame>? ExternalGames { get; set; }
     public IgdbCoverDto? Cover { get; set; }
 }
 
@@ -34,8 +34,15 @@ public class ReleaseDate
     public long Date { get; set; }
 }
 
-public class Website
+public class ExternalGame 
 {
-    public int Type { get; set; }
-    public string Url { get; set; } = string.Empty;
+    [JsonPropertyName("uid")] public string Uid { get; set; }
+
+    [JsonPropertyName("external_game_source")]
+    public ExternalGameSource Source { get; set; }
+}
+
+public enum ExternalGameSource
+{
+    Steam = 1,
 }

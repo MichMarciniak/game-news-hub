@@ -10,7 +10,7 @@ public class SteamGameWrapperDto
 public class SteamGameDto
 {
     public int Id { get; set; }
-    public int SteamAppId { get; set; }
+    public ulong SteamAppId { get; set; }
     public string Title { get; set; } = string.Empty;
     public string? CoverUrl { get; set; }
     public long PlaytimeForeverMinutes { get; set; }

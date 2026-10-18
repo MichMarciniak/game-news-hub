@@ -257,8 +257,8 @@ namespace Data.Migrations
                     b.Property<DateTimeOffset?>("ReleaseDate")
                         .HasColumnType("timestamp with time zone");
 
-                    b.Property<int?>("SteamAppId")
-                        .HasColumnType("integer");
+                    b.Property<decimal?>("SteamAppId")
+                        .HasColumnType("numeric(20,0)");
 
                     b.Property<string>("Summary")
                         .IsRequired()

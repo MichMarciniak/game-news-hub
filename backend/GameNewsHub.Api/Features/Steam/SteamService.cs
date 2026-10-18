@@ -30,7 +30,6 @@ public class SteamService
         var ownedGamesResponse = await _client.GetSteamOwnedGames(steamUserId);
         if (ownedGamesResponse?.Games == null || !ownedGamesResponse.Games.Any())
         {
-            _logger.LogInformation("NO games????");
             return new SteamGameWrapperDto();
         }
 

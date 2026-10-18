@@ -150,21 +150,16 @@ public class GameSyncService : IGameSyncService
         return platforms.Where(p => ids.Contains(p.IgdbId)).ToList();
     }
 
-    private int? GetSteamAppId(IgdbGameDto dto)
+    private ulong? GetSteamAppId(IgdbGameDto dto)
     {
-        // 13 = steam
-        if (dto.Websites == null) return null;
-        
-        var url = dto.Websites.Where(w => w.Type == 13).Select(w => w.Url).FirstOrDefault();
-        if (url == null) return null;
+        if (dto.ExternalGames == null) return null;
 
-        Match match = Regex.Match(url, @"/app/(\d+)");
+        var uid = dto.ExternalGames.Where(eg => eg.Source == ExternalGameSource.Steam).Select(eg => eg.Uid).FirstOrDefault();
 
-        if (match.Success && int.TryParse(match.Groups[1].Value, out var appId))
+        if (ulong.TryParse(uid, out var result))
         {
-            return appId;
+            return result;
         }
-
         return null;
     }
 
