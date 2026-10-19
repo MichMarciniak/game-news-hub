@@ -16,6 +16,12 @@ public record IgdbGameDto
     public IgdbCoverDto? Cover { get; set; }
 }
 
+public class ExternalIdToIgdbIdDto 
+{
+    [JsonPropertyName("game")] public int IgdbId { get; set; }
+    [JsonPropertyName("uid")] public string Uid { get; set; } = string.Empty;
+}
+
 public class GameIdContainer
 {
     [JsonPropertyName("id")] public int IgdbId { get; set; }

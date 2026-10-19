@@ -31,6 +31,7 @@
         <ProjectReference Include="..\GameNewsHub.Data\GameNewsHub.Data.csproj"/>
         <ProjectReference Include="..\GameNewsHub.External.Steam\GameNewsHub.External.Steam.csproj" />
         <ProjectReference Include="..\GameNewsHub.Hosting\GameNewsHub.Hosting.csproj" />
+        <ProjectReference Include="..\GameNewsHub.Sync.Core\GameNewsHub.Sync.Core.csproj" />
     </ItemGroup>
 
     <ItemGroup>

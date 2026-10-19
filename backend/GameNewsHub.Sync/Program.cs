@@ -25,7 +25,7 @@ services.AddDbContext<AppDbContext>(options =>
 );
 
 services.AddIgdbServices(igdbOptions);
-services.AddSyncCoreIgdbServices();
+services.AddSyncCoreServices();
 services.AddSyncBackgroundWorkers();
 
 builder.AddAppLogging(seqOptions);

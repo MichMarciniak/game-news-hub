@@ -8,11 +8,15 @@ using GameNewsHub.Api.Options;
 using GameNewsHub.Api.Services;
 using GameNewsHub.Data;
 using GameNewsHub.Data.Entities;
+using GameNewsHub.External.Igdb;
+using GameNewsHub.External.Igdb.Options;
 using GameNewsHub.External.Steam;
 using GameNewsHub.External.Steam.Options;
 using GameNewsHub.Hosting.Configuration;
 using GameNewsHub.Hosting.Logging;
 using GameNewsHub.Hosting.Options;
+using GameNewsHub.Sync.Core;
+using GameNewsHub.Sync.Core.Games;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
@@ -35,6 +39,7 @@ services.AddValidatedOptions<SteamOptions>(config);
 var dbOptions = services.AddValidatedOptions<DatabaseOptions>(config);
 var frontendOptions = services.AddValidatedOptions<FrontendOptions>(config);
 var seqOptions = services.AddValidatedOptions<SeqOptions>(config);
+var igdbOptions = services.AddValidatedOptions<IgdbOptions>(config);
 
 var devAuth = config.GetValue<bool>("DevAuth");
 
@@ -52,6 +57,8 @@ services.AddHttpContextAccessor();
 services.Configure<IdentityOptions>(IdentityConfig.ConfigIdentity);
 
 // CONFIG + SERVICES
+services.AddIgdbServices(igdbOptions);
+services.AddSyncCoreServices();
 services.AddSteamServices();
 services.AddFeatureServices();
 services.AddBackgroundServices();

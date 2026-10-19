@@ -9,12 +9,12 @@ namespace GameNewsHub.Sync.Core;
 
 public static class SyncCoreServiceExtensions
 {
-    public static IServiceCollection AddSyncCoreIgdbServices(this IServiceCollection services)
+    public static IServiceCollection AddSyncCoreServices(this IServiceCollection services)
     {
         services.AddScoped<IEventWeightCalculator, EventWeightCalculator>();
         services.AddScoped<EventDiscoveryService>();
         services.AddScoped<EventHydrationService>();
-        services.AddScoped<IGameSyncService, GameSyncService>();
+        services.AddGameSyncServices();
         services.AddScoped<IGenreSyncService, GenreSyncService>();
         services.AddScoped<IPlatformSyncService, PlatformSyncService>();
 

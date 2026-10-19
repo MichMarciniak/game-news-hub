@@ -9,4 +9,6 @@ public interface IIgdbClient
     public Task<List<IgdbDiscoverEventDto>> GetEventsFromIgdb(long from, long to);
 
     public Task<List<IgdbFullEventDto>> UpdateEventsFromIgdb(IEnumerable<int> eventIds);
+
+    public Task<List<ExternalIdToIgdbIdDto>> MapExternalGameIdToIgdbId(IEnumerable<string> externalIds, ExternalGameSource source);
 }

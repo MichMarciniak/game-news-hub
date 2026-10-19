@@ -1,7 +1,9 @@
 using System.Globalization;
 using GameNewsHub.Contracts;
 using GameNewsHub.Data;
+using GameNewsHub.External.Igdb.Dtos;
 using GameNewsHub.External.Steam.Client;
+using GameNewsHub.Sync.Core.Games;
 using Microsoft.EntityFrameworkCore;
 
 namespace GameNewsHub.Api.Features.Steam;
@@ -11,16 +13,19 @@ public class SteamService
     private readonly AppDbContext _context;
     private readonly SteamClient _client;
     private readonly ILogger<SteamService> _logger;
+    private readonly IGameSyncService _gameSyncService;
 
     public SteamService(
         AppDbContext context,
         SteamClient steamClient,
-        ILogger<SteamService> logger
+        ILogger<SteamService> logger,
+        IGameSyncService gameSyncService
     )
     {
         _context = context;
         _client = steamClient;
         _logger = logger;
+        _gameSyncService = gameSyncService;
     }
 
     public async Task<SteamGameWrapperDto> GetSteamGamesFromProfile(string url)
@@ -39,17 +44,30 @@ public class SteamService
             .Where(g => g.SteamAppId != null && steamAppIds.Contains(g.SteamAppId.Value))
             .ToListAsync();
 
+        var missingSteamIds = steamAppIds.Where(i => 
+            !dbGames.Select(g => g.SteamAppId!.Value).Contains(i))
+            .Select(x => x.ToString());
+        
+        // fetch games
+        var missingGames = await _gameSyncService.ImportByExternalIdsAsync(missingSteamIds, ExternalGameSource.Steam);
+
+        var allGames = missingGames.Concat(dbGames);
+        // user games bo ten import zwraca też pobrane parent games
+        var userGames = allGames
+            .Where(g => g.SteamAppId.HasValue && steamAppIds.Contains(g.SteamAppId.Value))
+            .DistinctBy(g => g.SteamAppId)
+            .ToList();
+        
         var playtimeDict = ownedGamesResponse.Games.ToDictionary(g => g.AppId, g => g.PlaytimeForeverMinutes);
 
         var lastPlayedDate = ownedGamesResponse.Games.ToDictionary(g => g.AppId,
             g => DateTimeOffset.FromUnixTimeSeconds(g.RtimeLastPlayedUnixSeconds));
 
-        var result = dbGames
-            .Where(g => g.SteamAppId.HasValue)
+        var result = userGames 
             .Select(game => new SteamGameDto
             {
                 Id = game.Id,
-                SteamAppId = game.SteamAppId ?? 0,
+                SteamAppId = game.SteamAppId!.Value,
                 Title = game.Title,
                 CoverUrl = game.CoverUrl,
                 PlaytimeForeverMinutes = playtimeDict[game.SteamAppId!.Value],

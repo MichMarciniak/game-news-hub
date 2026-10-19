@@ -79,6 +79,13 @@ public class GameSyncService : IGameSyncService
        return existingGames.Concat(newGames).ToList();
     }
 
+    public async Task<List<Game>> ImportByExternalIdsAsync(IEnumerable<string> externalIds, ExternalGameSource source)
+    {
+        var igdbIds = await _client.MapExternalGameIdToIgdbId(externalIds, source);
+
+        return await GetOrCreateGamesAsync(igdbIds.Select(x => x.IgdbId).ToList());
+    }
+
     private async Task<List<Genre>> ResolveGenresAsync(List<IgdbGameDto> externalGames)
     {
         var allGenres = externalGames

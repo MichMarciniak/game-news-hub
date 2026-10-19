@@ -50,6 +50,24 @@ public class IgdbClient : IIgdbClient
 
         return games;
     }
+
+    public async Task<List<ExternalIdToIgdbIdDto>> MapExternalGameIdToIgdbId(IEnumerable<string> gameIds, ExternalGameSource source)
+    {
+        var games = await FetchInChunkAsync<string, ExternalIdToIgdbIdDto>(gameIds, async chunk =>
+        {
+            var ids = string.Join(",", chunk.Select(id => $"\"{id}\""));
+            _logger.LogInformation(ids);
+            var query = new QueryBuilder()
+                .Fields("game, uid")
+                .Where($"uid = ({ids}) & external_game_source = {(int)source}") // 1 - steam
+                .Limit(chunk.Count())
+                .ToString();
+            
+            return await SendRequestAsync<ExternalIdToIgdbIdDto>(query, "external_games");
+        }, chunkSize: 200);
+        return games;
+    }
+    
     public async Task<List<IgdbFullEventDto>> UpdateEventsFromIgdb(IEnumerable<int> eventIds)
     {
         var events = await FetchInChunkAsync<int, IgdbFullEventDto>(eventIds, async chunk =>
