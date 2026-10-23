@@ -14,4 +14,10 @@ public class AppUser : IdentityUser<int>
     public ICollection<Genre> FollowedGenres { get; set; } = new List<Genre>();
 
     public ICollection<Event> FollowedEvents { get; set; } = new List<Event>();
+
+    public long? SteamId { get; set; }
+    public long? SteamIdAuth { get; set; }
+
+    public ICollection<long> FriendsSteamIds { get; set; } = new List<long>();
+    public ICollection<Game> WishlistedGames { get; set; } = new List<Game>();
 }

@@ -77,6 +77,10 @@ namespace Data.Migrations
                     b.Property<bool>("EmailConfirmed")
                         .HasColumnType("boolean");
 
+                    b.PrimitiveCollection<long[]>("FriendsSteamIds")
+                        .IsRequired()
+                        .HasColumnType("bigint[]");
+
                     b.Property<bool>("LockoutEnabled")
                         .HasColumnType("boolean");
 
@@ -105,6 +109,12 @@ namespace Data.Migrations
 
                     b.Property<bool>("ShowFutureRecommendations")
                         .HasColumnType("boolean");
+
+                    b.Property<long?>("SteamId")
+                        .HasColumnType("bigint");
+
+                    b.Property<long?>("SteamIdAuth")
+                        .HasColumnType("bigint");
 
                     b.Property<bool>("TwoFactorEnabled")
                         .HasColumnType("boolean");
@@ -135,6 +145,7 @@ namespace Data.Migrations
                             ConcurrencyStamp = "39949666-4c4c-4740-9e6e-210170a4a621",
                             CreatedAt = new DateTimeOffset(new DateTime(2026, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), new TimeSpan(0, 0, 0, 0, 0)),
                             EmailConfirmed = false,
+                            FriendsSteamIds = new long[0],
                             LockoutEnabled = false,
                             PhoneNumberConfirmed = false,
                             ShowFutureRecommendations = true,
@@ -239,6 +250,9 @@ namespace Data.Migrations
 
                     NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
 
+                    b.Property<int?>("AppUserId1")
+                        .HasColumnType("integer");
+
                     b.Property<string>("CoverUrl")
                         .HasColumnType("text");
 
@@ -272,6 +286,8 @@ namespace Data.Migrations
                         .HasColumnType("integer");
 
                     b.HasKey("Id");
+
+                    b.HasIndex("AppUserId1");
 
                     b.HasIndex("ParentGameId");
 
@@ -621,6 +637,10 @@ namespace Data.Migrations
 
             modelBuilder.Entity("GameNewsHub.Data.Entities.Game", b =>
                 {
+                    b.HasOne("GameNewsHub.Data.Entities.AppUser", null)
+                        .WithMany("WishlistedGames")
+                        .HasForeignKey("AppUserId1");
+
                     b.HasOne("GameNewsHub.Data.Entities.Game", "ParentGame")
                         .WithMany("ChildGames")
                         .HasForeignKey("ParentGameId")
@@ -764,6 +784,11 @@ namespace Data.Migrations
                         .HasForeignKey("FollowedPlatformGroupsId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
+                });
+
+            modelBuilder.Entity("GameNewsHub.Data.Entities.AppUser", b =>
+                {
+                    b.Navigation("WishlistedGames");
                 });
 
             modelBuilder.Entity("GameNewsHub.Data.Entities.Event", b =>

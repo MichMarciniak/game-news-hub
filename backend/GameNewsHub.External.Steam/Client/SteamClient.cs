@@ -49,5 +49,10 @@ public class SteamClient
         var result = await response.Content.ReadFromJsonAsync<SteamGamesResponse>();
         return result.Response;
     }
+
+    public async Task LoginToSteam()
+    {
+        
+    }
     
 }
