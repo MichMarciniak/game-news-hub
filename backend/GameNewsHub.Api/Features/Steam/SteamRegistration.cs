@@ -5,6 +5,7 @@ public static class SteamRegistration
     public static IServiceCollection AddSteamServices(this IServiceCollection services)
     {
         services.AddScoped<SteamService>();
+        services.AddScoped<SteamAuthService>();
 
         return services;
     }

@@ -34,7 +34,6 @@ const string FrontendCorsPolicy = "FrontendCorsPolicy";
 services.AddValidatedOptions<SmtpOptions>(config);
 services.AddValidatedOptions<FollowServiceOptions>(config);
 services.AddValidatedOptions<RecommendationWeights>(config);
-services.AddValidatedOptions<SteamOptions>(config);
 
 var dbOptions = services.AddValidatedOptions<DatabaseOptions>(config);
 var frontendOptions = services.AddValidatedOptions<FrontendOptions>(config);
@@ -57,9 +56,9 @@ services.AddHttpContextAccessor();
 services.Configure<IdentityOptions>(IdentityConfig.ConfigIdentity);
 
 // CONFIG + SERVICES
+services.AddSteamServices(config);
 services.AddIgdbServices(igdbOptions);
 services.AddSyncCoreServices();
-services.AddSteamServices();
 services.AddFeatureServices();
 services.AddBackgroundServices();
 
@@ -112,7 +111,7 @@ services.AddCors(options =>
     options.AddPolicy(FrontendCorsPolicy, policy =>
     {
         policy
-            .WithOrigins(frontendOptions!.Url, "http://localhost:5173", "http://127.0.0.1:5173", "http://localhost:5180")
+            .WithOrigins(frontendOptions!.Url, "http://localhost:5173", "http://100.92.144.13:5173")
             .AllowAnyHeader()
             .AllowAnyMethod()
             .AllowCredentials();

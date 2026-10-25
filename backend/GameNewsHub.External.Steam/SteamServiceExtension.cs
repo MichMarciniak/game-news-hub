@@ -1,4 +1,7 @@
 using GameNewsHub.External.Steam.Client;
+using GameNewsHub.External.Steam.Options;
+using GameNewsHub.Hosting.Configuration;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace GameNewsHub.External.Steam;
@@ -6,13 +9,21 @@ namespace GameNewsHub.External.Steam;
 public static class SteamServiceExtension
 {
 
-    public static IServiceCollection AddSteamServices(this IServiceCollection services)
+    public static IServiceCollection AddSteamServices(
+        this IServiceCollection services,
+        IConfiguration configuration
+        )
     {
-        var url = "https://api.steampowered.com/";
-        services.AddTransient<HttpClient>();
-        services.AddHttpClient<SteamClient>(client =>
+        var steamOptions = services.AddValidatedOptions<SteamOptions>(configuration);
+        
+        
+        services.AddHttpClient<SteamApiClient>(client =>
         {
-            client.BaseAddress = new Uri(url);
+            client.BaseAddress = new Uri(steamOptions.ApiUrl);
+        });
+        services.AddHttpClient<SteamAuthClient>(client =>
+        {
+            client.BaseAddress = new Uri(steamOptions.AuthUrl);
         });
 
         return services;

@@ -110,11 +110,8 @@ namespace Data.Migrations
                     b.Property<bool>("ShowFutureRecommendations")
                         .HasColumnType("boolean");
 
-                    b.Property<long?>("SteamId")
-                        .HasColumnType("bigint");
-
-                    b.Property<long?>("SteamIdAuth")
-                        .HasColumnType("bigint");
+                    b.Property<string>("SteamId")
+                        .HasColumnType("text");
 
                     b.Property<bool>("TwoFactorEnabled")
                         .HasColumnType("boolean");
