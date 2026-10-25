@@ -1,4 +1,4 @@
-import { setAccessToken, setUnauthorizedHandler } from "@/api/custom-instance";
+import { setUnauthorizedHandler } from "@/api/custom-instance";
 import { getUsersMe, usePostAuthLogin, usePostAuthLogout, usePostAuthLogoutAll } from "@/api/generated";
 import { type LoginDto, type ProfileDto } from "@/api/generated/models";
 import { defineStore } from "pinia";
@@ -11,6 +11,7 @@ export const useAuthStore = defineStore('auth', () => {
   
   const isAuthenticated = computed(() => user.value !== null)
   const isAdmin = computed(() => user.value?.isAdmin)
+  const isSteamConnected = computed(() => user.value?.steamId !== null)
 
   const clear = () => {user.value = null}
   setUnauthorizedHandler(clear)
@@ -39,5 +40,5 @@ export const useAuthStore = defineStore('auth', () => {
   const logout = () => logoutMutate(undefined, {onSettled: clear })
   const logoutAll = () => logoutAllMutate(undefined, {onSettled: clear })
 
-  return {user, isAuthenticated, isAdmin, login, logout, logoutAll, initialize}
+  return {user, isAuthenticated, isAdmin, isSteamConnected, login, logout, logoutAll, initialize}
 })

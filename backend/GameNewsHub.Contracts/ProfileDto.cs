@@ -7,6 +7,7 @@ public class ProfileDto
     public DateTimeOffset CreatedAt { get; set; }
     public SettingsDto Settings { get; set; }
     public bool? isAdmin { get; set; }
+    public string? SteamId { get; set; }
 
 }
 
@@ -21,6 +22,7 @@ public class FullProfileDto
     public List<GenreDto> Genres { get; set; }
     public List<EventListNameDto> Events { get; set; }
     public List<PlatformGroupDto> PlatformGroups { get; set; }
+    public string? SteamId { get; set; }
 }
 
 public class SettingsDto

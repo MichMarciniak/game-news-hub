@@ -8,6 +8,7 @@ import Settings from '@/features/profile/Settings.vue';
 import { useAuthStore } from '@/stores/auth';
 import { storeToRefs } from 'pinia';
 import { useRouter } from 'vue-router';
+import SteamContainer from './steam/SteamContainer.vue';
 
 const router = useRouter()
 
@@ -28,7 +29,7 @@ function onLogout(fn: Function) {
 
 <template>
   <div class="max-w-7xl w-full mt-5 mx-auto grid grid-cols-1 sm:grid-cols-2">
-    <div class="flex flex-col gap-2">
+    <div class="flex flex-col gap-5">
       <h2 class="text-2xl font-semibold">{{ user?.username }}</h2>
       <Settings />
       <PasswordChange />
@@ -36,6 +37,7 @@ function onLogout(fn: Function) {
         <Button label="logout" @click="onLogout(logout)" ></Button>
         <Button label="logoutAll" @click="onLogout(logoutAll)" ></Button>
       </div>
+      <SteamContainer />
 
     </div>
 

@@ -55,8 +55,8 @@ public class SteamController : ControllerBase
         var result = await _authService.Login(userId, Request.Query);
 
         return result.Match(
-            _ => Redirect($"{_frontendOptions.Url}profile?steam=connected"),
-            _ => Redirect($"{_frontendOptions.Url}profile?steam=error")
+            _ => Redirect($"{_frontendOptions.Url}me?steam=connected"),
+            err => Redirect($"{_frontendOptions.Url}me?steam=error={err[0].Code}&{err[0].Description}")
         );
     }
     

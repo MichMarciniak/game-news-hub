@@ -14,7 +14,8 @@ public static class ProfileMappingExtension
             Username = user.UserName!,
             CreatedAt = user.CreatedAt,
             Settings = user.ToSettingsDto(),
-            isAdmin = isAdmin
+            isAdmin = isAdmin,
+            SteamId = user.SteamId
         };
     }
     
@@ -28,7 +29,8 @@ public static class ProfileMappingExtension
             Games = user.FollowedGames.Select(g => g.ToListItemDto()).ToList(),
             Genres = user.FollowedGenres.Select(g => g.ToDto()).ToList(),
             PlatformGroups = user.FollowedPlatformGroups.Select(pg => pg.ToDto()).ToList(),
-            Settings = user.ToSettingsDto()
+            Settings = user.ToSettingsDto(),
+            SteamId = user.SteamId
         };
     }
 

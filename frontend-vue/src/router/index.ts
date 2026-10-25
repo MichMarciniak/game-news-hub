@@ -13,12 +13,15 @@ const router = createRouter({
   ],
 })
 
-router.beforeEach((to, from) => {
+router.beforeEach(async (to, from) => {
   const authStore = useAuthStore()
 
   if (!authStore) {
     return false
   }
+
+  // Ensure cookie-based session is restored before auth checks on hard refresh.
+  await authStore.initialize()
 
   if (to.meta.requiresAuth && !authStore.isAuthenticated) {
     return ({

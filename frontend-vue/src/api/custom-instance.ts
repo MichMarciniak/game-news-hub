@@ -3,22 +3,9 @@ import router from '@/router';
 import axios, { type AxiosRequestConfig } from 'axios';
 
 export const AXIOS_INSTANCE = axios.create({
-  baseURL: 'http://localhost:5190',
-  withCredentials: true, // Auto-sends httpOnly refresh cookies
-});
-
-let accessToken: string | null = null;
-
-export const setAccessToken = (token: string | null) => {
-  accessToken = token;
-};
-
-// Request Interceptor: Attach Access Token
-AXIOS_INSTANCE.interceptors.request.use((config) => {
-  if (accessToken) {
-    config.headers.Authorization = `Bearer ${accessToken}`;
-  }
-  return config;
+  // Use same-origin /api in dev (via Vite proxy) to avoid cross-site cookie issues.
+  baseURL: import.meta.env.VITE_API_BASE_URL ?? '/api',
+  withCredentials: true,
 });
 
 let onUnauthorized: (() => void) | null = null;
@@ -32,10 +19,10 @@ const SILENT_401 = ['/auth/login', '/users/me', '/auth/logout', 'auth/confirm-em
 AXIOS_INSTANCE.interceptors.response.use(
   (response) => response,
   async (error) => {
-    const url: string = error.config.url ?? '';
+    const url: string = error.config?.url ?? '';
     const isSilent = SILENT_401.some((path) => url.includes(path));
 
-    if (error.response.status === 401 && !isSilent) {
+    if (error.response?.status === 401 && !isSilent) {
       onUnauthorized?.();
 
       const route = router.currentRoute.value;

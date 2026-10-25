@@ -52,6 +52,9 @@ public class SteamAuthClient
         var requestParams = queryParams.ToDictionary(k => k.Key, v => v.Value.ToString());
 
         requestParams["openid.mode"] = "check_authentication";
+        
+        _logger.LogInformation($"{requestParams}");
+        
 
         using var content = new FormUrlEncodedContent(requestParams);
         var response = await _httpClient.PostAsync("openid/login", content);
@@ -66,7 +69,7 @@ public class SteamAuthClient
 
         var responseBody = await response.Content.ReadAsStringAsync();
 
-        if (!responseBody.Contains("is_valid:false"))
+        if (!responseBody.Contains("is_valid:true"))
             return new SteamAuthResult
             {
                 IsSuccess = false,
