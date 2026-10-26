@@ -114,4 +114,14 @@ public class UsersService
 
         return user.ToFullDto();
     }
+
+    public async Task<ErrorOr<List<GameListItemDto>>> GetWishlist(int userId)
+    {
+        var wishlistedGames = await _context.Users
+            .SelectMany(u => u.WishlistedGames)
+            .Select(g => g.ToListItemDto())
+            .ToListAsync();
+
+        return wishlistedGames;
+    }
 }

@@ -71,4 +71,16 @@ public class GameController : ControllerBase
             success => NoContent(),
             err => this.ProblemErr(err));
     }
+
+    [HttpPost("batch/follow")]
+    [Authorize]
+    public async Task<IActionResult> BatchFollowGames([FromBody] BatchFollowDto<int> gameIds)
+    {
+        var userId = User.GetUserId();
+        var result = await _followService.FollowBatch(userId, gameIds.Ids);
+        return result.Match<IActionResult>(
+            _ => Ok(),
+            err =>  this.ProblemErr(err));
+    }
+
 }

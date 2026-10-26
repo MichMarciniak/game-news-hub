@@ -11,21 +11,18 @@ using Microsoft.Extensions.Options;
 namespace GameNewsHub.Api.Features.Steam;
 
 [ApiController]
-[Route("[controller]")]
+[Route("steam/auth")]
 [Authorize]
-public class SteamController : ControllerBase
+public class SteamAuthController : ControllerBase
 {
-    private readonly SteamService _service;
     private readonly SteamAuthService _authService;
     private readonly FrontendOptions _frontendOptions;
 
-    public SteamController(
-        SteamService service,
+    public SteamAuthController(
         SteamAuthService steamAuthService,
         IOptions<FrontendOptions> frontendOptions
     )
     {
-        _service = service;
         _authService = steamAuthService;
         _frontendOptions = frontendOptions.Value;
     }

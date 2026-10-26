@@ -247,9 +247,6 @@ namespace Data.Migrations
 
                     NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
 
-                    b.Property<int?>("AppUserId1")
-                        .HasColumnType("integer");
-
                     b.Property<string>("CoverUrl")
                         .HasColumnType("text");
 
@@ -283,8 +280,6 @@ namespace Data.Migrations
                         .HasColumnType("integer");
 
                     b.HasKey("Id");
-
-                    b.HasIndex("AppUserId1");
 
                     b.HasIndex("ParentGameId");
 
@@ -576,6 +571,21 @@ namespace Data.Migrations
                     b.ToTable("UserPlatformGroups");
                 });
 
+            modelBuilder.Entity("UserWishlistGames", b =>
+                {
+                    b.Property<int>("AppUser1Id")
+                        .HasColumnType("integer");
+
+                    b.Property<int>("WishlistedGamesId")
+                        .HasColumnType("integer");
+
+                    b.HasKey("AppUser1Id", "WishlistedGamesId");
+
+                    b.HasIndex("WishlistedGamesId");
+
+                    b.ToTable("UserWishlistGames");
+                });
+
             modelBuilder.Entity("GameEvents", b =>
                 {
                     b.HasOne("GameNewsHub.Data.Entities.Event", null)
@@ -634,10 +644,6 @@ namespace Data.Migrations
 
             modelBuilder.Entity("GameNewsHub.Data.Entities.Game", b =>
                 {
-                    b.HasOne("GameNewsHub.Data.Entities.AppUser", null)
-                        .WithMany("WishlistedGames")
-                        .HasForeignKey("AppUserId1");
-
                     b.HasOne("GameNewsHub.Data.Entities.Game", "ParentGame")
                         .WithMany("ChildGames")
                         .HasForeignKey("ParentGameId")
@@ -783,9 +789,19 @@ namespace Data.Migrations
                         .IsRequired();
                 });
 
-            modelBuilder.Entity("GameNewsHub.Data.Entities.AppUser", b =>
+            modelBuilder.Entity("UserWishlistGames", b =>
                 {
-                    b.Navigation("WishlistedGames");
+                    b.HasOne("GameNewsHub.Data.Entities.AppUser", null)
+                        .WithMany()
+                        .HasForeignKey("AppUser1Id")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("GameNewsHub.Data.Entities.Game", null)
+                        .WithMany()
+                        .HasForeignKey("WishlistedGamesId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
                 });
 
             modelBuilder.Entity("GameNewsHub.Data.Entities.Event", b =>

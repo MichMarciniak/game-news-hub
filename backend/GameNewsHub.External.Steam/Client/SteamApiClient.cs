@@ -24,17 +24,17 @@ public class SteamApiClient
         _steamOptions = steamOptions.Value;
     }
 
-    public Task<OwnedGameList> GetOwnedGamesAsync(string steamId)
+    public Task<SteamGamesResponse> GetOwnedGamesAsync(string steamId)
     {
         var queryParams = new Dictionary<string, string>
         {
             ["steamid"] = steamId
         };
 
-        return SendRequestAsync<OwnedGameList>("IPlayerService/GetOwnedGames/v0001/", queryParams);
+        return SendRequestAsync<SteamGamesResponse>("IPlayerService/GetOwnedGames/v0001/", queryParams);
     }
 
-    public Task<FriendListDto> GetFriendListAsync(string steamId)
+    public Task<FriendListResponse> GetFriendListAsync(string steamId)
     {
         var queryParams = new Dictionary<string, string>
         {
@@ -42,17 +42,17 @@ public class SteamApiClient
             ["relationship"] = "friend"
         };
 
-        return SendRequestAsync<FriendListDto>("ISteamUser/GetFriendList/v0001/", queryParams);
+        return SendRequestAsync<FriendListResponse>("ISteamUser/GetFriendList/v0001/", queryParams);
     }
 
-    public Task<WishlistDto> GetWishlistAsync(string steamId)
+    public Task<WishlistResponse> GetWishlistAsync(string steamId)
     {
         var queryParams = new Dictionary<string, string>
         {
             ["steamid"] = steamId
         };
 
-        return SendRequestAsync<WishlistDto>("IWishlistService/GetWishlist/v0001/", queryParams);
+        return SendRequestAsync<WishlistResponse>("IWishlistService/GetWishlist/v0001/", queryParams);
     }
     
     private async Task<T> SendRequestAsync<T>(
@@ -79,7 +79,9 @@ public class SteamApiClient
 
         if (!response.IsSuccessStatusCode)
         {
-            return default;
+            var error = await response.Content.ReadAsStringAsync();
+            _logger.LogError(error);
+            throw new HttpRequestException("Steam api error");
         }
 
         return await response.Content.ReadFromJsonAsync<T>();

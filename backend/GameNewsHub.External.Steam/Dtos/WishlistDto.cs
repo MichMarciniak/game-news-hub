@@ -17,7 +17,7 @@ public record WishlistDto
 public record WishlistItemDto
 {
     [JsonPropertyName("appid")]
-    public long AppId { get; init; }
+    public ulong AppId { get; init; }
     [JsonPropertyName("date_added")]
     public long DateAdded { get; init; }
 }

@@ -88,4 +88,15 @@ public class UsersController : ControllerBase
             details => Ok(details),
             err => this.ProblemErr(err));
     }
+    
+    [HttpGet("me/wishlist")]
+    public async Task<ActionResult<List<GameListItemDto>>> GetWishlist()
+    {
+        var userId = User.GetUserId();
+        var result = await _service.GetWishlist(userId);
+
+        return result.Match(
+            res => Ok(res),
+            err => this.ProblemErr(err));
+    }
 }

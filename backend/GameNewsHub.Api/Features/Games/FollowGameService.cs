@@ -1,5 +1,6 @@
 ﻿using ErrorOr;
 using GameNewsHub.Api.Features.Shared;
+using GameNewsHub.Contracts;
 using GameNewsHub.Data;
 using GameNewsHub.Data.Entities;
 using Microsoft.EntityFrameworkCore;
@@ -51,6 +52,49 @@ public class FollowGameService : IFollowService<Game>
         if (user.FollowedGames.Contains(game))
         {
             user.FollowedGames.Remove(game);
+            await _context.SaveChangesAsync();
+        }
+
+        return Result.Success;
+    }
+
+    public async Task<ErrorOr<Success>> FollowBatch(int userId, List<int> gameIds)
+    {
+        if (gameIds == null || !gameIds.Any())
+        {
+            return Result.Success;
+        }
+        
+        var user = await _context.Users
+            .Include(u => u.FollowedGames)
+            .FirstOrDefaultAsync(u => u.Id == userId);
+        
+        if (user == null) return Error.NotFound("User.NotFound", $"User with id {userId} does not exist");
+
+
+        var distinctGameIds = gameIds.Distinct().ToList();
+
+        var existingGames = await _context.Games
+            .Where(g => distinctGameIds.Contains(g.Id))
+            .ToListAsync();
+
+        if (!existingGames.Any())
+        {
+            return Result.Success;
+        }
+
+        var currentFollowedIds = user.FollowedGames.Select(g => g.Id).ToHashSet();
+        var gamesToFollow = existingGames
+            .Where(g => !currentFollowedIds.Contains(g.Id))
+            .ToList();
+
+        if (gamesToFollow.Any())
+        {
+            foreach (var game in gamesToFollow)
+            {
+                user.FollowedGames.Add(game);
+            }
+
             await _context.SaveChangesAsync();
         }
 

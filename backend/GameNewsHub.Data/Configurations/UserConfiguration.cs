@@ -28,5 +28,9 @@ public class UserConfiguration : IEntityTypeConfiguration<AppUser>
         builder.HasMany(x => x.FollowedEvents)
             .WithMany()
             .UsingEntity("UserEvents");
+
+        builder.HasMany(x => x.WishlistedGames)
+            .WithMany()
+            .UsingEntity("UserWishlistGames");
     }
 }
