@@ -1,44 +1,23 @@
-﻿using ErrorOr;
+using ErrorOr;
 using GameNewsHub.Api.Features.Platforms;
 using GameNewsHub.Api.Mappings;
 using GameNewsHub.Contracts;
 using GameNewsHub.Data;
 using Microsoft.EntityFrameworkCore;
 
-namespace GameNewsHub.Api.Features.Users;
+namespace GameNewsHub.Api.Features.Users.Preferences;
 
-public class UsersService
+public class UserPreferencesService
 {
     private readonly AppDbContext _context;
 
-    public UsersService(AppDbContext context)
+    public UserPreferencesService(
+        AppDbContext context
+    )
     {
         _context = context;
     }
-
-    public async Task<ErrorOr<ProfileDto>> GetProfile(int userId)
-    {
-        var user = await _context.Users
-            .FirstOrDefaultAsync(u => u.Id == userId);
-
-        if (user == null)
-            return Error.NotFound("User.NotFound", $"User {userId} not found");
-
-        return user.ToDto(false);
-    }
-
-    public async Task<ErrorOr<Success>> PatchSettings(int userId, SettingsDto settings)
-    {
-        var user = await _context.Users
-            .FirstOrDefaultAsync(u => u.Id == userId);
-        
-        if (user == null) return Error.NotFound("User.NotFound", $"User {userId} not found.");
-
-        user.ShowFutureRecommendations = settings.ShowFutureRecommendations;
-        await _context.SaveChangesAsync();
-        return new ErrorOr<Success>();
-    }
-
+    
     public async Task<ErrorOr<List<GameListItemDto>>> GetFollowedGames(int userId)
     {
         var user = await _context.Users
@@ -98,30 +77,5 @@ public class UsersService
             .ToList();
 
         return events;
-    }
-
-    public async Task<ErrorOr<FullProfileDto>> GetFullProfile(int userId)
-    {
-        var user = await _context.Users
-            .Include(u => u.FollowedEvents)
-            .Include(u => u.FollowedGames)
-            .Include(u => u.FollowedGenres)
-            .Include(u => u.FollowedPlatformGroups)
-            .FirstOrDefaultAsync(u => u.Id == userId);
-
-        if (user == null)
-            return Error.NotFound("User.NotFound", $"User {userId} not found");
-
-        return user.ToFullDto();
-    }
-
-    public async Task<ErrorOr<List<GameListItemDto>>> GetWishlist(int userId)
-    {
-        var wishlistedGames = await _context.Users
-            .SelectMany(u => u.WishlistedGames)
-            .Select(g => g.ToListItemDto())
-            .ToListAsync();
-
-        return wishlistedGames;
     }
 }
