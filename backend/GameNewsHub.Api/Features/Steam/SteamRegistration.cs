@@ -1,3 +1,5 @@
+using GameNewsHub.Api.Features.Steam.Auth;
+
 namespace GameNewsHub.Api.Features.Steam;
 
 public static class SteamRegistration

@@ -2,7 +2,7 @@ using ErrorOr;
 using GameNewsHub.Data;
 using GameNewsHub.External.Steam.Client;
 
-namespace GameNewsHub.Api.Features.Steam;
+namespace GameNewsHub.Api.Features.Steam.Auth;
 
 public class SteamAuthService
 {

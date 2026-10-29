@@ -1,14 +1,10 @@
-using System.Security.Claims;
-using ErrorOr;
 using GameNewsHub.Api.Extensions;
-using GameNewsHub.Api.Features.Shared;
 using GameNewsHub.Api.Options;
-using GameNewsHub.Contracts;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Options;
 
-namespace GameNewsHub.Api.Features.Steam;
+namespace GameNewsHub.Api.Features.Steam.Auth;
 
 [ApiController]
 [Route("steam/auth")]
@@ -37,6 +33,7 @@ public class SteamAuthController : ControllerBase
 
     
     [HttpGet("connect/redirect")]
+    [ProducesResponseType(StatusCodes.Status302Found)]
     public async Task<IActionResult> GetSteamLoginUrlRedirect()
     {
         var result = _authService.GetLoginUrl();
@@ -45,7 +42,8 @@ public class SteamAuthController : ControllerBase
     }
     
     [HttpGet("callback")]
-    public async Task<IActionResult> SteamCallback()
+    [ProducesResponseType(StatusCodes.Status302Found)]
+    public async Task<IActionResult> GetSteamCallback()
     {
         var userId = User.GetUserId();
         
@@ -56,8 +54,4 @@ public class SteamAuthController : ControllerBase
             err => Redirect($"{_frontendOptions.Url}me?steam=error={err[0].Code}&{err[0].Description}")
         );
     }
-    
-    
-    
-    
 }

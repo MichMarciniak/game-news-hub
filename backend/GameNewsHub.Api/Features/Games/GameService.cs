@@ -115,14 +115,12 @@ public class GameService
         return game.ToDetailDto(platformGroups);
     }
 
-    public async Task<ErrorOr<List<GameListItemDto>>> GetGameAddons(int gameId)
+    public async Task<List<GameListItemDto>> GetGameAddons(int gameId)
     {
         var gameAddons = await _context.Games
             .Where(g => g.ParentGameId == gameId)
             .Select(g => g.ToListItemDto())
             .ToListAsync();
-
-        if (gameAddons.Count == 0) return Error.NotFound("GameAddons.NotFound", "GameAddons not found.");
 
         return gameAddons;
     }

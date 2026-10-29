@@ -26,7 +26,7 @@ public class AdminController : ControllerBase
     
     
     [HttpPatch("events/{id}/series")]
-    public async Task<IActionResult> ReassignSeries(int id, [FromQuery] int seriesId)
+    public async Task<IActionResult> PatchReassignSeries(int id, [FromQuery] int seriesId)
     {
         _logger.LogInformation(
             "Admin {AdminId} attempting to reassign event {EventId} to series {SeriesId}",
@@ -39,7 +39,7 @@ public class AdminController : ControllerBase
     }
     
     [HttpPatch("platforms/{id}/group")]
-    public async Task<IActionResult> ReassignPlatformGroup(int id, [FromQuery] int groupId)
+    public async Task<IActionResult> PatchReassignPlatformGroup(int id, [FromQuery] int groupId)
     {
         _logger.LogInformation(
             "Admin {AdminId} reassigning platform {PlatformId} to group {PlatformGroupId}",
@@ -52,7 +52,7 @@ public class AdminController : ControllerBase
     }
 
     [HttpGet("series/search")]
-    public async Task<ActionResult<SearchDto<AdminSeriesDto>>> SearchSeries(
+    public async Task<ActionResult<SearchDto<AdminSeriesDto>>> GetSeriesSearch(
         string? query, int page = 1, int pageSize = 20)
     {
         var result = await _eventService.GetAdminSeries(query, page, pageSize);

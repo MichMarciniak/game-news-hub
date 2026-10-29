@@ -1,11 +1,14 @@
 using GameNewsHub.Api.Extensions;
 using GameNewsHub.Api.Features.Shared;
 using GameNewsHub.Contracts;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace GameNewsHub.Api.Features.Users.Preferences;
 
-public class UserPreferencesController : UserControllerBase
+[ApiController]
+[Authorize]
+public class UserPreferencesController : UserControllerBase 
 {
     private readonly UserPreferencesService _service;
 
@@ -21,9 +24,7 @@ public class UserPreferencesController : UserControllerBase
     {
         var userId = User.GetUserId();
         var result = await _service.GetFollowedGames(userId);
-        return result.MatchFirst(
-            details => Ok(details),
-            err => this.ProblemErr(err));
+        return result.ToActionResult(this);
     }
 
     [HttpGet("followed-events")]
@@ -31,9 +32,7 @@ public class UserPreferencesController : UserControllerBase
     {
         var userId = User.GetUserId();
         var result = await _service.GetFollowedEvents(userId);
-        return result.MatchFirst(
-            details => Ok(details),
-            err => this.ProblemErr(err));
+        return result.ToActionResult(this);
     }
 
     [HttpGet("followed-genres")]
@@ -41,9 +40,7 @@ public class UserPreferencesController : UserControllerBase
     {
         var userId = User.GetUserId();
         var result = await _service.GetFollowedGenres(userId);
-        return result.MatchFirst(
-            details => Ok(details),
-            err => this.ProblemErr(err));
+        return result.ToActionResult(this);
     }
 
     [HttpGet("followed-platform-groups")]
@@ -51,8 +48,6 @@ public class UserPreferencesController : UserControllerBase
     {
         var userId = User.GetUserId();
         var result = await _service.GetFollowedPlatformGroups(userId);
-        return result.MatchFirst(
-            details => Ok(details),
-            err => this.ProblemErr(err));
+        return result.ToActionResult(this);
     }
 }

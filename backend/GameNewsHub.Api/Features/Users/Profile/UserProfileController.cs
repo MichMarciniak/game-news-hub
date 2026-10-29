@@ -1,10 +1,13 @@
 ﻿using GameNewsHub.Api.Extensions;
 using GameNewsHub.Api.Features.Shared;
 using GameNewsHub.Contracts;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace GameNewsHub.Api.Features.Users.Profile;
 
+[ApiController]
+[Authorize]
 public class UserProfileController : UserControllerBase 
 {
     private readonly UserProfileService _service;
@@ -19,31 +22,22 @@ public class UserProfileController : UserControllerBase
     {
         var userId = User.GetUserId();
         var result = await _service.PatchSettings(userId, settings);
-        return result.Match(
-            details => Ok(details),
-            err => this.ProblemErr(err));
-            
+        return result.ToNoContent(this);
     }
-
 
     [HttpGet]
-    public async Task<ActionResult<ProfileDto>> GetProfile()
+    public async Task<ActionResult<FullProfileDto>> GetProfile()
     {
         var userId = User.GetUserId();
         var result = await _service.GetFullProfile(userId);
-        return result.MatchFirst(
-            details => Ok(details),
-            err => this.ProblemErr(err));
-    }
-    
-    [HttpGet("full")]
-    public async Task<ActionResult<ProfileDto>> GetFullProfile()
-    {
-        var userId = User.GetUserId();
-        var result = await _service.GetFullProfile(userId);
-        return result.MatchFirst(
-            details => Ok(details),
-            err => this.ProblemErr(err));
+        return result.ToActionResult(this);
     }
 
+    [HttpGet("full")]
+    public async Task<ActionResult<FullProfileDto>> GetFullProfile()
+    {
+        var userId = User.GetUserId();
+        var result = await _service.GetFullProfile(userId);
+        return result.ToActionResult(this);
+    }
 }

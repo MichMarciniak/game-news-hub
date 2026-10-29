@@ -1,4 +1,6 @@
-﻿namespace GameNewsHub.Api.Features.Events;
+﻿using GameNewsHub.Api.Features.Events.Follow;
+
+namespace GameNewsHub.Api.Features.Events;
 
 public static class EventRegistraion
 {

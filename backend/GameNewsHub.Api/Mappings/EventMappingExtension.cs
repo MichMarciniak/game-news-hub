@@ -18,16 +18,6 @@ public static class EventMappingExtension
         };
     }
 
-    public static NormalizedEventListItemDto ToNormalizedListItemDto(this EventListItemDto e)
-    {
-        return new NormalizedEventListItemDto
-        {
-            Id = e.Id,
-            Name = e.Name,
-            NormalizedName = EventNameNormalizer.Normalize(e.Name)
-        };
-    }
-
     public static EventListNameDto ToListNameDto(this Event e)
     {
         return new EventListNameDto

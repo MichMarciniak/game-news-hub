@@ -1,12 +1,7 @@
 using GameNewsHub.Api.Extensions;
-using GameNewsHub.Api.Features.Shared;
-using GameNewsHub.Api.Options;
 using GameNewsHub.Contracts;
-using GameNewsHub.Data.Entities;
 using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.Extensions.Options;
 
 namespace GameNewsHub.Api.Features.Auth;
 
@@ -21,36 +16,22 @@ public class AuthController : ControllerBase
         _service = service;
     }
 
-    [HttpGet("test")]
-    [Authorize]
-    public async Task<IActionResult> Test()
-    {
-        var userId = User.GetUserId();
-        if (userId == null) return NotFound();
-        return Ok();
-    }
-
     [HttpPost("register")]
-    public async Task<ActionResult<EmailDto>> Register(RegisterDto request)
+    public async Task<ActionResult<EmailDto>> PostRegister(RegisterDto request)
     {
         var result = await _service.Register(request);
-        return result.Match(
-            details => Ok(details),
-            error => this.ProblemErr(error));
+        return result.ToActionResult(this);
     }
 
     [HttpPost("login")]
-    public async Task<ActionResult<ProfileDto>> Login(LoginDto request)
+    public async Task<ActionResult<ProfileDto>> PostLogin(LoginDto request)
     {
         var result = await _service.Login(request);
-        return result.Match(
-            value => Ok(value),
-            errors => this.ProblemErr(errors)
-        );
+        return result.ToActionResult(this);
     }
 
     [HttpPost("logout")]
-    public async Task<IActionResult> Logout()
+    public async Task<IActionResult> PostLogout()
     {
         await _service.Logout();
         return NoContent();
@@ -58,7 +39,7 @@ public class AuthController : ControllerBase
 
     [HttpPost("logout-all")]
     [Authorize]
-    public async Task<IActionResult> LogoutAll()
+    public async Task<IActionResult> PostLogoutAll()
     {
         var userId = User.GetUserId();
         await _service.LogoutFull(userId);
@@ -66,49 +47,39 @@ public class AuthController : ControllerBase
     }
 
     [HttpPost("confirm-email")]
-    public async Task<IActionResult> ConfirmEmail(EmailConfirmDto request)
+    public async Task<IActionResult> PostConfirmEmail(EmailConfirmDto request)
     {
         var result = await _service.ConfirmEmail(request.UserId, request.Token);
-        return result.Match<IActionResult>(
-            ok => NoContent(),
-            error => this.ProblemErr(error));
+        return result.ToNoContent(this);
     }
 
     [HttpPost("resend-email")]
-    public async Task<IActionResult> ResendConfirmation(EmailDto request)
+    public async Task<IActionResult> PostResendConfirmation(EmailDto request)
     {
         var result = await _service.ResendConfirmation(request.Email);
-        return result.Match<IActionResult>(
-            ok => NoContent(),
-            error => this.ProblemErr(error));
+        return result.ToNoContent(this);
     }
 
     [HttpPost("forgot-password")]
-    public async Task<IActionResult> RequestPasswordReset(EmailDto request)
+    public async Task<IActionResult> PostRequestPasswordReset(EmailDto request)
     {
         var result = await _service.RequestPasswordReset(request.Email);
-        return result.Match<IActionResult>(
-            ok => NoContent(),
-            error => this.ProblemErr(error));
+        return result.ToNoContent(this);
     }
 
     [HttpPost("reset-password")]
-    public async Task<IActionResult> ResetPassword(ResetPasswordDto request)
+    public async Task<IActionResult> PostResetPassword(ResetPasswordDto request)
     {
         var result = await _service.ResetPassword(request.UserId, request.Token, request.Password);
-        return result.Match<IActionResult>(
-            ok => NoContent(),
-            error => this.ProblemErr(error));
+        return result.ToNoContent(this);
     }
 
     [HttpPost("change-password")]
     [Authorize]
-    public async Task<IActionResult> ChangePassword(ChangePasswordDto request)
+    public async Task<IActionResult> PostChangePassword(ChangePasswordDto request)
     {
         var userId = User.GetUserId();
         var result = await _service.ChangePassword(userId, request.OldPassword, request.NewPassword);
-        return result.Match<IActionResult>(
-            ok => NoContent(),
-            error => this.ProblemErr(error));
+        return result.ToNoContent(this);
     }
 }

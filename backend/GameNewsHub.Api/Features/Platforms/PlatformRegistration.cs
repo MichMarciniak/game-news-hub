@@ -1,10 +1,13 @@
-﻿namespace GameNewsHub.Api.Features.Platforms;
+﻿using GameNewsHub.Api.Features.Platforms.Follow;
+
+namespace GameNewsHub.Api.Features.Platforms;
 
 public static class PlatformRegistration
 {
     public static IServiceCollection AddPlatformServices(this IServiceCollection services)
     {
         services.AddScoped<PlatformService>();
+        services.AddScoped<FollowPlatformGroupService>();
 
         return services;
     }

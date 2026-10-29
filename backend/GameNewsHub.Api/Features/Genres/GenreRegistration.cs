@@ -1,3 +1,5 @@
+using GameNewsHub.Api.Features.Genres.Follow;
+
 namespace GameNewsHub.Api.Features.Genres;
 
 public static class GenreRegistration

@@ -1,7 +1,7 @@
 using GameNewsHub.Api.Extensions;
 using GameNewsHub.Api.Features.Shared;
 using GameNewsHub.Contracts;
-using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Mvc;
 
 namespace GameNewsHub.Api.Features.Games;
@@ -10,17 +10,15 @@ namespace GameNewsHub.Api.Features.Games;
 [Route("games")]
 public class GameController : ControllerBase
 {
-    private readonly FollowGameService _followService;
     private readonly GameService _service;
 
-    public GameController(GameService service, FollowGameService followGameService)
+    public GameController(GameService service)
     {
         _service = service;
-        _followService = followGameService;
     }
 
     [HttpGet("search")]
-    public async Task<ActionResult<SearchDto<GameListItemDto>>> SearchGames([FromQuery] GetGameSearchParams request)
+    public async Task<ActionResult<SearchDto<GameListItemDto>>> GetGameSearch([FromQuery] GetGameSearchParams request)
     {
         var games = await _service.SearchGamesAsync(
             request.Query,
@@ -29,58 +27,21 @@ public class GameController : ControllerBase
             request.SortBy,
             request.Descending 
         );
-        return Ok(games);
+
+        return games;
     }
 
     [HttpGet("{id}")]
     public async Task<ActionResult<GameDetailDto>> GetGameDetails(int id)
     {
         var result = await _service.GetGameDetailsAsync(id);
-        return result.MatchFirst(
-            details => Ok(details),
-            err => this.ProblemErr(err));
+        return result.ToActionResult(this);
     }
 
     [HttpGet("{id}/addons")]
-    public async Task<ActionResult<GameDetailDto>> GetGameAddons(int id)
+    public async Task<ActionResult<List<GameListItemDto>>> GetGameAddons(int id)
     {
         var result = await _service.GetGameAddons(id);
-        return result.MatchFirst(
-            details => Ok(details),
-            err => this.ProblemErr(err));
+        return result;
     }
-
-    [HttpPost("{id}/follow")]
-    [Authorize]
-    public async Task<IActionResult> FollowGame(int id)
-    {
-        var userId = User.GetUserId();
-        var result = await _followService.Follow(userId, id);
-        return result.MatchFirst<IActionResult>(
-            success => Ok(),
-            err => this.ProblemErr(err));
-    }
-
-    [HttpDelete("{id}/follow")]
-    [Authorize]
-    public async Task<IActionResult> UnfollowGame(int id)
-    {
-        var userId = User.GetUserId();
-        var result = await _followService.Unfollow(userId, id);
-        return result.MatchFirst<IActionResult>(
-            success => NoContent(),
-            err => this.ProblemErr(err));
-    }
-
-    [HttpPost("batch/follow")]
-    [Authorize]
-    public async Task<IActionResult> BatchFollowGames([FromBody] BatchFollowDto<int> gameIds)
-    {
-        var userId = User.GetUserId();
-        var result = await _followService.FollowBatch(userId, gameIds.Ids);
-        return result.Match<IActionResult>(
-            _ => Ok(),
-            err =>  this.ProblemErr(err));
-    }
-
 }

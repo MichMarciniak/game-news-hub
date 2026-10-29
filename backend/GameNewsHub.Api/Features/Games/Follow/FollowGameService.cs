@@ -1,11 +1,10 @@
 ﻿using ErrorOr;
 using GameNewsHub.Api.Features.Shared;
-using GameNewsHub.Contracts;
 using GameNewsHub.Data;
 using GameNewsHub.Data.Entities;
 using Microsoft.EntityFrameworkCore;
 
-namespace GameNewsHub.Api.Features.Games;
+namespace GameNewsHub.Api.Features.Games.Follow;
 
 public class FollowGameService : IFollowService<Game>
 {

@@ -1,3 +1,5 @@
+using GameNewsHub.Api.Features.Games.Follow;
+
 namespace GameNewsHub.Api.Features.Games;
 
 public static class GameRegistration

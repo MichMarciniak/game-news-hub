@@ -4,7 +4,7 @@ using GameNewsHub.Data;
 using GameNewsHub.Data.Entities;
 using Microsoft.EntityFrameworkCore;
 
-namespace GameNewsHub.Api.Features.Events;
+namespace GameNewsHub.Api.Features.Events.Follow;
 
 public class FollowEventService : IFollowService<Event>
 {

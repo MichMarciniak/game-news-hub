@@ -1,13 +1,14 @@
 using GameNewsHub.Api.Extensions;
 using GameNewsHub.Api.Features.Shared;
 using GameNewsHub.Contracts;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace GameNewsHub.Api.Features.Users.Wishlist;
 
 [ApiController]
-[Route("me")]
-public class UserWishlistController : UserControllerBase
+[Authorize]
+public class UserWishlistController : UserControllerBase 
 {
     private readonly UserWishlistService _service;
 
@@ -31,7 +32,7 @@ public class UserWishlistController : UserControllerBase
     }
 
     [HttpPost("wishlist/games/{gameId}")]
-    public async Task<IActionResult> AddGame(int gameId)
+    public async Task<IActionResult> PostGame(int gameId)
     {
         var userId = User.GetUserId();
         await _service.AddGameToWishlist(userId, gameId);
@@ -39,7 +40,7 @@ public class UserWishlistController : UserControllerBase
         return NoContent();
     }
     [HttpDelete("wishlist/games/{gameId}")]
-    public async Task<IActionResult> RemoveGame(int gameId)
+    public async Task<IActionResult> DeleteGame(int gameId)
     {
         var userId = User.GetUserId();
         await _service.RemoveGameFromWishlist(userId, gameId);

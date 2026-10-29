@@ -4,7 +4,7 @@ using GameNewsHub.Data;
 using GameNewsHub.Data.Entities;
 using Microsoft.EntityFrameworkCore;
 
-namespace GameNewsHub.Api.Features.Genres;
+namespace GameNewsHub.Api.Features.Genres.Follow;
 
 public class FollowGenreService : IFollowService<Genre>
 {

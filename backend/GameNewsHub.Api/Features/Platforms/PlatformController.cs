@@ -1,7 +1,4 @@
-using GameNewsHub.Api.Extensions;
-using GameNewsHub.Api.Features.Shared;
 using GameNewsHub.Contracts;
-using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace GameNewsHub.Api.Features.Platforms;
@@ -18,7 +15,7 @@ public class PlatformController : ControllerBase
     }
 
     [HttpGet("groups")]
-    public async Task<ActionResult<List<PlatformGroupDto>>> GetGroups()
+    public async Task<ActionResult<List<PlatformGroupDto>>> GetPlatformGroups()
     {
         var result = await _service.GetPlatformGroups();
 
@@ -26,37 +23,10 @@ public class PlatformController : ControllerBase
     }
 
     [HttpGet("groups/full")]
-    public async Task<ActionResult<List<PlatformGroupWithPlatformsDto>>> GetGroupsFull()
+    public async Task<ActionResult<List<PlatformGroupWithPlatformsDto>>> GetPlatformGroupsFull()
     {
         var result = await _service.GetPlatformGroupsFull();
 
         return result;
     }
-    
-    
-
-    [HttpPost("groups/{id}/follow")]
-    [Authorize]
-    public async Task<IActionResult> FollowGroup(int id)
-    {
-        var userId = User.GetUserId();
-        var result = await _service.FollowPlatformGroup(userId, id);
-
-        return result.MatchFirst<IActionResult>(
-            success => Ok(),
-            err => this.ProblemErr(err));
-    }
-
-    [HttpDelete("groups/{id}/follow")]
-    [Authorize]
-    public async Task<IActionResult> UnfollowGroup(int id)
-    {
-        var userId = User.GetUserId();
-        var result = await _service.UnfollowPlatformGroup(userId, id);
-
-        return result.MatchFirst<IActionResult>(
-            success => Ok(),
-            err => this.ProblemErr(err));
-    }
-
 }
