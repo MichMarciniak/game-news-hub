@@ -1,8 +1,11 @@
 ﻿using System.Diagnostics;
 using ErrorOr;
+using GameNewsHub.Api.Features.Games;
 using GameNewsHub.Api.Features.Shared;
 using GameNewsHub.Api.Mappings;
 using GameNewsHub.Contracts;
+using GameNewsHub.Contracts.Events;
+using GameNewsHub.Contracts.Shared;
 using GameNewsHub.Data;
 using GameNewsHub.Data.Entities;
 using Microsoft.EntityFrameworkCore;
@@ -45,7 +48,15 @@ public class EventService
 
         if (e == null) return Error.NotFound("Event.NotFound", $"Event {eventId} not found");
 
-        return e.ToDetailDto();
+        var games = e.Games
+            .Select(g => g.ToListItemDto())
+            .ToList();
+        var relatedEvents = e.Series?.Events
+            .Where(se => se.Id != e.Id)
+            .Select(se => se.ToListNameDto())
+            .ToList() ?? [];
+
+        return e.ToDetailDto(games, relatedEvents);
     }
 
     public async Task<ErrorOr<Success>> ReassignEventToSeries(int eventId, int seriesId)
@@ -76,7 +87,7 @@ public class EventService
         var oldSeriesId = evt.EventSeriesId;
         evt.Series = series;
         await _context.SaveChangesAsync();
-        
+
         _logger.LogInformation(
             "Event {EventId} reassigned from series {OldSeriesId} to {NewSeriesId}",
             evt.Id, oldSeriesId, seriesId);
@@ -90,7 +101,7 @@ public class EventService
     {
         page = Math.Max(1, page);
         pageSize = Math.Clamp(pageSize, 1, 50);
-        
+
         IQueryable<Event> dbQuery = _context.Events.AsQueryable();
 
         var hasQuery = !string.IsNullOrWhiteSpace(query);
@@ -102,15 +113,16 @@ public class EventService
             prefix = cleanQuery + "%";
             wordStart = "% " + cleanQuery + "%";
             like = "%" + cleanQuery + "%";
-            
+
             dbQuery = dbQuery.Where(g =>
                 EF.Functions.ILike(g.Name, like) ||
                 EF.Functions.TrigramsAreWordSimilar(g.Name, cleanQuery));
         }
+
         var total = await dbQuery.CountAsync();
 
         IQueryable<Event> sortedQuery;
-        if (!hasQuery) 
+        if (!hasQuery)
         {
             sortedQuery = dbQuery.ApplySorting(sortBy ?? EventSortBy.Date, descending);
         }
@@ -158,7 +170,6 @@ public class EventService
             dbQuery = dbQuery
                 .Where(s => s.Events
                     .Any(e => EF.Functions.ILike(e.Name, $"%{query}%")));
-
         };
 
         var total = await dbQuery.CountAsync();

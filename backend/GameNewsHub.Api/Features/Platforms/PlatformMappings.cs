@@ -1,4 +1,5 @@
 using GameNewsHub.Contracts;
+using GameNewsHub.Contracts.Platforms;
 using GameNewsHub.Data.Entities;
 
 namespace GameNewsHub.Api.Features.Platforms;
@@ -14,13 +15,15 @@ public static class PlatformMappings
         };
     }
 
-    public static PlatformGroupWithPlatformsDto ToDtoWithPlatforms(this PlatformGroup group)
+    public static PlatformGroupWithPlatformsDto ToDtoWithPlatforms(
+        this PlatformGroup group,
+        List<PlatformDto> platforms)
     {
         return new PlatformGroupWithPlatformsDto
         {
             Id = group.Id,
             Name = group.Name,
-            Platforms = group.Platforms.Select(ToDto).ToList()
+            Platforms = platforms
         };
     }
 

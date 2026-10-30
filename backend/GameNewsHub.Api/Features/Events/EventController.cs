@@ -1,6 +1,8 @@
 ﻿using GameNewsHub.Api.Extensions;
 using GameNewsHub.Api.Features.Shared;
 using GameNewsHub.Contracts;
+using GameNewsHub.Contracts.Events;
+using GameNewsHub.Contracts.Shared;
 using Microsoft.AspNetCore.Mvc;
 
 namespace GameNewsHub.Api.Features.Events;

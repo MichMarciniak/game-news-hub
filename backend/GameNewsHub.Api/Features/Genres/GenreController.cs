@@ -1,4 +1,5 @@
 using GameNewsHub.Contracts;
+using GameNewsHub.Contracts.Genres;
 using Microsoft.AspNetCore.Mvc;
 
 namespace GameNewsHub.Api.Features.Genres;

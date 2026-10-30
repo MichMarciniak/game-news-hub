@@ -1,6 +1,8 @@
 using System.Globalization;
 using ErrorOr;
 using GameNewsHub.Contracts;
+using GameNewsHub.Contracts.Games;
+using GameNewsHub.Contracts.User;
 using GameNewsHub.Data;
 using GameNewsHub.Data.Entities;
 using GameNewsHub.External.Igdb.Dtos;

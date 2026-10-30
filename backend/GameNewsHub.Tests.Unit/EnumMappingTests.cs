@@ -1,4 +1,5 @@
 ﻿using FluentAssertions;
+using GameNewsHub.Contracts.Games;
 
 namespace GameNewsHub.Tests.Unit;
 
@@ -6,7 +7,7 @@ public class EnumMappingTests
 {
 
     [Theory]
-    [InlineData(typeof(Data.Entities.GameType), typeof(Contracts.GameTypeString))]
+    [InlineData(typeof(Data.Entities.GameType), typeof(GameTypeString))]
     public void Enums_ShouldHaveMatchingNamesAndValues(Type dataEnum, Type contractEnum)
     {
         var dataValues = Enum.GetValues(dataEnum)

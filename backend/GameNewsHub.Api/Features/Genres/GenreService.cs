@@ -1,5 +1,6 @@
 using GameNewsHub.Api.Mappings;
 using GameNewsHub.Contracts;
+using GameNewsHub.Contracts.Genres;
 using GameNewsHub.Data;
 
 namespace GameNewsHub.Api.Features.Genres;

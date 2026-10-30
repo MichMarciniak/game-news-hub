@@ -7,6 +7,8 @@ using GameNewsHub.Api.Features.Shared.Email;
 using GameNewsHub.Api.Mappings;
 using GameNewsHub.Api.Options;
 using GameNewsHub.Contracts;
+using GameNewsHub.Contracts.Auth;
+using GameNewsHub.Contracts.User;
 using GameNewsHub.Data.Constants;
 using GameNewsHub.Data.Entities;
 using Microsoft.AspNetCore.Identity;
@@ -64,7 +66,7 @@ public class AuthService
 
         await AssignRoleAsync(user, Roles.User);
         await SendConfirmationEmail(user);
-        
+
         _logger.LogInformation(
             "User {UserId} registered with email {EmailId}",
             user.Id, user.Email);
@@ -95,7 +97,7 @@ public class AuthService
             _logger.LogWarning(
                 "Login blocked: User {UserId} is locked out",
                 user.Id);
-            
+
             var remainingMinutes = user.LockoutEnd.HasValue
                 ? Math.Max(0, (int)(user.LockoutEnd.Value - DateTimeOffset.UtcNow).TotalMinutes)
                 : 0;
@@ -130,7 +132,8 @@ public class AuthService
         _logger.LogInformation(
             "User {UserId} logged in",
             user.Id);
-        return user.ToDto(isAdmin);
+        var settings = user.ToSettingsDto();
+        return user.ToDto(isAdmin, settings);
     }
 
     public async Task Logout()
@@ -192,9 +195,10 @@ public class AuthService
                 .Select(e => Error.Validation(e.Code, e.Description))
                 .ToList();
         }
+
         _logger.LogInformation(
             "User {UserId} confirmed email",
-            userId );
+            userId);
 
         return Result.Success;
     }
@@ -281,7 +285,7 @@ public class AuthService
 
         //await _userManager.UpdateSecurityStampAsync(user); //change password powinno to aktualizować
         await SendPasswordChangedNotificationEmail(user);
-        
+
         _logger.LogInformation("Password changed for User {UserId}", user.Id);
 
         await _signInManager.RefreshSignInAsync(user);

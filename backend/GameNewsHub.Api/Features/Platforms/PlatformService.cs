@@ -1,5 +1,6 @@
 using ErrorOr;
 using GameNewsHub.Contracts;
+using GameNewsHub.Contracts.Platforms;
 using GameNewsHub.Data;
 using Microsoft.EntityFrameworkCore;
 
@@ -25,15 +26,23 @@ public class PlatformService
 
         return groups;
     }
-    
+
     public async Task<List<PlatformGroupWithPlatformsDto>> GetPlatformGroupsFull()
     {
         var groups = await _context.PlatformGroups
             .Include(pg => pg.Platforms)
-            .Select(pg => pg.ToDtoWithPlatforms())
             .ToListAsync();
 
-        return groups;
+        return groups
+            .Select(group =>
+            {
+                var platforms = group.Platforms
+                    .Select(platform => platform.ToDto())
+                    .ToList();
+
+                return group.ToDtoWithPlatforms(platforms);
+            })
+            .ToList();
     }
 
     public async Task<ErrorOr<Success>> ReassignPlatformGroup(int platformId, int groupId)
@@ -63,12 +72,11 @@ public class PlatformService
         var oldGroupId = platform.PlatformGroupId;
         platform.PlatformGroup = newGroup;
         await _context.SaveChangesAsync();
-        
+
         _logger.LogInformation(
             "Platform {PlatformId} reassigned from group {OldPlatformGroupId} to {NewPlatformGroupId}",
             platformId, oldGroupId, groupId);
 
         return new ErrorOr<Success>();
     }
-
 }

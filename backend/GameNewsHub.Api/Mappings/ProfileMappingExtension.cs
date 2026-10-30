@@ -1,35 +1,45 @@
-﻿using GameNewsHub.Api.Features.Platforms;
 using GameNewsHub.Contracts;
+using GameNewsHub.Contracts.Events;
+using GameNewsHub.Contracts.Games;
+using GameNewsHub.Contracts.Genres;
+using GameNewsHub.Contracts.Platforms;
+using GameNewsHub.Contracts.User;
 using GameNewsHub.Data.Entities;
 
 namespace GameNewsHub.Api.Mappings;
 
 public static class ProfileMappingExtension
 {
-    public static ProfileDto ToDto(this AppUser user, bool isAdmin)
+    public static ProfileDto ToDto(this AppUser user, bool isAdmin, SettingsDto settings)
     {
         return new ProfileDto
         {
             Id = user.Id,
             Username = user.UserName!,
             CreatedAt = user.CreatedAt,
-            Settings = user.ToSettingsDto(),
-            isAdmin = isAdmin,
+            Settings = settings,
+            IsAdmin = isAdmin,
             SteamId = user.SteamId
         };
     }
-    
-    public static FullProfileDto ToFullDto(this AppUser user)
+
+    public static FullProfileDto ToFullDto(
+        this AppUser user,
+        List<EventListNameDto> events,
+        List<GameListItemDto> games,
+        List<GenreDto> genres,
+        List<PlatformGroupDto> platformGroups,
+        SettingsDto settings)
     {
         return new FullProfileDto
         {
             Id = user.Id,
             CreatedAt = user.CreatedAt,
-            Events = user.FollowedEvents.Select(e => e.ToListNameDto()).ToList(),
-            Games = user.FollowedGames.Select(g => g.ToListItemDto()).ToList(),
-            Genres = user.FollowedGenres.Select(g => g.ToDto()).ToList(),
-            PlatformGroups = user.FollowedPlatformGroups.Select(pg => pg.ToDto()).ToList(),
-            Settings = user.ToSettingsDto(),
+            Events = events,
+            Games = games,
+            Genres = genres,
+            PlatformGroups = platformGroups,
+            Settings = settings,
             SteamId = user.SteamId
         };
     }

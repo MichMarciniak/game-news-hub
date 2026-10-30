@@ -1,4 +1,5 @@
 using GameNewsHub.Contracts;
+using GameNewsHub.Contracts.Platforms;
 using Microsoft.AspNetCore.Mvc;
 
 namespace GameNewsHub.Api.Features.Platforms;

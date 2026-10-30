@@ -1,6 +1,8 @@
 using ErrorOr;
+using GameNewsHub.Api.Features.Games;
 using GameNewsHub.Api.Mappings;
 using GameNewsHub.Contracts;
+using GameNewsHub.Contracts.Games;
 using GameNewsHub.Data;
 using Microsoft.EntityFrameworkCore;
 

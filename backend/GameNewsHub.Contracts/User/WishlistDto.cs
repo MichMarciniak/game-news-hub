@@ -1,4 +1,4 @@
-namespace GameNewsHub.Contracts;
+namespace GameNewsHub.Contracts.User;
 
 public class WishlistDto
 {

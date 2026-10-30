@@ -3,6 +3,8 @@ using System.Net.Http.Json;
 using FluentAssertions;
 using GameNewsHub.Api.Configuration;
 using GameNewsHub.Contracts;
+using GameNewsHub.Contracts.Games;
+using GameNewsHub.Contracts.Shared;
 using GameNewsHub.Data;
 using GameNewsHub.Tests.Integration.Bases;
 using GameNewsHub.Tests.Integration.Fixtures;

@@ -3,6 +3,8 @@ using GameNewsHub.Api.Features.Events;
 using GameNewsHub.Api.Features.Platforms;
 using GameNewsHub.Api.Features.Shared;
 using GameNewsHub.Contracts;
+using GameNewsHub.Contracts.Events;
+using GameNewsHub.Contracts.Shared;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 

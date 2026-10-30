@@ -1,6 +1,8 @@
 using GameNewsHub.Api.Extensions;
 using GameNewsHub.Api.Features.Shared;
 using GameNewsHub.Contracts;
+using GameNewsHub.Contracts.Games;
+using GameNewsHub.Contracts.Shared;
 using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Mvc;
 

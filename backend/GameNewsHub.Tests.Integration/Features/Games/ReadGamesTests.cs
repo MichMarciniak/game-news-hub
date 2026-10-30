@@ -2,6 +2,7 @@
 using System.Net.Http.Json;
 using FluentAssertions;
 using GameNewsHub.Contracts;
+using GameNewsHub.Contracts.Games;
 using GameNewsHub.Data;
 using GameNewsHub.Tests.Integration.Bases;
 using GameNewsHub.Tests.Integration.Fixtures;

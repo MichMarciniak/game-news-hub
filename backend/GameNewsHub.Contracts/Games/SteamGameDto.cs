@@ -1,10 +1,10 @@
-namespace GameNewsHub.Contracts;
+namespace GameNewsHub.Contracts.Games;
 
 public class SteamGameWrapperDto 
 {
     public int Requested { get; set; }
     public int Found { get; set; }
-    public List<SteamGameDto> Games { get; set; }
+    public List<SteamGameDto> Games { get; set; } = [];
 }
 
 public class SteamGameDto

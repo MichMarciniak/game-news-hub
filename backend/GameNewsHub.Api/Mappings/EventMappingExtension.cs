@@ -1,5 +1,6 @@
-﻿using GameNewsHub.Api.Features.Events;
 using GameNewsHub.Contracts;
+using GameNewsHub.Contracts.Events;
+using GameNewsHub.Contracts.Games;
 using GameNewsHub.Data.Entities;
 
 namespace GameNewsHub.Api.Mappings;
@@ -27,7 +28,10 @@ public static class EventMappingExtension
         };
     }
 
-    public static EventDetailDto ToDetailDto(this Event e)
+    public static EventDetailDto ToDetailDto(
+        this Event e,
+        List<GameListItemDto> games,
+        List<EventListNameDto> relatedEvents)
     {
         return new EventDetailDto
         {
@@ -36,14 +40,10 @@ public static class EventMappingExtension
             Description = e.Description,
             StartTime = e.StartTime,
             EndTime = e.EndTime,
-            Games = e.Games.Select(g => g.ToListItemDto()).ToList(),
+            Games = games,
             FollowerCount = e.FollowerCount,
             LiveStreamUrl = e.LiveStreamUrl,
-            RelatedEvents = e.Series?.Events
-                .Where(se => se.Id != e.Id)
-                .Select(se => se.ToListNameDto())
-                .ToList()
+            RelatedEvents = relatedEvents
         };
     }
-
 }

@@ -3,6 +3,8 @@ using GameNewsHub.Api.Configuration;
 using GameNewsHub.Api.Features.Platforms;
 using GameNewsHub.Api.Mappings;
 using GameNewsHub.Contracts;
+using GameNewsHub.Contracts.Games;
+using GameNewsHub.Contracts.Shared;
 using GameNewsHub.Data;
 using GameNewsHub.Data.Entities;
 using Microsoft.EntityFrameworkCore;
@@ -49,7 +51,7 @@ public class GameService
             prefix = cleanQuery + "%";
             wordStart = "% " + cleanQuery + "%";
             like = "%" + cleanQuery + "%";
-            
+
             filteredQuery = filteredQuery.Where(g =>
                 EF.Functions.ILike(g.Title, like) ||
                 EF.Functions.TrigramsAreWordSimilar(g.Title, cleanQuery));
@@ -58,7 +60,7 @@ public class GameService
         var total = await filteredQuery.CountAsync();
 
         IQueryable<Game> sortedQuery;
-        if (!hasQuery) 
+        if (!hasQuery)
         {
             sortedQuery = filteredQuery.ApplySorting(sortBy ?? GameSortBy.Name, descending);
         }
@@ -109,20 +111,37 @@ public class GameService
         // ???
         var platformGroups = game.Platforms
             .GroupBy(p => p.PlatformGroup)
-            .Select(pg => pg.Key.ToDtoWithPlatforms())
+            .Select(pg =>
+            {
+                var platforms = pg
+                    .Select(p => p.ToDto())
+                    .ToList();
+
+                return pg.Key.ToDtoWithPlatforms(platforms);
+            })
             .ToList();
 
-        return game.ToDetailDto(platformGroups);
+        var genres = game.Genres
+            .Select(g => g.ToDto())
+            .ToList();
+        var addons = game.ChildGames
+            .Select(g => g.ToListItemDto())
+            .ToList();
+        var parent = game.ParentGame;
+        var parentGame = parent is null
+            ? null
+            : GameMappingExtension.ToParentGameDto(parent);
+
+        return game.ToDetailDto(genres, addons, platformGroups, parentGame);
     }
 
     public async Task<List<GameListItemDto>> GetGameAddons(int gameId)
     {
         var gameAddons = await _context.Games
             .Where(g => g.ParentGameId == gameId)
-            .Select(g => g.ToListItemDto())
+            .ProjectToListItemDto()
             .ToListAsync();
 
         return gameAddons;
     }
-
 }

@@ -1,11 +1,13 @@
-﻿using System.Text.Json.Serialization;
+using GameNewsHub.Contracts.Shared;
 
-namespace GameNewsHub.Contracts;
+namespace GameNewsHub.Contracts.Games;
 
-public class SearchDto<T>
+
+public enum GameSortBy
 {
-    public int Total { get; set; }
-    public List<T> Items { get; set; }
+    Name,
+    Popularity,
+    Relevance
 }
 
 public class GetGameSearchParams

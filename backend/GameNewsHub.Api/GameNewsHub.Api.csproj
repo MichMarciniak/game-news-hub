@@ -18,6 +18,7 @@
             <PrivateAssets>all</PrivateAssets>
             <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
         </PackageReference>
+        <PackageReference Include="Riok.Mapperly" Version="4.3.1" />
         <PackageReference Include="Scalar.AspNetCore" Version="2.16.20"/>
         <PackageReference Include="Scriban" Version="7.4.0"/>
         <PackageReference Include="Serilog.AspNetCore" Version="10.0.0" />
@@ -38,10 +39,6 @@
         <None Include="Resources\EmailTemplates\**\*.html">
             <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
         </None>
-    </ItemGroup>
-
-    <ItemGroup>
-      <Folder Include="Features\Shared\Api\" />
     </ItemGroup>
 
 </Project>
