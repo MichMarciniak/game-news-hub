@@ -1,7 +1,8 @@
 using ErrorOr;
 using GameNewsHub.Api.Configuration;
+using GameNewsHub.Api.Features.Events;
+using GameNewsHub.Api.Features.Genres;
 using GameNewsHub.Api.Features.Platforms;
-using GameNewsHub.Api.Mappings;
 using GameNewsHub.Contracts;
 using GameNewsHub.Contracts.Games;
 using GameNewsHub.Contracts.Shared;

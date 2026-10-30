@@ -1,4 +1,3 @@
-using GameNewsHub.Contracts;
 using GameNewsHub.Contracts.Events;
 using GameNewsHub.Contracts.Games;
 using GameNewsHub.Contracts.Genres;
@@ -6,7 +5,7 @@ using GameNewsHub.Contracts.Platforms;
 using GameNewsHub.Contracts.User;
 using GameNewsHub.Data.Entities;
 
-namespace GameNewsHub.Api.Mappings;
+namespace GameNewsHub.Api.Features.Users.Profile;
 
 public static class ProfileMappingExtension
 {

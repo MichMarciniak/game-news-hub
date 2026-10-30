@@ -4,7 +4,7 @@ using System.Security.Claims;
 using ErrorOr;
 using GameNewsHub.Api.Constants;
 using GameNewsHub.Api.Features.Shared.Email;
-using GameNewsHub.Api.Mappings;
+using GameNewsHub.Api.Features.Users.Profile;
 using GameNewsHub.Api.Options;
 using GameNewsHub.Contracts;
 using GameNewsHub.Contracts.Auth;

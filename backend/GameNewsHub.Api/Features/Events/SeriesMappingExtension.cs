@@ -1,8 +1,7 @@
-﻿using GameNewsHub.Contracts;
-using GameNewsHub.Contracts.Events;
+﻿using GameNewsHub.Contracts.Events;
 using GameNewsHub.Data.Entities;
 
-namespace GameNewsHub.Api.Mappings;
+namespace GameNewsHub.Api.Features.Events;
 
 public static class SeriesMappingExtension
 {

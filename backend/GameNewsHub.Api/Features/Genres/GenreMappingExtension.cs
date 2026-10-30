@@ -1,8 +1,7 @@
-﻿using GameNewsHub.Contracts;
-using GameNewsHub.Contracts.Genres;
+﻿using GameNewsHub.Contracts.Genres;
 using GameNewsHub.Data.Entities;
 
-namespace GameNewsHub.Api.Mappings;
+namespace GameNewsHub.Api.Features.Genres;
 
 public static class GenreMappingExtension
 {

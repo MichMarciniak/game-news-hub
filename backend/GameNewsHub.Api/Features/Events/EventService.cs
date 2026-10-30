@@ -2,7 +2,6 @@
 using ErrorOr;
 using GameNewsHub.Api.Features.Games;
 using GameNewsHub.Api.Features.Shared;
-using GameNewsHub.Api.Mappings;
 using GameNewsHub.Contracts;
 using GameNewsHub.Contracts.Events;
 using GameNewsHub.Contracts.Shared;
