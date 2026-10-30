@@ -20,7 +20,7 @@ public class UserProfileController : UserControllerBase
     [HttpPatch("settings")]
     public async Task<IActionResult> PatchSettings(SettingsDto settings)
     {
-        var userId = User.GetUserId();
+        var userId = User.GetId();
         var result = await _service.PatchSettings(userId, settings);
         return result.ToNoContent(this);
     }
@@ -28,7 +28,7 @@ public class UserProfileController : UserControllerBase
     [HttpGet]
     public async Task<ActionResult<FullProfileDto>> GetProfile()
     {
-        var userId = User.GetUserId();
+        var userId = User.GetId();
         var result = await _service.GetFullProfile(userId);
         return result.ToActionResult(this);
     }
@@ -36,7 +36,7 @@ public class UserProfileController : UserControllerBase
     [HttpGet("full")]
     public async Task<ActionResult<FullProfileDto>> GetFullProfile()
     {
-        var userId = User.GetUserId();
+        var userId = User.GetId();
         var result = await _service.GetFullProfile(userId);
         return result.ToActionResult(this);
     }

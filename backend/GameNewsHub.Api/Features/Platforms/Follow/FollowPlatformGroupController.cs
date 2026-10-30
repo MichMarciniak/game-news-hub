@@ -22,7 +22,7 @@ public class FollowPlatformGroupController : ControllerBase
     [HttpPost("groups/{id}/follow")]
     public async Task<IActionResult> PostFollowGroup(int id)
     {
-        var userId = User.GetUserId();
+        var userId = User.GetId();
         var result = await _service.FollowPlatformGroup(userId, id);
         return result.ToNoContent(this);
     }
@@ -30,7 +30,7 @@ public class FollowPlatformGroupController : ControllerBase
     [HttpDelete("groups/{id}/follow")]
     public async Task<IActionResult> DeleteFollowGroup(int id)
     {
-        var userId = User.GetUserId();
+        var userId = User.GetId();
         var result = await _service.UnfollowPlatformGroup(userId, id);
         return result.ToNoContent(this);
     }

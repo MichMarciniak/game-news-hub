@@ -21,7 +21,7 @@ public class FollowEventController : ControllerBase
     [HttpPost("{id}/follow")]
     public async Task<IActionResult> PostFollowEvent(int id)
     {
-        var userId = User.GetUserId();
+        var userId = User.GetId();
         var result = await _service.Follow(userId, id);
         return result.ToNoContent(this);
     }
@@ -29,7 +29,7 @@ public class FollowEventController : ControllerBase
     [HttpDelete("{id}/follow")]
     public async Task<IActionResult> DeleteFollowEvent(int id)
     {
-        var userId = User.GetUserId();
+        var userId = User.GetId();
         var result = await _service.Unfollow(userId, id);
         return result.ToNoContent(this);
     }

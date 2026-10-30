@@ -23,28 +23,26 @@ public class UserWishlistController : UserControllerBase
     [HttpGet("wishlist")]
     public async Task<ActionResult<List<GameListItemDto>>> GetWishlist()
     {
-        var userId = User.GetUserId();
+        var userId = User.GetId();
         var result = await _service.GetWishlist(userId);
 
-        return result.Match(
-            res => Ok(res),
-            err => this.ProblemErr(err));
+        return result.ToActionResult(this);
     }
 
     [HttpPost("wishlist/games/{gameId}")]
     public async Task<IActionResult> PostGame(int gameId)
     {
-        var userId = User.GetUserId();
-        await _service.AddGameToWishlist(userId, gameId);
+        var userId = User.GetId();
+        var result = await _service.AddGameToWishlist(userId, gameId);
 
-        return NoContent();
+        return result.ToNoContent(this);
     }
     [HttpDelete("wishlist/games/{gameId}")]
     public async Task<IActionResult> DeleteGame(int gameId)
     {
-        var userId = User.GetUserId();
-        await _service.RemoveGameFromWishlist(userId, gameId);
+        var userId = User.GetId();
+        var result = await _service.RemoveGameFromWishlist(userId, gameId);
         
-        return NoContent();
+        return result.ToNoContent(this);
     }
 }

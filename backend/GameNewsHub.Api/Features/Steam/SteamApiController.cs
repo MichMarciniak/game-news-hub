@@ -23,7 +23,7 @@ public class SteamApiController : ControllerBase
     [HttpGet("import/games")]
     public async Task<ActionResult<SteamGameWrapperDto>> GetGamesFromSteam()
     {
-        var userId = User.GetUserId();
+        var userId = User.GetId();
         var result = await _steamService.ImportOwnedGames(userId);
         return result.ToActionResult(this);
     }
@@ -31,7 +31,7 @@ public class SteamApiController : ControllerBase
     [HttpGet("import/wishlist")]
     public async Task<ActionResult<WishlistDto>> GetWishlistFromSteam()
     {
-        var userId = User.GetUserId();
+        var userId = User.GetId();
         var result = await _steamService.ImportWishlist(userId);
         return result.ToActionResult(this);
     }

@@ -23,7 +23,7 @@ public class FollowGameController : ControllerBase
     [HttpPost("{id}/follow")]
     public async Task<IActionResult> PostFollowGame(int id)
     {
-        var userId = User.GetUserId();
+        var userId = User.GetId();
         var result = await _service.Follow(userId, id);
         return result.ToNoContent(this);
     }
@@ -31,7 +31,7 @@ public class FollowGameController : ControllerBase
     [HttpDelete("{id}/follow")]
     public async Task<IActionResult> DeleteFollowGame(int id)
     {
-        var userId = User.GetUserId();
+        var userId = User.GetId();
         var result = await _service.Unfollow(userId, id);
         return result.ToNoContent(this);
     }
@@ -39,7 +39,7 @@ public class FollowGameController : ControllerBase
     [HttpPost("batch/follow")]
     public async Task<IActionResult> PostBatchFollowGames([FromBody] BatchFollowDto<int> gameIds)
     {
-        var userId = User.GetUserId();
+        var userId = User.GetId();
         var result = await _service.FollowBatch(userId, gameIds.Ids);
         return result.ToNoContent(this);
     }

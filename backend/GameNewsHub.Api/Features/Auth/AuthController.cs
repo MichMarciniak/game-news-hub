@@ -41,7 +41,7 @@ public class AuthController : ControllerBase
     [Authorize]
     public async Task<IActionResult> PostLogoutAll()
     {
-        var userId = User.GetUserId();
+        var userId = User.GetId();
         await _service.LogoutFull(userId);
         return NoContent();
     }
@@ -78,7 +78,7 @@ public class AuthController : ControllerBase
     [Authorize]
     public async Task<IActionResult> PostChangePassword(ChangePasswordDto request)
     {
-        var userId = User.GetUserId();
+        var userId = User.GetId();
         var result = await _service.ChangePassword(userId, request.OldPassword, request.NewPassword);
         return result.ToNoContent(this);
     }

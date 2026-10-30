@@ -7,7 +7,7 @@ namespace GameNewsHub.Api.Extensions;
 
 public static class ClaimsPrincipalExtensions
 {
-    public static int GetUserId(this ClaimsPrincipal user)
+    public static int GetId(this ClaimsPrincipal user)
     {
         var id = user.FindFirstValue(ClaimTypes.NameIdentifier);
 

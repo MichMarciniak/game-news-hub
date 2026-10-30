@@ -45,7 +45,7 @@ public class SteamAuthController : ControllerBase
     [ProducesResponseType(StatusCodes.Status302Found)]
     public async Task<IActionResult> GetSteamCallback()
     {
-        var userId = User.GetUserId();
+        var userId = User.GetId();
         
         var result = await _authService.Login(userId, Request.Query);
 

@@ -22,7 +22,7 @@ public class UserPreferencesController : UserControllerBase
     [HttpGet("followed-games")]
     public async Task<ActionResult<List<GameListItemDto>>> GetFollowedGames()
     {
-        var userId = User.GetUserId();
+        var userId = User.GetId();
         var result = await _service.GetFollowedGames(userId);
         return result.ToActionResult(this);
     }
@@ -30,7 +30,7 @@ public class UserPreferencesController : UserControllerBase
     [HttpGet("followed-events")]
     public async Task<ActionResult<List<EventListItemDto>>> GetFollowedEvents()
     {
-        var userId = User.GetUserId();
+        var userId = User.GetId();
         var result = await _service.GetFollowedEvents(userId);
         return result.ToActionResult(this);
     }
@@ -38,7 +38,7 @@ public class UserPreferencesController : UserControllerBase
     [HttpGet("followed-genres")]
     public async Task<ActionResult<List<GenreDto>>> GetFollowedGenres()
     {
-        var userId = User.GetUserId();
+        var userId = User.GetId();
         var result = await _service.GetFollowedGenres(userId);
         return result.ToActionResult(this);
     }
@@ -46,7 +46,7 @@ public class UserPreferencesController : UserControllerBase
     [HttpGet("followed-platform-groups")]
     public async Task<ActionResult<List<PlatformGroupDto>>> GetFollowedPlatformGroups()
     {
-        var userId = User.GetUserId();
+        var userId = User.GetId();
         var result = await _service.GetFollowedPlatformGroups(userId);
         return result.ToActionResult(this);
     }

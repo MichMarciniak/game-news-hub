@@ -33,7 +33,6 @@ const string FrontendCorsPolicy = "FrontendCorsPolicy";
 // OPTIONS from appsettings and secrets
 services.AddValidatedOptions<SmtpOptions>(config);
 services.AddValidatedOptions<FollowServiceOptions>(config);
-services.AddValidatedOptions<RecommendationWeights>(config);
 
 var dbOptions = services.AddValidatedOptions<DatabaseOptions>(config);
 var frontendOptions = services.AddValidatedOptions<FrontendOptions>(config);
@@ -66,6 +65,7 @@ services.AddBackgroundServices();
 
 services.AddOpenApi(options =>
 {
+    // enum as string
     options.AddSchemaTransformer((schema, context, _) =>
     {
         var targetType = Nullable.GetUnderlyingType(context.JsonTypeInfo.Type) ?? context.JsonTypeInfo.Type;
@@ -84,6 +84,8 @@ services.AddOpenApi(options =>
         }
         return Task.CompletedTask;
     });
+    
+    // convert query params to camelCase 
     options.AddOperationTransformer((operation, _, _) =>
     {
         if (operation.Parameters is null) return Task.CompletedTask;
@@ -111,7 +113,7 @@ services.AddCors(options =>
     options.AddPolicy(FrontendCorsPolicy, policy =>
     {
         policy
-            .WithOrigins(frontendOptions!.Url, "http://localhost:5173", "http://100.92.144.13:5173")
+            .WithOrigins(frontendOptions!.Url, "http://localhost:5173")
             .AllowAnyHeader()
             .AllowAnyMethod()
             .AllowCredentials();
@@ -138,7 +140,6 @@ if (devAuth)
 }
 else
 {
-    services.AddCookieAuth();
     services.AddAuthorization();
 }
 

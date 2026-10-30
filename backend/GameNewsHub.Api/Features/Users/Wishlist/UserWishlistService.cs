@@ -27,12 +27,12 @@ public class UserWishlistService
         return wishlistedGames;
     }
 
-    public async Task AddGameToWishlist(int userId, int gameId)
+    public async Task<ErrorOr<Success>> AddGameToWishlist(int userId, int gameId)
     {
         var game = await _context.Games.FirstOrDefaultAsync(g => g.Id == gameId);
         if (game == null)
         {
-            return;
+            return Error.NotFound("Game.NotFound", "Game not found");
         }
 
         var user = await _context.Users
@@ -40,19 +40,20 @@ public class UserWishlistService
             .FirstOrDefaultAsync(u => u.Id == userId);
         if (user == null)
         {
-            return;
+            return Error.NotFound("User.NotFound", "User not found");
         }
         
         user.WishlistedGames.Add(game);
         await _context.SaveChangesAsync();
+        return Result.Success;
     }
 
-    public async Task RemoveGameFromWishlist(int userId, int gameId)
+    public async Task<ErrorOr<Success>> RemoveGameFromWishlist(int userId, int gameId)
     {
         var game = await _context.Games.FirstOrDefaultAsync(g => g.Id == gameId);
         if (game == null)
         {
-            return;
+            return Error.NotFound("Game.NotFound", "Game not found");
         }
 
         var user = await _context.Users
@@ -60,10 +61,11 @@ public class UserWishlistService
             .FirstOrDefaultAsync(u => u.Id == userId);
         if (user == null)
         {
-            return;
+            return Error.NotFound("User.NotFound", "User not found");
         }
 
         user.WishlistedGames.Remove(game);
         await _context.SaveChangesAsync();
+        return Result.Success;
     }
 }
