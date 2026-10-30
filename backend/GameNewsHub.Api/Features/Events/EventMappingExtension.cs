@@ -1,48 +1,20 @@
-using GameNewsHub.Contracts.Events;
+using GameNewsHub.Api.Features.Games;
 using GameNewsHub.Contracts.Games;
+using GameNewsHub.Contracts.Events;
 using GameNewsHub.Data.Entities;
+using Riok.Mapperly.Abstractions;
+using System.Linq;
 
 namespace GameNewsHub.Api.Features.Events;
 
-public static class EventMappingExtension
+[Mapper(RequiredMappingStrategy = RequiredMappingStrategy.Target)]
+[UseStaticMapper(typeof(GameMapper))]
+public static partial class EventMapper
 {
-    public static EventListItemDto ToListItemDto(this Event e)
-    {
-        return new EventListItemDto
-        {
-            Id = e.Id,
-            Name = e.Name,
-            StartTime = e.StartTime,
-            EndTime = e.EndTime,
-            FollowerCount = e.FollowerCount
-        };
-    }
+    [MapperIgnoreTarget(nameof(EventDetailDto.RelatedEvents))]
+    public static partial EventDetailDto ToDetailDto(Event source);
 
-    public static EventListNameDto ToListNameDto(this Event e)
-    {
-        return new EventListNameDto
-        {
-            Id = e.Id,
-            Name = e.Name
-        };
-    }
-
-    public static EventDetailDto ToDetailDto(
-        this Event e,
-        List<GameListItemDto> games,
-        List<EventListNameDto> relatedEvents)
-    {
-        return new EventDetailDto
-        {
-            Id = e.Id,
-            Name = e.Name,
-            Description = e.Description,
-            StartTime = e.StartTime,
-            EndTime = e.EndTime,
-            Games = games,
-            FollowerCount = e.FollowerCount,
-            LiveStreamUrl = e.LiveStreamUrl,
-            RelatedEvents = relatedEvents
-        };
-    }
+    public static partial EventListItemDto ToListItemDto(Event source);
+    public static partial EventListNameDto ToListNameDto(Event source);
+    public static partial IQueryable<EventListItemDto> ProjectToListItemDto(this IQueryable<Event> query);
 }

@@ -1,38 +1,18 @@
 using GameNewsHub.Contracts;
 using GameNewsHub.Contracts.Platforms;
 using GameNewsHub.Data.Entities;
+using Riok.Mapperly.Abstractions;
+using System.Linq;
 
 namespace GameNewsHub.Api.Features.Platforms;
 
-public static class PlatformMappings
+[Mapper(RequiredMappingStrategy = RequiredMappingStrategy.Target)]
+public static partial class PlatformMapper
 {
-    public static PlatformDto ToDto(this Platform platform)
-    {
-        return new PlatformDto
-        {
-            Id = platform.Id,
-            Name = platform.Name
-        };
-    }
+    [MapperIgnoreTarget(nameof(PlatformGroupWithPlatformsDto.Platforms))]
+    public static partial PlatformGroupWithPlatformsDto ToDtoWithPlatforms(PlatformGroup source);
 
-    public static PlatformGroupWithPlatformsDto ToDtoWithPlatforms(
-        this PlatformGroup group,
-        List<PlatformDto> platforms)
-    {
-        return new PlatformGroupWithPlatformsDto
-        {
-            Id = group.Id,
-            Name = group.Name,
-            Platforms = platforms
-        };
-    }
-
-    public static PlatformGroupDto ToDto(this PlatformGroup group)
-    {
-        return new PlatformGroupDto
-        {
-            Id = group.Id,
-            Name = group.Name
-        };
-    }
+    public static partial PlatformDto ToDto(Platform source);
+    public static partial PlatformGroupDto ToDto(PlatformGroup source);
+    public static partial IQueryable<PlatformGroupDto> ProjectToDto(this IQueryable<PlatformGroup> query);
 }

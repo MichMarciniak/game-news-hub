@@ -30,7 +30,7 @@ public class EventService
         var events = await _context.Events
             .Where(e => e.StartTime <= rangeTo)
             .Where(e => (e.EndTime ?? e.StartTime) >= rangeFrom)
-            .Select(e => e.ToListItemDto())
+            .ProjectToListItemDto()
             .ToListAsync();
 
         return events;
@@ -47,51 +47,14 @@ public class EventService
 
         if (e == null) return Error.NotFound("Event.NotFound", $"Event {eventId} not found");
 
-        var games = e.Games
-            .Select(g => g.ToListItemDto())
-            .ToList();
         var relatedEvents = e.Series?.Events
             .Where(se => se.Id != e.Id)
-            .Select(se => se.ToListNameDto())
+            .Select(EventMapper.ToListNameDto)
             .ToList() ?? [];
 
-        return e.ToDetailDto(games, relatedEvents);
-    }
-
-    public async Task<ErrorOr<Success>> ReassignEventToSeries(int eventId, int seriesId)
-    {
-        var evt = await _context.Events
-            .Include(e => e.Series)
-            .FirstOrDefaultAsync(e => e.Id == eventId);
-
-        if (evt == null)
-        {
-            _logger.LogWarning(
-                "Reassign failed: Event {EventId} not found",
-                eventId);
-            return Error.NotFound("Event.NotFound", $"Event {eventId} not found");
-        }
-
-        var series = await _context.EventSeries
-            .FirstOrDefaultAsync(s => s.Id == seriesId);
-
-        if (series == null)
-        {
-            _logger.LogWarning(
-                "Reassign failed: EventSeries {SeriesId} not found",
-                seriesId);
-            return Error.NotFound("EventSeries.NotFound", $"EventSeries {seriesId} not found");
-        }
-
-        var oldSeriesId = evt.EventSeriesId;
-        evt.Series = series;
-        await _context.SaveChangesAsync();
-
-        _logger.LogInformation(
-            "Event {EventId} reassigned from series {OldSeriesId} to {NewSeriesId}",
-            evt.Id, oldSeriesId, seriesId);
-
-        return new ErrorOr<Success>();
+        var result = EventMapper.ToDetailDto(e);
+        result.RelatedEvents = relatedEvents;
+        return result;
     }
 
     public async Task<SearchDto<EventListItemDto>> SearchEvents(
@@ -144,52 +107,10 @@ public class EventService
         var items = await sortedQuery
             .Skip((page - 1) * pageSize)
             .Take(pageSize)
-            .Select(g => g.ToListItemDto())
+            .ProjectToListItemDto()
             .ToListAsync();
 
         return new SearchDto<EventListItemDto>
-        {
-            Total = total,
-            Items = items
-        };
-    }
-
-
-    public async Task<SearchDto<AdminSeriesDto>> GetAdminSeries(string? query, int page, int pageSize)
-    {
-        page = Math.Max(1, page);
-        pageSize = Math.Clamp(pageSize, 1, 50);
-
-        IQueryable<EventSeries> dbQuery = _context.EventSeries
-            .Where(s => s.Events.Any());
-
-        if (!string.IsNullOrWhiteSpace(query))
-        {
-            query = query.Trim();
-            dbQuery = dbQuery
-                .Where(s => s.Events
-                    .Any(e => EF.Functions.ILike(e.Name, $"%{query}%")));
-        };
-
-        var total = await dbQuery.CountAsync();
-
-        var items = await dbQuery
-            .OrderByDescending(s => s.Events.Max(e => e.StartTime))
-            .ThenBy(s => s.Id)
-            .Skip((page - 1) * pageSize)
-            .Take(pageSize)
-            .Select(s => new AdminSeriesDto
-            {
-                Id = s.Id,
-                DisplayName = s.Events
-                    .OrderByDescending(e => e.StartTime)
-                    .Select(e => e.NormalizedName)
-                    .FirstOrDefault() ?? "",
-                Events = s.Events.Select(e => e.ToListItemDto()).ToList()
-            })
-            .ToListAsync();
-
-        return new SearchDto<AdminSeriesDto>
         {
             Total = total,
             Items = items

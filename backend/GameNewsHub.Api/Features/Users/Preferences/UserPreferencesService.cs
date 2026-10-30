@@ -26,61 +26,56 @@ public class UserPreferencesService
     
     public async Task<ErrorOr<List<GameListItemDto>>> GetFollowedGames(int userId)
     {
-        var user = await _context.Users
-            .Include(u => u.FollowedGames)
-            .FirstOrDefaultAsync(u => u.Id == userId);
+        if (!await _context.Users.AnyAsync(u => u.Id == userId))
+            return Error.NotFound("User.NotFound", $"User {userId} not found.");
 
-        if (user == null) return Error.NotFound("User.NotFound", $"User {userId} not found.");
-
-        var games = user.FollowedGames
-            .Select(g => g.ToListItemDto())
-            .ToList();
+        var games = await _context.Users
+            .Where(u => u.Id == userId)
+            .SelectMany(u => u.FollowedGames)
+            .ProjectToListItemDto()
+            .ToListAsync();
 
         return games;
     }
 
     public async Task<ErrorOr<List<GenreDto>>> GetFollowedGenres(int userId)
     {
-        var user = await _context.Users
-            .Include(u => u.FollowedGenres)
-            .FirstOrDefaultAsync(u => u.Id == userId);
+        if (!await _context.Users.AnyAsync(u => u.Id == userId))
+            return Error.NotFound("User.NotFound", $"User {userId} not found.");
 
-        if (user == null) return Error.NotFound("User.NotFound", $"User {userId} not found.");
-
-        var genres = user.FollowedGenres
-            .Select(g => g.ToDto())
-            .ToList();
+        var genres = await _context.Users
+            .Where(u => u.Id == userId)
+            .SelectMany(u => u.FollowedGenres)
+            .ProjectToDto()
+            .ToListAsync();
 
         return genres;
     }
 
     public async Task<ErrorOr<List<EventListItemDto>>> GetFollowedEvents(int userId)
     {
-        var user = await _context.Users
-            .Include(u => u.FollowedEvents)
-            .FirstOrDefaultAsync(u => u.Id == userId);
+        if (!await _context.Users.AnyAsync(u => u.Id == userId))
+            return Error.NotFound("User.NotFound", $"User {userId} not found.");
 
-        if (user == null) return Error.NotFound("User.NotFound", $"User {userId} not found.");
-
-        var events = user.FollowedEvents
-            .Select(e => e.ToListItemDto())
-            .ToList();
+        var events = await _context.Users
+            .Where(u => u.Id == userId)
+            .SelectMany(u => u.FollowedEvents)
+            .ProjectToListItemDto()
+            .ToListAsync();
 
         return events;
     }
 
     public async Task<ErrorOr<List<PlatformGroupDto>>> GetFollowedPlatformGroups(int userId)
     {
-        var user = await _context.Users
-            .Include(u => u.FollowedPlatformGroups)
-            .ThenInclude(pg => pg.Platforms)
-            .FirstOrDefaultAsync(u => u.Id == userId);
+        if (!await _context.Users.AnyAsync(u => u.Id == userId))
+            return Error.NotFound("User.NotFound", $"User {userId} not found.");
 
-        if (user == null) return Error.NotFound("User.NotFound", $"User {userId} not found.");
-
-        var events = user.FollowedPlatformGroups
-            .Select(pg => pg.ToDto())
-            .ToList();
+        var events = await _context.Users
+            .Where(u => u.Id == userId)
+            .SelectMany(u => u.FollowedPlatformGroups)
+            .ProjectToDto()
+            .ToListAsync();
 
         return events;
     }

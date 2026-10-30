@@ -27,8 +27,11 @@ public class UserProfileService
         if (user == null)
             return Error.NotFound("User.NotFound", $"User {userId} not found");
 
-        var settings = user.ToSettingsDto();
-        return user.ToDto(false, settings);
+        var settings = ProfileMapper.ToSettingsDto(user);
+        var result = ProfileMapper.ToDto(user);
+        result.Settings = settings;
+        result.IsAdmin = false;
+        return result;
     }
 
     public async Task<ErrorOr<Success>> PatchSettings(int userId, SettingsDto settings)
@@ -56,20 +59,9 @@ public class UserProfileService
         if (user == null)
             return Error.NotFound("User.NotFound", $"User {userId} not found");
 
-        var events = user.FollowedEvents
-            .Select(e => e.ToListNameDto())
-            .ToList();
-        var games = user.FollowedGames
-            .Select(g => g.ToListItemDto())
-            .ToList();
-        var genres = user.FollowedGenres
-            .Select(g => g.ToDto())
-            .ToList();
-        var platformGroups = user.FollowedPlatformGroups
-            .Select(pg => pg.ToDto())
-            .ToList();
-        var settings = user.ToSettingsDto();
-
-        return user.ToFullDto(events, games, genres, platformGroups, settings);
+        var settings = ProfileMapper.ToSettingsDto(user);
+        var result = ProfileMapper.ToFullDto(user);
+        result.Settings = settings;
+        return result;
     }
 }

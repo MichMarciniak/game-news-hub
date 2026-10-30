@@ -26,7 +26,7 @@ public class GameService
     {
         var games = await _context.Games
             .Where(g => g.Type == GameType.MainGame)
-            .Select(g => g.ToListItemDto())
+            .ProjectToListItemDto()
             .Take(100)
             .ToListAsync();
         return games;
@@ -84,7 +84,7 @@ public class GameService
         var items = await sortedQuery
             .Skip((page - 1) * pageSize)
             .Take(pageSize)
-            .Select(g => g.ToListItemDto())
+            .ProjectToListItemDto()
             .ToListAsync();
 
         return new SearchDto<GameListItemDto>
@@ -115,25 +115,32 @@ public class GameService
             .Select(pg =>
             {
                 var platforms = pg
-                    .Select(p => p.ToDto())
+                    .Select(PlatformMapper.ToDto)
                     .ToList();
 
-                return pg.Key.ToDtoWithPlatforms(platforms);
+                var dto = PlatformMapper.ToDtoWithPlatforms(pg.Key);
+                dto.Platforms = platforms;
+                return dto;
             })
             .ToList();
 
         var genres = game.Genres
-            .Select(g => g.ToDto())
+            .Select(GenreMapper.ToDto)
             .ToList();
         var addons = game.ChildGames
-            .Select(g => g.ToListItemDto())
+            .Select(GameMapper.ToListItemDto)
             .ToList();
         var parent = game.ParentGame;
         var parentGame = parent is null
             ? null
-            : GameMappingExtension.ToParentGameDto(parent);
+            : GameMapper.ToParentGameDto(parent);
 
-        return game.ToDetailDto(genres, addons, platformGroups, parentGame);
+        var result = GameMapper.ToDetailDto(game);
+        result.Genres = genres;
+        result.Addons = addons;
+        result.PlatformGroups = platformGroups;
+        result.ParentGame = parentGame;
+        return result;
     }
 
     public async Task<List<GameListItemDto>> GetGameAddons(int gameId)

@@ -17,7 +17,7 @@ public class GenreService
 
     public Task<List<GenreDto>> GetGenreListAsync()
     {
-        var genres = _context.Genres.Select(g => g.ToDto()).ToList();
+        var genres = _context.Genres.ProjectToDto().ToList();
         return Task.FromResult(genres);
     }
 }

@@ -1,16 +1,13 @@
-﻿using GameNewsHub.Contracts.Genres;
+using GameNewsHub.Contracts.Genres;
 using GameNewsHub.Data.Entities;
+using Riok.Mapperly.Abstractions;
+using System.Linq;
 
 namespace GameNewsHub.Api.Features.Genres;
 
-public static class GenreMappingExtension
+[Mapper(RequiredMappingStrategy = RequiredMappingStrategy.Target)]
+public static partial class GenreMapper
 {
-    public static GenreDto ToDto(this Genre genre)
-    {
-        return new GenreDto
-        {
-            Id = genre.Id,
-            Name = genre.Name
-        };
-    }
+    public static partial GenreDto ToDto(Genre source);
+    public static partial IQueryable<GenreDto> ProjectToDto(this IQueryable<Genre> query);
 }

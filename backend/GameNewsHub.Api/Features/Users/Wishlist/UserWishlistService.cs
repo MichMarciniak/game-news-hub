@@ -22,7 +22,7 @@ public class UserWishlistService
     {
         var wishlistedGames = await _context.Users
             .SelectMany(u => u.WishlistedGames)
-            .Select(g => g.ToListItemDto())
+            .ProjectToListItemDto()
             .ToListAsync();
 
         return wishlistedGames;

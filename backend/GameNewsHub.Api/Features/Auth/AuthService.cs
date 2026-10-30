@@ -132,8 +132,11 @@ public class AuthService
         _logger.LogInformation(
             "User {UserId} logged in",
             user.Id);
-        var settings = user.ToSettingsDto();
-        return user.ToDto(isAdmin, settings);
+        var settings = ProfileMapper.ToSettingsDto(user);
+        var result = ProfileMapper.ToDto(user);
+        result.Settings = settings;
+        result.IsAdmin = isAdmin;
+        return result;
     }
 
     public async Task Logout()

@@ -15,16 +15,14 @@ namespace GameNewsHub.Api.Features.Admin;
 [Authorize]
 public class AdminController : ControllerBase
 {
-    private readonly EventService _eventService;
-    private readonly PlatformService _platformService;
+    private readonly AdminService _service;
     
     // tu logger bo tu user id jest, może to przenieść do serwisów?
     private readonly ILogger<AdminController> _logger;
 
-    public AdminController(EventService eventService, PlatformService platformService, ILogger<AdminController> logger)
+    public AdminController(AdminService service, ILogger<AdminController> logger)
     {
-        _eventService = eventService;
-        _platformService = platformService;
+        _service = service;
         _logger = logger;
     }
     
@@ -35,7 +33,7 @@ public class AdminController : ControllerBase
             "Admin {AdminId} attempting to reassign event {EventId} to series {SeriesId}",
             User.GetId(), id, seriesId);
             
-        var result = await _eventService.ReassignEventToSeries(id, seriesId);
+        var result = await _service.ReassignEventToSeries(id, seriesId);
         return result.ToNoContent(this);
     }
     
@@ -45,7 +43,7 @@ public class AdminController : ControllerBase
         _logger.LogInformation(
             "Admin {AdminId} reassigning platform {PlatformId} to group {PlatformGroupId}",
             User.GetId(), id, groupId);
-        var result = await _platformService.ReassignPlatformGroup(id, groupId);
+        var result = await _service.ReassignPlatformGroup(id, groupId);
 
         return result.ToNoContent(this);
     }
@@ -54,7 +52,7 @@ public class AdminController : ControllerBase
     public async Task<ActionResult<SearchDto<AdminSeriesDto>>> GetSeriesSearch(
         string? query, int page = 1, int pageSize = 20)
     {
-        var result = await _eventService.GetAdminSeries(query, page, pageSize);
+        var result = await _service.GetAdminSeries(query, page, pageSize);
         return result;
     }
 }
