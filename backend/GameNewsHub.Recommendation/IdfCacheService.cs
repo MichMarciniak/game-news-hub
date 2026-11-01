@@ -17,7 +17,6 @@ public class IdfCacheService
 
     private const string GenreIdfKey = "IDF_GENRES";
     private const string PlatformIdfKey = "IDF_PLATFORMS";
-    private const string SeriesIdfKey = "IDF_SERIES";
     public IdfCacheService(
         IMemoryCache cache,
         AppDbContext context,
@@ -36,11 +35,6 @@ public class IdfCacheService
     public float GetPlatformIdf(int platformId)
     {
         return GetFromDictionary(PlatformIdfKey, platformId);
-    }
-
-    public float GetSeriesIdf(int seriesId)
-    {
-        return GetFromDictionary(SeriesIdfKey, seriesId);
     }
 
     private float GetFromDictionary(string cacheKey, int id)
@@ -81,15 +75,8 @@ public class IdfCacheService
             .Select(group => new { Id = group.Key, Count = group.Count() })
             .ToDictionaryAsync(x => x.Id, x => x.Count, ct);
 
-        var seriesCounts = await _context.Events
-            .AsNoTracking()
-            .GroupBy(e => e.EventSeriesId)
-            .Select(group => new { Id = group.Key, Count = group.Count() })
-            .ToDictionaryAsync(x => x.Id, x => x.Count, ct);
-        
         var genreIdfs = CalculateIdfDictionary(totalGamesCount, genreCounts);
         var platformIdfs = CalculateIdfDictionary(totalGamesCount, platformCounts);
-        var seriesIds = CalculateIdfDictionary(totalEventsCount, seriesCounts);
 
         var cacheOptions = new MemoryCacheEntryOptions
         {
@@ -98,7 +85,6 @@ public class IdfCacheService
 
         _cache.Set(GenreIdfKey, genreIdfs, cacheOptions);
         _cache.Set(PlatformIdfKey, platformIdfs, cacheOptions);
-        _cache.Set(SeriesIdfKey, seriesIds, cacheOptions);
         
         _logger.LogInformation("Idf cache refreshed");
     }

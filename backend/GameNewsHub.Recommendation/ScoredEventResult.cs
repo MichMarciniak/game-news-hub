@@ -14,5 +14,5 @@ public class ScoredEventResult
     public float PlatformGroupFacetContribution { get; set; }
     public float SeriesFacetContribution { get; set; }
 
-    public List<string> Labels { get; set; } = [];
+    public List<RecLabel> Labels { get; set; } = [];
 }
