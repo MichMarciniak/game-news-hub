@@ -1,23 +1,23 @@
-﻿using GameNewsHub.Api.Options;
+using GameNewsHub.Api.BackgroundServices.FollowCounter;
+using GameNewsHub.Api.Options;
 using Microsoft.Extensions.Options;
 
-namespace GameNewsHub.Api.Services;
+namespace GameNewsHub.Api.Services.FollowSnapshot;
 
-
-public class CountFollowsBackgroundService : BackgroundService
+public class SnapshotBackgroundService : BackgroundService
 {
     private readonly IServiceProvider _serviceProvider;
-    private readonly ILogger<CountFollowsBackgroundService> _logger;
+    private readonly ILogger<SnapshotBackgroundService> _logger;
     private readonly TimeSpan _period;
 
-    public CountFollowsBackgroundService(
+    public SnapshotBackgroundService(
         IServiceProvider serviceProvider,
-        ILogger<CountFollowsBackgroundService> logger,
-        IOptions<FollowServiceOptions> options)
+        ILogger<SnapshotBackgroundService> logger,
+        IOptions<FollowServiceOptions> followServiceOptions)
     {
         _serviceProvider = serviceProvider;
         _logger = logger;
-        _period = options.Value.Timespan;
+        _period = followServiceOptions.Value.SnapTimespan;
     }
     
     protected override async Task ExecuteAsync(CancellationToken stoppingToken)
@@ -28,22 +28,17 @@ public class CountFollowsBackgroundService : BackgroundService
         {
             try
             {
-
                 using (var scope = _serviceProvider.CreateScope())
                 {
-                    var job = scope.ServiceProvider.GetRequiredService<FollowRecalculationJob>();
-                    await job.RecalculateAsync();
+                    var job = scope.ServiceProvider.GetRequiredService<SnapshotFollowCount>();
+                    await job.SnapshotFollowerCount();
                 }
-                
-                _logger.LogInformation("Follows recalculated.");
-                
+                _logger.LogInformation("Snapshot made");
             }
             catch (Exception ex)
             {
                 _logger.LogError(ex, ex.Message);
             }
         }
-        
     }
-    
 }

@@ -1,7 +1,7 @@
 ﻿using GameNewsHub.Data;
 using Microsoft.EntityFrameworkCore;
 
-namespace GameNewsHub.Api.Services;
+namespace GameNewsHub.Api.BackgroundServices.FollowCounter;
 
 public class FollowRecalculationJob
 {

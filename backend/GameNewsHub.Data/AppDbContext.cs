@@ -19,6 +19,8 @@ public class AppDbContext : IdentityDbContext<AppUser, IdentityRole<int>, int>
     public DbSet<PlatformGroup> PlatformGroups { get; set; }
 
     public DbSet<EventSeries> EventSeries { get; set; }
+    
+    public DbSet<EventFollowerSnapshot> EventFollowerSnapshots { get; set; }
 
     protected override void OnModelCreating(ModelBuilder builder)
     {

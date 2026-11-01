@@ -58,10 +58,11 @@ public class IdfCacheService
         _logger.LogInformation("Refreshing IDF cache");
 
         var totalGamesCount = await _context.Games.AsNoTracking().CountAsync(ct);
+        var totalEventsCount = await _context.Events.AsNoTracking().CountAsync(ct);
 
-        if (totalGamesCount == 0)
+        if (totalGamesCount == 0 || totalEventsCount == 0)
         {
-            _logger.LogWarning("No games in db");
+            _logger.LogWarning("Lacking db data");
             return;
         }
 
@@ -71,12 +72,12 @@ public class IdfCacheService
             .GroupBy(g => g.Id)
             .Select(group => new { Id = group.Key, Count = group.Count() })
             .ToDictionaryAsync(x => x.Id, x => x.Count, ct);
-        
+
         var platformCounts = await _context.Games
             .AsNoTracking()
-            .SelectMany(g => g.Platforms.Select(p => p.PlatformGroupId))
+            .SelectMany(g => g.Platforms.Select(p => new { GameId = g.Id, p.PlatformGroupId }))
             .Distinct()
-            .GroupBy(groupId => groupId)
+            .GroupBy(x => x.PlatformGroupId)
             .Select(group => new { Id = group.Key, Count = group.Count() })
             .ToDictionaryAsync(x => x.Id, x => x.Count, ct);
 
@@ -88,7 +89,7 @@ public class IdfCacheService
         
         var genreIdfs = CalculateIdfDictionary(totalGamesCount, genreCounts);
         var platformIdfs = CalculateIdfDictionary(totalGamesCount, platformCounts);
-        var seriesIds = CalculateIdfDictionary(totalGamesCount, seriesCounts);
+        var seriesIds = CalculateIdfDictionary(totalEventsCount, seriesCounts);
 
         var cacheOptions = new MemoryCacheEntryOptions
         {
