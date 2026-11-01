@@ -16,6 +16,6 @@ public class EventFollowerSnapshotConfiguration : IEntityTypeConfiguration<Event
             .OnDelete(DeleteBehavior.Cascade);
 
         // indeks pod zapytania czasowe / event
-        builder.HasIndex(x => new { x.Event, x.RecordedAt });
+        builder.HasIndex(x => new { x.EventId, x.RecordedAt });
     }
 }

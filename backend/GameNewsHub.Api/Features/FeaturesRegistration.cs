@@ -3,6 +3,7 @@ using GameNewsHub.Api.Features.Events;
 using GameNewsHub.Api.Features.Games;
 using GameNewsHub.Api.Features.Genres;
 using GameNewsHub.Api.Features.Platforms;
+using GameNewsHub.Api.Features.Recommendations;
 using GameNewsHub.Api.Features.Shared.Email;
 using GameNewsHub.Api.Features.Steam;
 using GameNewsHub.Api.Features.Users;
@@ -21,6 +22,7 @@ public static class FeaturesRegistration
         services.AddAuthServices();
         services.AddEmailServices();
         services.AddSteamServices();
+        services.AddRecommendationServices();
         return services;
     }
 }

@@ -11,7 +11,6 @@ public static class LabelCodes
     public const string FollowedSeries = "FollowedSeries";
 }
 
-public record RecLabel(string Code, int Count);
 
 public class EventScoringEngine
 {
@@ -42,10 +41,10 @@ public class EventScoringEngine
         _cache = cache;
     }
 
-    public async Task<List<ScoredEventResult>> ScoreEventsAsync(
-        UserProfileVector userProfile,
+    public async Task<List<ScoredEventResult>> ScoreEventsAsync(UserProfileVector userProfile,
         IEnumerable<EventVector> events,
         bool isUpcomingSection,
+        int maxFollowers,
         CancellationToken ct = default)
     {
         var eventList = events.ToList();
@@ -55,7 +54,7 @@ public class EventScoringEngine
             ? await LoadFollowerBaselineAsync(eventList.Select(e => e.EventId).ToList(), ct)
             : new Dictionary<int, int>();
 
-        return ScoreEvents(userProfile, eventList, baseline, isUpcomingSection);
+        return ScoreEvents(userProfile, eventList, baseline, isUpcomingSection, maxFollowers);
     }
 
 
@@ -66,7 +65,7 @@ public class EventScoringEngine
         UserProfileVector profile,
         IReadOnlyList<EventVector> events,
         IReadOnlyDictionary<int, int> followerBaseline,
-        bool isUpcomingSection)
+        bool isUpcomingSection, int maxFollowers)
     {
         if (events.Count == 0) return [];
 
@@ -77,9 +76,8 @@ public class EventScoringEngine
         
         float beta = isUpcomingSection ? BetaMomentumUpcoming : 0.0f;
         float alpha = Math.Min(MaxAlpha, profile.Alpha);
-
-        float maxFollowers = Math.Max(1.0f, events.Max(e => e.FollowerCount));
-        float logMax = MathF.Log(maxFollowers + 1);
+        
+        float logMax = MathF.Log(Math.Max(1, maxFollowers) + 1);
 
         float genreNorm = Norm(profile.GenreWeights, _cache.GetGenreIdf);
         float platformNorm = Norm(profile.PlatformGroupWeights, _cache.GetPlatformIdf);
@@ -137,7 +135,7 @@ public class EventScoringEngine
                                    + result.PlatformGroupFacetContribution
                                    + result.SeriesFacetContribution;
 
-            result.PopularityScore = MathF.Log(evt.FollowerCount + 1) / logMax;
+            result.PopularityScore = Math.Min(1f, MathF.Log(evt.FollowerCount + 1) / logMax);
 
             if (isUpcomingSection)
             {

@@ -16,3 +16,5 @@ public class ScoredEventResult
 
     public List<RecLabel> Labels { get; set; } = [];
 }
+
+public record RecLabel(string Code, int Count);

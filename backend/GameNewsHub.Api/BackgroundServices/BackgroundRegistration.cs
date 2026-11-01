@@ -1,4 +1,5 @@
 ﻿using GameNewsHub.Api.BackgroundServices.FollowCounter;
+using GameNewsHub.Api.Services.Cache;
 using GameNewsHub.Api.Services.FollowSnapshot;
 
 namespace GameNewsHub.Api.Services;
@@ -12,6 +13,8 @@ public static class BackgroundRegistration
 
         services.AddScoped<SnapshotFollowCount>();
         services.AddHostedService<SnapshotBackgroundService>();
+
+        services.AddHostedService<IdfCacheRefreshService>();
         return services;
     }
 }

@@ -17,25 +17,20 @@ public class IdfCacheService
 
     private const string GenreIdfKey = "IDF_GENRES";
     private const string PlatformIdfKey = "IDF_PLATFORMS";
+
     public IdfCacheService(
         IMemoryCache cache,
         AppDbContext context,
-        ILogger<IdfCacheService> logger
-    ) {
+        ILogger<IdfCacheService> logger)
+    {
         _cache = cache;
         _context = context;
         _logger = logger;
     }
 
-    public float GetGenreIdf(int genreId)
-    {
-        return GetFromDictionary(GenreIdfKey, genreId);
-    }
+    public float GetGenreIdf(int genreId) => GetFromDictionary(GenreIdfKey, genreId);
 
-    public float GetPlatformIdf(int platformId)
-    {
-        return GetFromDictionary(PlatformIdfKey, platformId);
-    }
+    public float GetPlatformIdf(int platformGroupId) => GetFromDictionary(PlatformIdfKey, platformGroupId);
 
     private float GetFromDictionary(string cacheKey, int id)
     {
@@ -52,11 +47,10 @@ public class IdfCacheService
         _logger.LogInformation("Refreshing IDF cache");
 
         var totalGamesCount = await _context.Games.AsNoTracking().CountAsync(ct);
-        var totalEventsCount = await _context.Events.AsNoTracking().CountAsync(ct);
 
-        if (totalGamesCount == 0 || totalEventsCount == 0)
+        if (totalGamesCount == 0)
         {
-            _logger.LogWarning("Lacking db data");
+            _logger.LogWarning("IDF cache not refreshed: no games in database");
             return;
         }
 
@@ -85,21 +79,22 @@ public class IdfCacheService
 
         _cache.Set(GenreIdfKey, genreIdfs, cacheOptions);
         _cache.Set(PlatformIdfKey, platformIdfs, cacheOptions);
-        
-        _logger.LogInformation("Idf cache refreshed");
+
+        _logger.LogInformation(
+            "IDF cache refreshed: {Genres} genres, {Platforms} platform groups, {Games} games",
+            genreIdfs.Count, platformIdfs.Count, totalGamesCount);
     }
 
-    private static Dictionary<int, float> CalculateIdfDictionary(int totalgames, Dictionary<int, int> featureCounts)
+    private static Dictionary<int, float> CalculateIdfDictionary(
+        int totalGames, Dictionary<int, int> featureCounts)
     {
-        var result = new Dictionary<int, float>();
+        var result = new Dictionary<int, float>(featureCounts.Count);
 
         foreach (var (featureId, count) in featureCounts)
         {
-            var idf = (float)(Math.Log((double)(totalgames + 1) / (count + 1)) + 1.0f);
-            result[featureId] = idf;
+            result[featureId] = (float)(Math.Log((double)(totalGames + 1) / (count + 1)) + 1.0);
         }
 
         return result;
     }
-
 }
