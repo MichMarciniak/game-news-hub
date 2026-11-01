@@ -132,19 +132,22 @@ public class SteamService
     
     private async Task<ErrorOr<string>> ValidateUserSteamIdAsync(int userId)
     {
-        var user = await _context.Users.FirstOrDefaultAsync(u => u.Id == userId);
+        var user = await _context.Users
+            .Include(u => u.SteamProfile)
+            .FirstOrDefaultAsync(u => u.Id == userId);
+        
         if (user == null)
         {
             return Error.NotFound("User not found");
         }
 
-        var steamId = user.SteamId;
-        if (steamId == null)
+        var steamProfile = user.SteamProfile;
+        if (steamProfile == null)
         {
             return Error.Failure("Account is not connected to steam");
         }
 
-        return steamId;
+        return steamProfile.SteamId.ToString();
     }
     private async Task<List<Game>> GetOrSyncGamesBySteamIdsAsync(List<ulong> steamAppIds)
     {

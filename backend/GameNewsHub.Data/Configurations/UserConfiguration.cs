@@ -32,5 +32,10 @@ public class UserConfiguration : IEntityTypeConfiguration<AppUser>
         builder.HasMany(x => x.WishlistedGames)
             .WithMany()
             .UsingEntity("UserWishlistGames");
+
+        builder.HasOne(x => x.SteamProfile)
+            .WithOne(sp => sp.AppUser)
+            .HasForeignKey<AppUser>(x => x.SteamProfileId)
+            .OnDelete(DeleteBehavior.SetNull);
     }
 }

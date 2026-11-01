@@ -77,10 +77,6 @@ namespace Data.Migrations
                     b.Property<bool>("EmailConfirmed")
                         .HasColumnType("boolean");
 
-                    b.PrimitiveCollection<long[]>("FriendsSteamIds")
-                        .IsRequired()
-                        .HasColumnType("bigint[]");
-
                     b.Property<bool>("LockoutEnabled")
                         .HasColumnType("boolean");
 
@@ -110,8 +106,8 @@ namespace Data.Migrations
                     b.Property<bool>("ShowFutureRecommendations")
                         .HasColumnType("boolean");
 
-                    b.Property<string>("SteamId")
-                        .HasColumnType("text");
+                    b.Property<int?>("SteamProfileId")
+                        .HasColumnType("integer");
 
                     b.Property<bool>("TwoFactorEnabled")
                         .HasColumnType("boolean");
@@ -129,6 +125,9 @@ namespace Data.Migrations
                         .IsUnique()
                         .HasDatabaseName("UserNameIndex");
 
+                    b.HasIndex("SteamProfileId")
+                        .IsUnique();
+
                     b.HasIndex("UserName")
                         .IsUnique();
 
@@ -142,7 +141,6 @@ namespace Data.Migrations
                             ConcurrencyStamp = "39949666-4c4c-4740-9e6e-210170a4a621",
                             CreatedAt = new DateTimeOffset(new DateTime(2026, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), new TimeSpan(0, 0, 0, 0, 0)),
                             EmailConfirmed = false,
-                            FriendsSteamIds = new long[0],
                             LockoutEnabled = false,
                             PhoneNumberConfirmed = false,
                             ShowFutureRecommendations = true,
@@ -362,6 +360,35 @@ namespace Data.Migrations
                         .IsUnique();
 
                     b.ToTable("PlatformGroups");
+                });
+
+            modelBuilder.Entity("GameNewsHub.Data.Entities.SteamProfile", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("integer");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
+
+                    b.Property<int>("AppUserId")
+                        .HasColumnType("integer");
+
+                    b.Property<string>("FriendSteamIds")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<DateTimeOffset>("LastImportedAt")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<decimal>("SteamId")
+                        .HasColumnType("numeric(20,0)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("SteamId")
+                        .IsUnique();
+
+                    b.ToTable("SteamProfile");
                 });
 
             modelBuilder.Entity("GamePlatforms", b =>
@@ -616,6 +643,16 @@ namespace Data.Migrations
                         .IsRequired();
                 });
 
+            modelBuilder.Entity("GameNewsHub.Data.Entities.AppUser", b =>
+                {
+                    b.HasOne("GameNewsHub.Data.Entities.SteamProfile", "SteamProfile")
+                        .WithOne("AppUser")
+                        .HasForeignKey("GameNewsHub.Data.Entities.AppUser", "SteamProfileId")
+                        .OnDelete(DeleteBehavior.SetNull);
+
+                    b.Navigation("SteamProfile");
+                });
+
             modelBuilder.Entity("GameNewsHub.Data.Entities.Event", b =>
                 {
                     b.HasOne("GameNewsHub.Data.Entities.EventSeries", "Series")
@@ -822,6 +859,12 @@ namespace Data.Migrations
             modelBuilder.Entity("GameNewsHub.Data.Entities.PlatformGroup", b =>
                 {
                     b.Navigation("Platforms");
+                });
+
+            modelBuilder.Entity("GameNewsHub.Data.Entities.SteamProfile", b =>
+                {
+                    b.Navigation("AppUser")
+                        .IsRequired();
                 });
 #pragma warning restore 612, 618
         }

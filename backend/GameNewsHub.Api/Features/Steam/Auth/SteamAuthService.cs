@@ -1,5 +1,6 @@
 using ErrorOr;
 using GameNewsHub.Data;
+using GameNewsHub.Data.Entities;
 using GameNewsHub.External.Steam.Client;
 
 namespace GameNewsHub.Api.Features.Steam.Auth;
@@ -43,7 +44,17 @@ public class SteamAuthService
             return Error.Unauthorized("User not found");
         }
 
-        user.SteamId = result.SteamId;
+        if (!ulong.TryParse(result.SteamId, out var steamId))
+        {
+            return Error.Failure("Invalid steam Id");
+        }
+
+        var steamProfile = new SteamProfile
+        {
+            SteamId = steamId
+        };
+
+        user.SteamProfile = steamProfile;
         await _context.SaveChangesAsync();
 
         return new ErrorOr<Success>();

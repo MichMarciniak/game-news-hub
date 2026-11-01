@@ -24,8 +24,6 @@ public class Event
 
     public int FollowerCount { get; set; } = 0;
 
-    // moze bedzie potrzebne pozniej
-    // public boolean is_user_added {get; set;}
 }
 
 public enum EventSyncStatus
