@@ -1,7 +1,6 @@
-using System.ComponentModel;
 using GameNewsHub.Recommendation;
 
-namespace GameNewsHub.Api.Services.Cache;
+namespace GameNewsHub.Api.BackgroundServices.Cache;
 
 public class IdfCacheRefreshService : BackgroundService 
 {

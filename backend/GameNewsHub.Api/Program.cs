@@ -1,12 +1,12 @@
 using System.Text.Json;
 using System.Text.Json.Nodes;
 using System.Text.Json.Serialization;
+using GameNewsHub.Api.BackgroundServices;
 using GameNewsHub.Api.Configuration;
 using GameNewsHub.Api.Extensions;
 using GameNewsHub.Api.Features;
 using GameNewsHub.Api.Options;
 using GameNewsHub.Api.Services;
-using GameNewsHub.Api.Services.Cache;
 using GameNewsHub.Data;
 using GameNewsHub.Data.Entities;
 using GameNewsHub.External.Igdb;

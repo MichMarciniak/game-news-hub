@@ -25,11 +25,13 @@ public class IgdbClient : IIgdbClient
     public async Task<List<IgdbDiscoverEventDto>> GetEventsFromIgdb(long from, long to)
     {
         var query = new QueryBuilder()
-            .Fields("name, start_time, end_time, description, games.id, live_stream_url")
+            .Fields(IgdbFields.DiscoveryEvents)
             .Where($"start_time >= {from} & start_time <= {to}")
             .Sort("start_time", "asc")
             .Limit(500) //domyślny limit to 10, trzeba ustawić go żeby był ponad
             .ToString();
+        
+        _logger.LogInformation("Query: {query}", query);
 
         return await SendRequestAsync<IgdbDiscoverEventDto>(query, "events");
     }
@@ -44,6 +46,7 @@ public class IgdbClient : IIgdbClient
                 .Where($"id = ({ids})")
                 .Limit(chunk.Count())
                 .ToString();
+            _logger.LogInformation("Query: {query}", query);
             
             return await SendRequestAsync<IgdbGameDto>(query, "games");
         }, chunkSize: 200);
@@ -74,10 +77,11 @@ public class IgdbClient : IIgdbClient
         {
             var ids = String.Join(",", chunk);
             var query = new QueryBuilder()
-                .Fields("name, start_time, end_time, description, games.id, live_stream_url;")
+                .Fields(IgdbFields.FullEvents)
                 .Where($"id = ({ids})")
                 .Limit(chunk.Count())
                 .ToString();
+            _logger.LogInformation("Query: {query}", query);
 
             return await SendRequestAsync<IgdbFullEventDto>(query, "events");
         }, chunkSize: 200);

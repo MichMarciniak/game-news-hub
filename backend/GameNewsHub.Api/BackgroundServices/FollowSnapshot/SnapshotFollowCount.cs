@@ -1,7 +1,7 @@
 using GameNewsHub.Data;
 using Microsoft.EntityFrameworkCore;
 
-namespace GameNewsHub.Api.Services.FollowSnapshot;
+namespace GameNewsHub.Api.BackgroundServices.FollowSnapshot;
 
 public class SnapshotFollowCount
 {

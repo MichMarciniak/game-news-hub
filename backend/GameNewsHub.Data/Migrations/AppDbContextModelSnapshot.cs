@@ -206,6 +206,30 @@ namespace Data.Migrations
                     b.ToTable("Events");
                 });
 
+            modelBuilder.Entity("GameNewsHub.Data.Entities.EventFollowerSnapshot", b =>
+                {
+                    b.Property<long>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("bigint");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<long>("Id"));
+
+                    b.Property<int>("EventId")
+                        .HasColumnType("integer");
+
+                    b.Property<int>("FollowerCount")
+                        .HasColumnType("integer");
+
+                    b.Property<DateTimeOffset>("RecordedAt")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("EventId", "RecordedAt");
+
+                    b.ToTable("EventFollowerSnapshots");
+                });
+
             modelBuilder.Entity("GameNewsHub.Data.Entities.EventGenreWeight", b =>
                 {
                     b.Property<int>("EventId")
@@ -662,6 +686,17 @@ namespace Data.Migrations
                         .IsRequired();
 
                     b.Navigation("Series");
+                });
+
+            modelBuilder.Entity("GameNewsHub.Data.Entities.EventFollowerSnapshot", b =>
+                {
+                    b.HasOne("GameNewsHub.Data.Entities.Event", "Event")
+                        .WithMany()
+                        .HasForeignKey("EventId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Event");
                 });
 
             modelBuilder.Entity("GameNewsHub.Data.Entities.EventGenreWeight", b =>

@@ -1,8 +1,9 @@
-﻿using GameNewsHub.Api.BackgroundServices.FollowCounter;
-using GameNewsHub.Api.Services.Cache;
+﻿using GameNewsHub.Api.BackgroundServices.Cache;
+using GameNewsHub.Api.BackgroundServices.FollowCounter;
+using GameNewsHub.Api.BackgroundServices.FollowSnapshot;
 using GameNewsHub.Api.Services.FollowSnapshot;
 
-namespace GameNewsHub.Api.Services;
+namespace GameNewsHub.Api.BackgroundServices;
 
 public static class BackgroundRegistration
 {

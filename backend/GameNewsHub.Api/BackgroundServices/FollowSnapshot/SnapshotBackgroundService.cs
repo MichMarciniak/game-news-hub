@@ -1,4 +1,5 @@
 using GameNewsHub.Api.BackgroundServices.FollowCounter;
+using GameNewsHub.Api.BackgroundServices.FollowSnapshot;
 using GameNewsHub.Api.Options;
 using Microsoft.Extensions.Options;
 
