@@ -16,12 +16,12 @@ export const defaultRoutes: RouteRecordRaw[] = [
   {
     path: '/games',
     name: 'games',
-    component: () => import('@/features/games/GameSearchPage.vue'),
+    component: () => import('@/features/games/pages/GameSearchPage.vue'),
   },
   {
     path: '/games/:id',
     name: 'game-detail',
-    component: () => import('@/features/games/GameDetailsPage.vue'),
+    component: () => import('@/features/games/pages/GameDetailsPage.vue'),
     props: true,
   },
   {

@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import GameGrid from '@/features/games/GameGrid.vue';
+import GameGrid from '@/features/games/components/GameGrid.vue';
 import SkeletonGameCard from '@/features/shared/skeletons/SkeletonGameCard.vue';
 
 </script>

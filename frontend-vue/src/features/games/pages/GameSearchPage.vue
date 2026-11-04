@@ -1,50 +1,26 @@
 <script setup lang="ts">
-import { useGetGamesSearch } from '@/api/generated';
-import { GameSortBy, type GetGameSearchParams } from '@/api/generated/models';
-import type { PageState } from 'openvue';
-import { ref, watch } from 'vue';
-import DebouncedInput from '../shared/DebouncedInput.vue';
-import { OiArrowDown, OiArrowUp, OiFilter } from '@openvue/openicons-vue';
-import GameCard from './GameCard.vue';
-import SkeletonGameCard from '../shared/skeletons/SkeletonGameCard.vue';
-import { keepPreviousData } from '@tanstack/vue-query';
-import FilterList from '@/features/games/FilterList.vue';
-import GameGrid from './GameGrid.vue';
-import { useSearchQuerySync } from '@/utils/saveSearch.ts';
-import SortButton from '../shared/SortButton.vue';
-import FadeTransition from '../shared/transitions/FadeTransition.vue';
-import MyPaginator from '../shared/MyPaginator.vue';
+import { ref } from 'vue'
+import { useGameSearchService } from '@/features/games/services/useGameSearchService'
+import DebouncedInput from '@/features/shared/DebouncedInput.vue'
+import { OiArrowDown, OiArrowUp, OiFilter } from '@openvue/openicons-vue'
+import GameCard from '@/features/games/components/GameCard.vue'
+import SkeletonGameCard from '@/features/shared/skeletons/SkeletonGameCard.vue'
+import { keepPreviousData } from '@tanstack/vue-query'
+import FilterList from '@/features/games/components/FilterList.vue'
+import GameGrid from '@/features/games/components/GameGrid.vue'
+import SortButton from '@/features/shared/SortButton.vue'
+import FadeTransition from '@/features/shared/transitions/FadeTransition.vue'
+import MyPaginator from '@/features/shared/MyPaginator.vue'
 
-const searchQuery = ref<GetGameSearchParams>({
-  query: undefined,
-  page: 1,
-  pageSize: 12,
-  descending: true,
-  sortBy: GameSortBy.Relevance,
-  genreIds: [],
-  platformIds: []
-})
-
-useSearchQuerySync(searchQuery)
-
-const sortOptions = [
-  {label: 'Relevance', value: GameSortBy.Relevance},
-  {label: 'Title', value: GameSortBy.Name},
-  {label: 'Popularity', value: GameSortBy.Popularity}
-]
+const {
+  searchQuery,
+  sortOptions,
+  gamesData,
+  isPending,
+  onPageChange
+} = useGameSearchService()
 
 const isMobileOpen = ref<boolean>(false)
-const {data: gamesData, isPending} = useGetGamesSearch(searchQuery, {
-  query: {
-    placeholderData: keepPreviousData
-  }
-})
-
-watch(
-  () => [searchQuery.value.query, searchQuery.value.genreIds, searchQuery.value.platformIds, searchQuery.value.sortBy],
-  () => { searchQuery.value.page = 1 },
-  { deep: true }
-)
 
 </script>
 
@@ -60,7 +36,7 @@ watch(
 
     <!-- Mobile filters/sort -->
     <div class="flex md:hidden justify-between items-center mb-4 gap-2">
-      <Button 
+      <Button
         :label="`Filters`"
         @click="isMobileOpen = true"
         variant="outlined"
@@ -86,17 +62,16 @@ watch(
       class="md:hidden"
     >
       <FilterList
-        v-model:genres="searchQuery.genreIds"
-        v-model:platforms="searchQuery.platformIds"
+        v-model:genres="searchQuery.genreIds!"
+        v-model:platforms="searchQuery.platformIds!"
       />
     </Drawer>
      <div class="flex gap-6 flex-1">
       <!-- Desktop filters/sort (po lewej)-->
       <aside class="hidden md:block w-64 shrink-0">
-        
-        <FilterList 
-          v-model:genres="searchQuery.genreIds"
-          v-model:platforms="searchQuery.platformIds"
+        <FilterList
+          v-model:genres="searchQuery.genreIds!"
+          v-model:platforms="searchQuery.platformIds!"
         />
       </aside>
 
@@ -104,7 +79,7 @@ watch(
       <section class="flex-1 flex flex-col">
         <div class="hidden md:flex justify-between items-center mb-4">
           <span>Found: <strong>{{ gamesData?.total ?? 0 }}</strong> games</span>
-          <MyPaginator 
+          <MyPaginator
             variant="simple"
             v-model:page="searchQuery.page"
             v-model:page-size="searchQuery.pageSize"
@@ -120,12 +95,11 @@ watch(
               option-value="value"
             />
             <SortButton v-model="searchQuery.descending"/>
-          </div> 
+          </div>
         </div>
 
         <!-- Game grid -->
         <FadeTransition>
-
           <GameGrid :key="isPending ? 'skeleton' : `${searchQuery.page}-${searchQuery.pageSize}-${searchQuery.query}-${searchQuery.sortBy}-${searchQuery.descending}`">
             <template v-if="isPending">
               <SkeletonGameCard v-for="num in searchQuery.pageSize" :key="`skeleton-${num}`" />
@@ -138,14 +112,13 @@ watch(
 
         <!-- Paginator -->
         <div class="mt-4">
-          <MyPaginator 
+          <MyPaginator
             variant="default"
             v-model:page="searchQuery.page"
             v-model:page-size="searchQuery.pageSize"
             :total-records="gamesData?.total"
           />
         </div>
-
       </section>
     </div>
   </div>

@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import type { GameListItemDto } from '@/api/generated/models';
-import FollowHeart from '../shared/FollowHeart.vue';
+import FollowHeart from '@/features/shared/FollowHeart.vue';
 import { useFollowedGames } from '@/composables/gameFollows';
 import { computed } from 'vue';
 import { useRouter } from 'vue-router';

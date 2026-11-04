@@ -7,8 +7,8 @@ export interface FilterOption {
 }
 
 const props = defineProps<{
-  genres: FilterOption[],
-  platforms: FilterOption[]
+  genres: Array<number | string>,
+  platforms: Array<number | string>
 }>()
 
 
