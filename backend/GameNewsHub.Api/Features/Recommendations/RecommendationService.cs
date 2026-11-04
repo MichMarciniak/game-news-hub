@@ -1,10 +1,12 @@
 using System.Diagnostics;
 using GameNewsHub.Api.Features.Shared;
+using GameNewsHub.Api.Options;
 using GameNewsHub.Contracts.Recommendations;
 using GameNewsHub.Data;
 using GameNewsHub.Data.Entities;
 using GameNewsHub.Recommendation;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Options;
 
 namespace GameNewsHub.Api.Features.Recommendations;
 
@@ -16,6 +18,7 @@ public class RecommendationService
     private readonly RecMapper _mapper;
     private readonly AppDbContext _context;
     private readonly ILogger<RecommendationService> _logger;
+    private readonly RecommendationOptions _options;
 
     public RecommendationService(
         UserProfileBuilder profileBuilder,
@@ -23,7 +26,8 @@ public class RecommendationService
         EventVectorRepresenter representer,
         RecMapper mapper,
         AppDbContext context,
-        ILogger<RecommendationService> logger)
+        ILogger<RecommendationService> logger,
+        IOptions<RecommendationOptions> options)
     {
         _profileBuilder = profileBuilder;
         _engine = engine;
@@ -31,6 +35,7 @@ public class RecommendationService
         _mapper = mapper;
         _context = context;
         _logger = logger;
+        _options = options.Value;
     }
 
     /// <param name="userId">null = uzytkownik niezalogowany (popularnosc + momentum)</param>
@@ -91,6 +96,7 @@ public class RecommendationService
         var dtos = upcomingScored.Select(r => (Result: r, IsUpcoming: true))
             .Concat(archivedScored.Select(r => (Result: r, IsUpcoming: false)))
             .OrderByDescending(x => x.Result.FinalScore)
+            .Where(x => x.Result.FinalScore >= _options.Threshold)
             .Select(x =>
             {
                 var dto = _mapper.MapToRecommendation(x.Result, eventsById[x.Result.EventVector.EventId]);

@@ -35,6 +35,7 @@ const string FrontendCorsPolicy = "FrontendCorsPolicy";
 // OPTIONS from appsettings and secrets
 services.AddValidatedOptions<SmtpOptions>(config);
 services.AddValidatedOptions<FollowServiceOptions>(config);
+services.AddValidatedOptions<RecommendationOptions>(config);
 
 var dbOptions = services.AddValidatedOptions<DatabaseOptions>(config);
 var frontendOptions = services.AddValidatedOptions<FrontendOptions>(config);
@@ -185,4 +186,3 @@ app.UseAuthorization();
 app.MapControllers();
 
 app.Run();
-
