@@ -7,8 +7,9 @@ import { useRoute, useRouter } from 'vue-router'
 import GameGrid from '@/features/games/components/GameGrid.vue'
 import GameCard from '@/features/games/components/GameCard.vue'
 import FollowHeart from '@/features/shared/FollowHeart.vue'
+import { useWishlist } from '@/composables/useWishlist'
 import Button from 'openvue/button'
-import { OiHeart, OiHeartFill } from '@openvue/openicons-vue'
+import { OiHeart, OiHeartFill, OiStar, OiStarFill } from '@openvue/openicons-vue'
 import Divider from 'openvue/divider'
 import Image from 'openvue/image'
 
@@ -18,11 +19,20 @@ const router = useRouter()
 const gameId = String(route.params.id)
 
 const { game, isPending, isFollowed, toggleFollowGame, formatGameType } = useGameService(gameId)
+const { wishlistIds, toggleWishlist, isWishlisted } = useWishlist()
+
+const isWishlistedGame = computed(() => !!game.value?.id && isWishlisted(game.value.id))
 
 const TRANSPARENT_IMAGE = 'data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="264" height="352"><defs><pattern id="stripes" width="20" height="20" patternTransform="rotate(45)" patternUnits="userSpaceOnUse"><line x1="0" y1="0" x2="0" y2="20" stroke="%23cccccc" stroke-width="2"/></pattern></defs><rect width="100%" height="100%" fill="url(%23stripes)"/></svg>'
 
 function goToGame() {
   router.push({ name: 'game-detail', params: { id: game.value?.parentGame?.id } })
+}
+
+function toggleWishlistGame() {
+  const id = game.value?.id
+  if (!id) return
+  toggleWishlist(id)
 }
 </script>
 
@@ -41,21 +51,39 @@ function goToGame() {
       <div class="flex flex-col gap-2 flex-1">
         <div class="flex items-start justify-between">
           <h2 class="text-2xl font-medium">{{ game.title }}</h2>
+          <div class="flex gap-2">
+
+            <Button
+              :severity="isFollowed ? 'secondary' : 'primary'"
+              :outlined="isFollowed"
+              @click="toggleFollowGame(game.id as string)"
+              class="flex-shrink-0"
+            >
+              <template v-if="isFollowed">
+                <OiHeartFill size="1.2rem"/>
+                <span>Following</span>
+              </template>
+              <template v-else>
+                <OiHeart size="1.2rem"/>
+                <span>Follow</span>
+              </template>
+            </Button>
           <Button
-            :severity="isFollowed ? 'secondary' : 'primary'"
-            :outlined="isFollowed"
-            @click="toggleFollowGame(game.id as string)"
+            :severity="isWishlistedGame ? 'secondary' : 'outline'"
+            :outlined="!isWishlistedGame"
+            @click="toggleWishlistGame"
             class="flex-shrink-0"
           >
-            <template v-if="isFollowed">
-              <OiHeartFill size="1.2rem"/>
-              <span>Following</span>
+            <template v-if="isWishlistedGame">
+              <OiStarFill size="1.2rem" class="text-yellow-500"/>
+              <span>In wishlist</span>
             </template>
             <template v-else>
-              <OiHeart size="1.2rem"/>
-              <span>Follow</span>
+              <OiStar size="1.2rem"/>
+              <span>Wishlist</span>
             </template>
           </Button>
+          </div>
         </div>
         <div class="flex gap-5">
           <span class="text-muted-color">{{ formatGameType(game.type) }}</span>
