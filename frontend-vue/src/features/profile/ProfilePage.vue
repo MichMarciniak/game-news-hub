@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { useGetGenres, useGetPlatformsGroups } from '@/api/generated';
-import PasswordChange from '@/features/auth/PasswordChange.vue';
+import PasswordChange from '@/features/auth/pages/PasswordChangePage.vue';
 import ExpandableFlex from '@/features/profile/ExpandableFlex.vue';
 import GenreFollowCard from '@/features/profile/GenreFollowCard.vue';
 import PlatformFollowCard from '@/features/profile/PlatformFollowCard.vue';
