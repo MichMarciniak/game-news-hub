@@ -1,15 +1,27 @@
 <script setup lang="ts">
 import { ref } from 'vue'
-import { useAuthService } from '@/features/auth/services/auth.service'
+import { useResetPasswordService } from '@/features/auth/services/useResetPasswordService'
 import AuthPageWrapper from '@/features/auth/components/AuthPageWrapper.vue'
-import { RouterLink } from 'vue-router'
+import { useRoute, useRouter, RouterLink } from 'vue-router'
 import Password from 'openvue/password'
 import Button from 'openvue/button'
 import FloatLabel from 'openvue/floatlabel'
 
-const password = ref('')
+const route = useRoute()
+const router = useRouter()
 
-const { resetUserPassword, resetError } = useAuthService()
+const password = ref('')
+const userId = route.query.userId as string | number
+const token = route.query.token as string
+
+const { resetUserPassword, resetError } = useResetPasswordService()
+
+const handleSubmit = async () => {
+  const result = await resetUserPassword({ userId, token, password: password.value })
+  if (result?.success) {
+    await router.push({ path: '/login' })
+  }
+}
 </script>
 
 <template>
@@ -19,7 +31,7 @@ const { resetUserPassword, resetError } = useAuthService()
     <template #body>
       <p>Enter your new password.</p>
 
-      <form @submit.prevent="resetUserPassword({ password })" class="flex flex-col gap-4">
+      <form @submit.prevent="handleSubmit" class="flex flex-col gap-4">
         <FloatLabel variant="on">
           <Password
             name="password"

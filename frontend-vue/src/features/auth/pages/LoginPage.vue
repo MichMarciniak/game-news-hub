@@ -1,23 +1,24 @@
 <script setup lang="ts">
 import { ref } from 'vue'
-import { useToast } from 'openvue'
 import { useRoute, useRouter, RouterLink } from 'vue-router'
-import { useAuthService } from '@/features/auth/services/auth.service'
+import { useLoginService } from '@/features/auth/services/useLoginService'
 import AuthPageWrapper from '@/features/auth/components/AuthPageWrapper.vue'
 import LoginForm from '../components/LoginForm.vue'
 
 const route = useRoute()
 const router = useRouter()
-const toast = useToast()
 
-const { login, loginError } = useAuthService()
+const { login, loginError } = useLoginService()
 const errorMessage = ref('')
 
 const onSubmit = async (values: unknown) => {
   errorMessage.value = ''
-  const result = await login(values)
+  const redirectPath = route.query.redirectPath as string | undefined
+  const result = await login(values, redirectPath)
   if (!result?.success) {
     errorMessage.value = result.error ?? 'Login error'
+  } else if (result.redirectTo) {
+    await router.push(result.redirectTo)
   }
 }
 </script>

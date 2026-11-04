@@ -1,8 +1,14 @@
 <script setup lang="ts">
-import { useAuthService } from '@/features/auth/services/auth.service'
+import { useResendEmailService } from '@/features/auth/services/useResendEmailService'
 import AuthPageWrapper from '@/features/auth/components/AuthPageWrapper.vue'
+import { useRoute, RouterLink } from 'vue-router'
+import Button from 'openvue/button'
 
-const { resendConfirmationEmail, isResendDisabled, userEmail, secondsLeft } = useAuthService()
+const route = useRoute()
+const userEmail = route.query.email as string | undefined
+const decodedEmail = userEmail ? atob(userEmail) : ''
+
+const { resendConfirmationEmail, isResendDisabled, secondsLeft } = useResendEmailService()
 </script>
 
 <template>
@@ -12,11 +18,11 @@ const { resendConfirmationEmail, isResendDisabled, userEmail, secondsLeft } = us
     <template #body>
       <p>
         An email has been sent to
-        <span class="font-semibold!">{{ userEmail }}</span>
+        <span class="font-semibold!">{{ decodedEmail }}</span>
       </p>
 
       <Button
-        @click="resendConfirmationEmail"
+        @click="() => resendConfirmationEmail(decodedEmail)"
         :disabled="isResendDisabled"
         class="px-4 py-2 rounded mt-6 disabled:opacity-50 w-full"
       >

@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { ref } from 'vue'
-import { useAuthService } from '@/features/auth/services/auth.service'
+import { useChangePasswordService } from '@/features/auth/services/useChangePasswordService'
 import Password from 'openvue/password'
 import Button from 'openvue/button'
 import FloatLabel from 'openvue/floatlabel'
@@ -9,7 +9,7 @@ const visible = ref(false)
 const oldPassword = ref('')
 const newPassword = ref('')
 
-const { changeUserPassword, changePasswordError } = useAuthService()
+const { changeUserPassword, changePasswordError } = useChangePasswordService()
 </script>
 
 <template>

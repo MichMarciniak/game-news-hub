@@ -1,21 +1,25 @@
 <script setup lang="ts">
 import { ref } from 'vue'
-import { useRouter } from 'vue-router'
-import { useAuthService } from '@/features/auth/services/auth.service'
+import { useRouter, RouterLink } from 'vue-router'
+import { useRegisterService } from '@/features/auth/services/useRegisterService'
 import AuthPageWrapper from '@/features/auth/components/AuthPageWrapper.vue'
 import RegisterForm from '../components/RegisterForm.vue'
-import { RouterLink } from 'vue-router'
 
 const router = useRouter()
 
-const { registerUser, isRegisterPending, registerError } = useAuthService()
+const { registerUser, isRegisterPending, registerError } = useRegisterService()
 const errorMessage = ref('')
 
 const onSubmit = async (values: unknown) => {
   errorMessage.value = ''
-  await registerUser(values)
-  if (registerError.value) {
-    errorMessage.value = registerError.value
+  const result = await registerUser(values)
+  if (result?.success && result.email) {
+    await router.push({
+      path: '/confirm-email-sent',
+      query: { email: btoa(result.email) }
+    })
+  } else if (result?.error) {
+    errorMessage.value = result.error
   }
 }
 </script>
