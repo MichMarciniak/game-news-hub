@@ -1,43 +1,14 @@
-import { getGetUsersMeFollowedPlatformGroupsQueryKey, useDeletePlatformsGroupsIdFollow, useGetUsersMeFollowedPlatformGroups, usePostPlatformsGroupsIdFollow } from "@/api/generated";
-import { useAuthStore } from "@/stores/auth";
-import { useQueryClient } from "@tanstack/vue-query";
-import { computed } from "vue";
+import { createFollowComposable } from "./useFollowedItems";
+import { useGetUsersMeFollowedPlatformGroups, usePostPlatformsGroupsIdFollow, useDeletePlatformsGroupsIdFollow, getGetUsersMeFollowedPlatformGroupsQueryKey } from "@/api/generated";
 
+const useFollowed = createFollowComposable({
+  useGetFollowed: () => useGetUsersMeFollowedPlatformGroups(),
+  usePostFollow: (options) => usePostPlatformsGroupsIdFollow(options),
+  useUnfollow: (options) => useDeletePlatformsGroupsIdFollow(options),
+  getQueryKey: getGetUsersMeFollowedPlatformGroupsQueryKey
+});
 
 export function useFollowedPlatforms() {
-  const queryClient = useQueryClient()
-  const auth = useAuthStore();
-  const enabled = computed(() => auth.isAuthenticated)
-
-  const {data: platformsData } = useGetUsersMeFollowedPlatformGroups({query: {enabled}})
-
-  const followedPlatformIds = computed(() => new Set(platformsData.value?.map(g => String(g.id)) ?? []))
-
-  const followPlatformMutation = usePostPlatformsGroupsIdFollow({
-    mutation:{
-      onSuccess: () => {
-        queryClient.invalidateQueries({queryKey: getGetUsersMeFollowedPlatformGroupsQueryKey() })
-      }
-    }
-  })
-
-  const unfollowPlatformMutation = useDeletePlatformsGroupsIdFollow({
-    mutation: {
-      onSuccess: () => {
-        queryClient.invalidateQueries({queryKey: getGetUsersMeFollowedPlatformGroupsQueryKey() })
-      }
-    }
-  })
-
-  const toggleFollowPlatform = (platformId: string | number) => {
-    const idStr = String(platformId)
-    if (followedPlatformIds.value.has(idStr)) {
-      unfollowPlatformMutation.mutate({id: idStr})
-    } else {
-      followPlatformMutation.mutate({id: idStr})
-    }
-  }
-
-
-  return {followedPlatformIds, toggleFollowPlatform}
+  const { followedIds, toggleFollow } = useFollowed();
+  return { followedPlatformIds: followedIds, toggleFollowPlatform: toggleFollow };
 }

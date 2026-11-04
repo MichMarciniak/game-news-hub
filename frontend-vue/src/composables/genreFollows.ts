@@ -1,43 +1,14 @@
-import { getGetUsersMeFollowedGenresQueryKey, useDeleteGenresIdFollow, useGetUsersMeFollowedGenres, usePostGenresIdFollow } from "@/api/generated";
-import { useAuthStore } from "@/stores/auth";
-import { useQueryClient } from "@tanstack/vue-query";
-import { computed } from "vue";
+import { createFollowComposable } from "./useFollowedItems";
+import { useGetUsersMeFollowedGenres, usePostGenresIdFollow, useDeleteGenresIdFollow, getGetUsersMeFollowedGenresQueryKey } from "@/api/generated";
 
+const useFollowed = createFollowComposable({
+  useGetFollowed: () => useGetUsersMeFollowedGenres(),
+  usePostFollow: (options) => usePostGenresIdFollow(options),
+  useUnfollow: (options) => useDeleteGenresIdFollow(options),
+  getQueryKey: getGetUsersMeFollowedGenresQueryKey
+});
 
 export function useFollowedGenres() {
-  const queryClient = useQueryClient()
-  const auth = useAuthStore();
-  const enabled = computed(() => auth.isAuthenticated)
-
-  const {data: genresData } = useGetUsersMeFollowedGenres({query: {enabled}})
-
-  const followedGenreIds = computed(() => new Set(genresData.value?.map(g => String(g.id)) ?? []))
-
-  const followGenreMutation = usePostGenresIdFollow({
-    mutation:{
-      onSuccess: () => {
-        queryClient.invalidateQueries({queryKey: getGetUsersMeFollowedGenresQueryKey() })
-      }
-    }
-  })
-
-  const unfollowGenreMutation = useDeleteGenresIdFollow({
-    mutation: {
-      onSuccess: () => {
-        queryClient.invalidateQueries({queryKey: getGetUsersMeFollowedGenresQueryKey() })
-      }
-    }
-  })
-
-  const toggleFollowGenre = (genreId: string | number) => {
-    const idStr = String(genreId)
-    if (followedGenreIds.value.has(idStr)) {
-      unfollowGenreMutation.mutate({id: idStr})
-    } else {
-      followGenreMutation.mutate({id: idStr})
-    }
-  }
-
-
-  return {followedGenreIds, toggleFollowGenre}
+  const { followedIds, toggleFollow } = useFollowed();
+  return { followedGenreIds: followedIds, toggleFollowGenre: toggleFollow };
 }
