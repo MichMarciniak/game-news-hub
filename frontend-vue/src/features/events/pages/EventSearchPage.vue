@@ -1,54 +1,22 @@
 <script setup lang="ts">
-import { useGetEventsSearch } from '@/api/generated';
-import { EventSortBy, type GetEventSearchParams, } from '@/api/generated/models';
-import type { PageState } from 'openvue';
-import { ref, watch } from 'vue';
-import DebouncedInput from '../shared/DebouncedInput.vue';
-import { keepPreviousData } from '@tanstack/vue-query';
+import { useEventSearchService } from '@/features/events/services/useEventSearchService';
+import DebouncedInput from '@/features/shared/DebouncedInput.vue';
 import { OiArrowDown, OiArrowUp } from '@openvue/openicons-vue';
-import EventItem from './EventItem.vue';
+import EventItem from '@/features/events/components/EventItem.vue';
 import SkeletonEventItem from '@/features/shared/skeletons/SkeletonEventItem.vue';
-import { useSearchQuerySync } from '@/utils/saveSearch.ts';
-import SortButton from '../shared/SortButton.vue';
-import FadeTransition from '../shared/transitions/FadeTransition.vue';
-import MyPaginator from '../shared/MyPaginator.vue';
+import SortButton from '@/features/shared/SortButton.vue';
+import FadeTransition from '@/features/shared/transitions/FadeTransition.vue';
+import MyPaginator from '@/features/shared/MyPaginator.vue';
 
 const gridCols = 'grid grid-cols-[1rem_1fr_11rem_11rem_auto] items-center gap-4'
 
-const searchQuery = ref<GetEventSearchParams>({
-  query: undefined,
-  page: 1,
-  pageSize: 12,
-  descending: true,
-  sortBy: EventSortBy.Relevance
-})
-
-useSearchQuerySync(searchQuery)
-
-const sortOptions = [
-  {label: 'Relevance', value: EventSortBy.Relevance},
-  {label: 'Title', value: EventSortBy.Name},
-  {label: 'Popularity', value: EventSortBy.Popularity},
-  {label: 'Date', value: EventSortBy.Date}
-]
-
-const {data: eventsData, isPending} = useGetEventsSearch(searchQuery, {
-  query: {
-    placeholderData: keepPreviousData
-  }
-})
-
-watch(
-  () => [searchQuery.value.query, searchQuery.value.sortBy],
-  () => { searchQuery.value.page = 1 },
-  { deep: true }
-)
-
-function onPageChange(event: PageState) {
-  searchQuery.value.page = event.page + 1
-  searchQuery.value.pageSize = event.rows
-}
-
+const {
+  searchQuery,
+  sortOptions,
+  eventsData,
+  isPending,
+  onPageChange
+} = useEventSearchService()
 </script>
 
 <template>

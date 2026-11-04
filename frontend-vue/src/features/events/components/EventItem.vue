@@ -3,9 +3,9 @@ import type { EventListItemDto } from '@/api/generated/models'; // dopasuj nazwÄ
 import { useFollowedEvents } from '@/composables/eventFollows';
 import { formatEventDate } from '@/utils/date';
 import { computed } from 'vue';
-import FollowHeart from '../shared/FollowHeart.vue';
+import FollowHeart from '@/features/shared/FollowHeart.vue';
 import { useRouter } from 'vue-router';
-import EventStatusBadge from '@/features/events/EventStatusBadge.vue';
+import EventStatusBadge from '@/features/events/components/EventStatusBadge.vue';
 
 const HEART_SIZE = '1.5rem'
 

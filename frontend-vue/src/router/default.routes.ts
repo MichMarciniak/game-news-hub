@@ -27,22 +27,22 @@ export const defaultRoutes: RouteRecordRaw[] = [
   {
     path: '/events',
     name: 'events',
-    component: () => import('@/features/events/EventCalendarPage.vue'),
+    component: () => import('@/features/events/pages/EventCalendarPage.vue'),
   },
   {
     path: '/events/search',
     name: 'events-search',
-    component: () => import('@/features/events/EventSearchPage.vue')
+    component: () => import('@/features/events/pages/EventSearchPage.vue')
   },
   {
     path: '/events/:id',
     name: 'event-detail',
-    component: () => import('@/features/events/EventDetailsPage.vue')
+    component: () => import('@/features/events/pages/EventDetailsPage.vue')
   },
   {
     path: '/events/recommended',
     name: 'events-recommended',
-    component: () => import('@/features/events/RecommendedCalendarPage.vue'),
+    component: () => import('@/features/events/pages/RecommendedCalendarPage.vue'),
     meta: {requiresAuth: true}
   },
   {

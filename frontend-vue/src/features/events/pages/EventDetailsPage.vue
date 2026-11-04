@@ -1,33 +1,30 @@
 <script setup lang="ts">
 import { computed } from 'vue'
-import { useFollowedEvents } from '@/composables/eventFollows'
-import { formatEventDate } from '@/utils/date'
-import { useGetEventsId } from '@/api/generated'
+import { useEventService } from '@/features/events/services/useEventService'
 import { useRoute } from 'vue-router'
 import { OiHeart, OiHeartFill, OiLink } from '@openvue/openicons-vue'
-import EventItemSimple from '@/features/events/EventItemSimple.vue'
-import EventStatusBadge from '@/features/events/EventStatusBadge.vue'
-import FollowHeart from '../shared/FollowHeart.vue'
-import GameInfiniteGrid from '../shared/GameInfiniteGrid.vue'
+import EventItemSimple from '@/features/events/components/EventItemSimple.vue'
+import EventStatusBadge from '@/features/events/components/EventStatusBadge.vue'
+import FollowHeart from '@/features/shared/FollowHeart.vue'
+import GameInfiniteGrid from '@/features/shared/GameInfiniteGrid.vue'
 import type { GameListItemDto } from '@/api/generated/models/gameListItemDto.ts'
 
 const route = useRoute()
 
-const eventId = computed(() => String(route.params.id))
-const { data: event, isPending } = useGetEventsId(eventId)
+const eventId = String(route.params.id)
 
-const { followedEventIds, toggleFollowEvent } = useFollowedEvents()
-const isFollowed = computed(() => !!event.value && followedEventIds.value.has(String(event.value.id)))
+const {
+  event,
+  isPending,
+  isFollowed,
+  toggleFollowEvent,
+  otherSeriesEvents,
+  defaultValue,
+  formatEventDate
+} = useEventService(eventId)
 
-// inne eventy z tej samej serii, minus obecny event
-const otherSeriesEvents = computed(() =>
-  event.value?.relatedEvents?.filter((e) => e.id !== event.value?.id) ?? []
-)
-
-const defaultValue = computed(() =>
-  event.value?.games?.length ? "0" : otherSeriesEvents.value.length ? "1" : "0"
-)
-
+const formattedStartTime = computed(() => formatEventDate(event.value?.startTime ?? ''))
+const formattedEndTime = computed(() => formatEventDate(event.value?.endTime ?? ''))
 </script>
 
 <template>
@@ -44,8 +41,8 @@ const defaultValue = computed(() =>
           <!-- Badge + title -->
           <div class="flex items-center gap-3 min-w-0">
             <EventStatusBadge
-              :start-time="event.startTime" 
-              :end-time="event.endTime" 
+              :start-time="event.startTime ?? ''" 
+              :end-time="event.endTime ?? ''" 
             />
             <h1 class="text-2xl font-semibold">{{ event.name }}</h1>
           </div>
@@ -79,8 +76,8 @@ const defaultValue = computed(() =>
         <!-- Time, follow count, stream url -->
         <div class="flex items-center gap-4 text-sm text-muted-color">
           <span>
-            {{ formatEventDate(event.startTime) }}
-            <template v-if="event.endTime"> – {{ formatEventDate(event.endTime) }}</template>
+            {{ formattedStartTime }}
+            <template v-if="event.endTime"> – {{ formattedEndTime }}</template>
           </span>
           <span class="flex items-center gap-1">
             <i class="pi pi-users" />
@@ -114,7 +111,7 @@ const defaultValue = computed(() =>
           <TabPanel value="1" class="p-0">
             <div class="flex flex-col gap-4 overflow-y-auto pb-2">
               <EventItemSimple
-                v-for="seriesEvent in otherSeriesEvents"
+                v-for="seriesEvent in otherSeriesEvents as { id: string | number; name: string }[]"
                 :key="seriesEvent.id"
                 :event="seriesEvent"
               />

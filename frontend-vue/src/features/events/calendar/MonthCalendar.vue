@@ -3,7 +3,7 @@ import { ref, computed, watch } from 'vue'
 import FullCalendar from '@fullcalendar/vue3'
 import dayGridPlugin from '@fullcalendar/daygrid'
 import interactionPlugin from '@fullcalendar/interaction'
-import type { CalendarOptions, DatesSetArg, EventClickArg } from '@fullcalendar/core'
+import type { CalendarOptions, DatesSetArg, EventClickArg, DayCellMountArg } from '@fullcalendar/core'
 import type { DateClickArg } from '@fullcalendar/interaction'
 import type { EventListItemDto } from '@/api/generated/models'
 import CalendarHeader from './CalendarHeader.vue'
@@ -12,6 +12,7 @@ import EventPopover from './EventPopover.vue'
 
 const props = defineProps<{
   events: EventListItemDto[],
+  selectedDate?: Date
 }>()
 
 const emit = defineEmits<{
@@ -66,6 +67,7 @@ const calendarOptions = ref<CalendarOptions>({
   eventClick: handleEventClick,
   datesSet: handleDatesSet,
   dateClick: handleDateClick,
+  dayCellDidMount: handleDayCellMount,
   headerToolbar: false,
   views: {
     dayGridMonth: {
@@ -73,6 +75,26 @@ const calendarOptions = ref<CalendarOptions>({
     }
   }
 })
+
+function handleDayCellMount(arg: DayCellMountArg) {
+  if (!props.selectedDate) return
+  const cellDate = arg.date
+  const isSelected =
+    cellDate.getFullYear() === props.selectedDate.getFullYear() &&
+    cellDate.getMonth() === props.selectedDate.getMonth() &&
+    cellDate.getDate() === props.selectedDate.getDate()
+
+  if (isSelected) {
+    arg.el.classList.add('calendar-day-selected')
+  }
+}
+
+watch(
+  () => props.selectedDate,
+  () => {
+    calendarApi.value?.render()
+  }
+)
 
 watch(events, (newEvents) => {
   calendarOptions.value.events = newEvents
@@ -127,5 +149,18 @@ function changeView(view: string) {
 </template>
 
 <style lang="css" scoped>
+.calendar-day-selected {
+  background-color: rgba(99, 102, 241, 0.15);
+  border-radius: 0.5rem;
+  position: relative;
+}
 
+.calendar-day-selected::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  border: 2px solid #6366f1;
+  border-radius: 0.5rem;
+  pointer-events: none;
+}
 </style>

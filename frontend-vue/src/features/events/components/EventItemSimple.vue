@@ -2,7 +2,7 @@
 <script setup lang="ts">
 import { computed } from 'vue'
 import { useFollowedEvents } from '@/composables/eventFollows'
-import FollowHeart from '../shared/FollowHeart.vue'
+import FollowHeart from '@/features/shared/FollowHeart.vue'
 
 const props = defineProps<{
   event: { id: string | number; name: string }
