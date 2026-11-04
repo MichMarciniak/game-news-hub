@@ -10,13 +10,17 @@ const oldPassword = ref('')
 const newPassword = ref('')
 
 const { changeUserPassword, changePasswordError } = useChangePasswordService()
+
+const handleSubmit = () => {
+  changeUserPassword({ oldPassword: oldPassword.value, newPassword: newPassword.value })
+}
 </script>
 
 <template>
   <div>
     <Drawer v-model:visible="visible" position="full" header="Change password">
       <form
-        @submit.prevent="changeUserPassword({ oldPassword, newPassword })"
+        @submit.prevent="handleSubmit"
         class="mx-auto mt-[5rem] max-w-md flex flex-col gap-5"
       >
         <FloatLabel variant="on">

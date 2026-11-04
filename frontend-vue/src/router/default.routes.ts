@@ -10,7 +10,7 @@ export const defaultRoutes: RouteRecordRaw[] = [
   {
     path: '/me',
     name: 'me',
-    component: () => import('@/features/profile/ProfilePage.vue'),
+    component: () => import('@/features/profile/pages/ProfilePage.vue'),
     meta: {requiresAuth: true}
   },
   {

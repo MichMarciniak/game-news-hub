@@ -12,13 +12,15 @@ const token = route.query.token as string
 const { confirmUserEmail } = useConfirmEmailService()
 const status = ref<'checking' | 'success' | 'error'>('checking')
 
-onMounted(async () => {
-  try {
-    confirmUserEmail({ userId, token })
-    status.value = 'success'
-  } catch {
-    status.value = 'error'
-  }
+onMounted(() => {
+  confirmUserEmail({ userId, token }, {
+    onSuccess: () => {
+      status.value = 'success'
+    },
+    onError: () => {
+      status.value = 'error'
+    }
+  })
 })
 </script>
 

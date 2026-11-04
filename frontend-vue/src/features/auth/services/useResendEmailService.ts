@@ -1,26 +1,11 @@
 import { usePostAuthResendEmail } from '@/api/generated'
 import { useToast } from 'openvue'
-import { computed, ref } from 'vue'
+import { useCooldown } from '@/composables/useCooldown'
 
 export function useResendEmailService() {
   const { mutate: resendEmail } = usePostAuthResendEmail()
   const toast = useToast()
-  const COOLDOWN_SECONDS = 60
-  const secondsLeft = ref(0)
-  let intervalId: number | undefined
-
-  const isResendDisabled = computed(() => secondsLeft.value > 0)
-
-  const startCooldown = () => {
-    secondsLeft.value = COOLDOWN_SECONDS
-    intervalId = setInterval(() => {
-      secondsLeft.value -= 1
-      if (secondsLeft.value <= 0) {
-        clearInterval(intervalId)
-        intervalId = undefined
-      }
-    }, 1000)
-  }
+  const { secondsLeft, isDisabled, start: startCooldown } = useCooldown(60)
 
   const resendConfirmationEmail = (email: string) => {
     resendEmail(
@@ -37,5 +22,5 @@ export function useResendEmailService() {
     )
   }
 
-  return { resendConfirmationEmail, isResendDisabled, secondsLeft }
+  return { resendConfirmationEmail, isResendDisabled: isDisabled, secondsLeft }
 }
