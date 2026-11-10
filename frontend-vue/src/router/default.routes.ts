@@ -10,39 +10,39 @@ export const defaultRoutes: RouteRecordRaw[] = [
   {
     path: '/me',
     name: 'me',
-    component: () => import('@/features/profile/ProfilePage.vue'),
+    component: () => import('@/features/profile/pages/ProfilePage.vue'),
     meta: {requiresAuth: true}
   },
   {
     path: '/games',
     name: 'games',
-    component: () => import('@/features/games/GameSearchPage.vue'),
+    component: () => import('@/features/games/pages/GameSearchPage.vue'),
   },
   {
     path: '/games/:id',
     name: 'game-detail',
-    component: () => import('@/features/games/GameDetailsPage.vue'),
+    component: () => import('@/features/games/pages/GameDetailsPage.vue'),
     props: true,
   },
   {
     path: '/events',
     name: 'events',
-    component: () => import('@/features/events/EventCalendarPage.vue'),
+    component: () => import('@/features/events/pages/EventCalendarPage.vue'),
   },
   {
     path: '/events/search',
     name: 'events-search',
-    component: () => import('@/features/events/EventSearchPage.vue')
+    component: () => import('@/features/events/pages/EventSearchPage.vue')
   },
   {
     path: '/events/:id',
     name: 'event-detail',
-    component: () => import('@/features/events/EventDetailsPage.vue')
+    component: () => import('@/features/events/pages/EventDetailsPage.vue')
   },
   {
     path: '/events/recommended',
     name: 'events-recommended',
-    component: () => import('@/features/events/RecommendedCalendarPage.vue'),
+    component: () => import('@/features/events/pages/RecommendedCalendarPage.vue'),
     meta: {requiresAuth: true}
   },
   {

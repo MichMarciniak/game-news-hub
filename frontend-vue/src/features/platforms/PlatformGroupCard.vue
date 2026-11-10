@@ -4,8 +4,8 @@ import { ref } from 'vue';
 
 
 defineProps<{
-  name: string,
-  platforms: PlatformDto[]
+  name?: string,
+  platforms?: PlatformDto[]
 }>()
 
 const open = ref(false)
@@ -21,11 +21,11 @@ const target = ref(null)
       @focusout="open = false"
       class=" border-surface border-2 rounded-lg py-1 px-2"
     >
-      <span>{{ name }}</span>
+      <span>{{ name ?? '' }}</span>
   </button>
     <div :class="{'hidden': !open}" 
       class="flex flex-col gap-1 absolute bg-emphasis p-2 rounded-lg">
-      <span v-for="p in platforms" :key="p.id">{{ p.name }}</span>
+      <span v-for="p in (platforms ?? [])" :key="p.id">{{ p.name }}</span>
     </div>
   </div>
 

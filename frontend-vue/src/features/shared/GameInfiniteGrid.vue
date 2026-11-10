@@ -1,8 +1,8 @@
 <script setup lang="ts">
 import { ref, computed, watch } from 'vue'
 import { useIntersectionObserver } from '@vueuse/core'
-import GameCard from '@/features/games/GameCard.vue'
-import GameGrid from '@/features/games/GameGrid.vue'
+import GameCard from '@/features/games/components/GameCard.vue'
+import GameGrid from '@/features/games/components/GameGrid.vue'
 import type { GameListItemDto } from '@/api/generated/models';
 
 const props = withDefaults(defineProps<{

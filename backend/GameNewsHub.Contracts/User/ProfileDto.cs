@@ -27,5 +27,6 @@ public class FullProfileDto
     public List<GenreDto> Genres { get; set; } = [];
     public List<EventListNameDto> Events { get; set; } = [];
     public List<PlatformGroupDto> PlatformGroups { get; set; } = [];
+    public List<GameListItemDto> Wishlist { get; set; } = [];
     public string? SteamId { get; set; }
 }

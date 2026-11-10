@@ -50,10 +50,13 @@ public class UserProfileService
     public async Task<ErrorOr<FullProfileDto>> GetFullProfile(int userId)
     {
         var user = await _context.Users
+            .AsNoTracking()
+            .AsSplitQuery()
             .Include(u => u.FollowedEvents)
             .Include(u => u.FollowedGames)
             .Include(u => u.FollowedGenres)
             .Include(u => u.FollowedPlatformGroups)
+            .Include(u => u.WishlistedGames)
             .FirstOrDefaultAsync(u => u.Id == userId);
 
         if (user == null)

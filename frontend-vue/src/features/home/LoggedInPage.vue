@@ -6,6 +6,7 @@ import { computed } from 'vue';
 import { useRouter } from 'vue-router';
 import RecommendedList from '../events/list/RecommendedList.vue';
 import EventWeekList from '../events/list/EventWeekList.vue';
+import FinishSetupPanel from './components/FinishSetupPanel.vue';
 
 const router = useRouter()
 
@@ -34,23 +35,7 @@ const gridCols = computed(() =>
       <EventWeekList />
       
       <!-- Follow platforms / genres -->
-      <div v-if="notFollowedPlatformsOrGenres">
-        <Panel class="h-full" :pt="{header: '!pb-0'}">
-          <template #header>
-            <h3 class="text-xl">Finish account creation</h3>
-          </template>
-          <div class="flex flex-col">
-            <Divider />
-            <div class="flex flex-col items-center gap-5">
-  
-              <span class="text-muted-color">Follow genres and platforms to personalize your recommendations.</span>
-              <RouterLink to="/me">
-                <Button variant="outlined">Go to profile</Button>
-              </RouterLink>
-            </div>
-          </div>
-        </Panel>
-      </div>
+      <FinishSetupPanel :is-incomplete="notFollowedPlatformsOrGenres" />
       
     </div>
     

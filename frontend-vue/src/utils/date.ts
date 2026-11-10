@@ -72,6 +72,6 @@ export function isInRange(
 
 export function addDays(date: Date, days: number) {
   var result = new Date(date);
-  result.setDate(result.getDate() + 7)
+  result.setDate(result.getDate() + days)
   return result
 }

@@ -29,6 +29,7 @@ public static partial class ProfileMapper
     [MapProperty(nameof(AppUser.FollowedGames), nameof(FullProfileDto.Games))]
     [MapProperty(nameof(AppUser.FollowedGenres), nameof(FullProfileDto.Genres))]
     [MapProperty(nameof(AppUser.FollowedPlatformGroups), nameof(FullProfileDto.PlatformGroups))]
+    [MapProperty(nameof(AppUser.WishlistedGames), nameof(FullProfileDto.Wishlist))]
     [MapperIgnoreTarget(nameof(FullProfileDto.Settings))]
     public static partial FullProfileDto ToFullDto(AppUser source);
 
