@@ -1,18 +1,20 @@
-<script setup lang="ts">
 import { useGetRecommendationEvents } from '@/api/generated';
 import { addDays } from '@/utils/date';
-import { ref, computed } from 'vue';
+import { ref, computed, watch } from 'vue';
 import EventFullDateItem from './EventFullDateItem.vue';
 import type { RecommendationResponse } from '@/api/generated/models';
 import type { EventListItemDto } from '@/api/generated/models';
+import Select from 'openvue/select';
 
+const limit = ref(5)
 
-const query = ref({
+const query = computed(() => ({
   from: new Date().toISOString(),
-  to: addDays(new Date(), 7).toISOString()
-})
+  to: addDays(new Date(), 7).toISOString(),
+  limit: limit.value
+}))
 
-const {data: responseData, isPending} = useGetRecommendationEvents(query)
+const {data: responseData, isPending, refetch} = useGetRecommendationEvents(query)
 
 const events = computed<EventListItemDto[]>(() => {
   const items = responseData.value?.events ?? []
@@ -25,35 +27,14 @@ const events = computed<EventListItemDto[]>(() => {
   }))
 })
 
-</script>
+const limitOptions = [
+  { label: '2', value: 2 },
+  { label: '5', value: 5 },
+  { label: '10', value: 10 },
+  { label: '20', value: 20 }
+]
 
-
-<template>
-  <Panel class="h-full" :pt="{header: '!pb-0'}">
-    <template #header>
-      <h3 class="text-xl">Recommended this week</h3>
-    </template>
-    <div class="flex flex-col">
-
-      <Divider />
-      <div class="flex flex-col gap-5 items-center">
-
-        <div v-if="isPending || events.length === 0">
-          <span class="text-muted-color">No recommended events.</span>
-        </div>
-        
-        <div v-else>
-          <EventFullDateItem v-for="e in events" :key="e.id" :event="e" />
-        </div>
-        <RouterLink to="/events/recommended">
-          <Button variant="outlined">
-            Go to calendar
-          </Button>
-
-        </RouterLink>
-      </div>
-    </div>
-
-  </Panel>
-
-</template>
+function onLimitChange(value: number) {
+  limit.value = value
+  refetch()
+}

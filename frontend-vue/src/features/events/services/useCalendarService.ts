@@ -1,10 +1,13 @@
 import { useGetEvents, useGetRecommendationEvents } from '@/api/generated'
 import type { EventListItemDto, RecommendationDto, RecommendationResponse } from '@/api/generated/models'
 import { isInRange } from '@/utils/date'
-import { computed, ref } from 'vue'
+import { computed, ref, type Ref, watch } from 'vue'
 import { keepPreviousData } from '@tanstack/vue-query'
 
-export function useCalendarService(apiType: 'events' | 'recommendations' = 'events') {
+export function useCalendarService(
+  apiType: 'events' | 'recommendations' = 'events',
+  limit?: Ref<number>
+) {
   const rangeStart = ref<Date>()
   const rangeEnd = ref<Date>()
 
@@ -13,23 +16,35 @@ export function useCalendarService(apiType: 'events' | 'recommendations' = 'even
 
   const apiHook = apiType === 'recommendations' ? useGetRecommendationEvents : useGetEvents
 
-  const { data: rawEventsData, isPending } = apiHook(
-    computed(() => ({
-      from: rangeStart.value?.toISOString(),
-      to: rangeEnd.value?.toISOString()
-    })),
+  const queryParams = computed(() => ({
+    from: rangeStart.value?.toISOString(),
+    to: rangeEnd.value?.toISOString(),
+    limit: limit?.value
+  }))
+
+  const { data: rawEventsData, isPending, refetch } = apiHook(
+    queryParams,
     {
       query: { placeholderData: keepPreviousData }
     }
   )
 
+  // Force refetch when limit changes
+  if (limit) {
+    watch(limit, () => {
+      refetch()
+    })
+  }
+
   // Extract just the events array for recommendations
-  const eventsData = computed(() => {
-    if (!rawEventsData.value) return []
+  const eventsData = computed<(EventListItemDto | RecommendationDto)[]>(() => {
+    const data = rawEventsData.value
+    if (!data) return []
     if (apiType === 'recommendations') {
-      return (rawEventsData.value as RecommendationResponse).events ?? []
+      const resp = data as RecommendationResponse
+      return resp.events ?? []
     }
-    return rawEventsData.value ?? []
+    return data as EventListItemDto[]
   })
 
   function handleRangeChange(start: Date, end: Date) {
