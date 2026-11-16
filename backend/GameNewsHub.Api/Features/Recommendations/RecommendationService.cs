@@ -90,8 +90,9 @@ public class RecommendationService
         var upcoming = events.Where(e => (e.EndTime ?? e.StartTime) > now).ToList();
         var archived = events.Where(e => (e.EndTime ?? e.StartTime) <= now).ToList();
 
-        var upcomingScored = await ScoreGroupAsync(profile, upcoming, isUpcoming: true, maxFollowers, ct);
-        var archivedScored = await ScoreGroupAsync(profile, archived, isUpcoming: false, maxFollowers, ct);
+        // Use Personalized mode: pure personal score, no popularity, no momentum
+        var upcomingScored = await ScoreGroupAsync(profile, upcoming, isUpcoming: true, maxFollowers, ScoringMode.Personalized, ct);
+        var archivedScored = await ScoreGroupAsync(profile, archived, isUpcoming: false, maxFollowers, ScoringMode.Personalized, ct);
 
         var dtos = upcomingScored.Select(r => (Result: r, IsUpcoming: true))
             .Concat(archivedScored.Select(r => (Result: r, IsUpcoming: false)))
@@ -121,12 +122,13 @@ public class RecommendationService
         List<Event> events,
         bool isUpcoming,
         int maxFollowers,
+        ScoringMode mode,
         CancellationToken ct)
     {
         if (events.Count == 0) return [];
 
         var vectors = await _representer.BuildEventVectorListAsync(events, ct);
-        var scored = await _engine.ScoreEventsAsync(profile, vectors, isUpcoming, maxFollowers, ct);
+        var scored = await _engine.ScoreEventsAsync(profile, vectors, isUpcoming, maxFollowers, mode, ct);
 
         return scored;
     }

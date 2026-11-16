@@ -11,6 +11,11 @@ public static class LabelCodes
     public const string FollowedSeries = "FollowedSeries";
 }
 
+public enum ScoringMode
+{
+    Personalized,
+    Hybrid
+}
 
 public class EventScoringEngine
 {
@@ -18,9 +23,9 @@ public class EventScoringEngine
     private readonly IdfCacheService _cache;
 
     private const float MomentumSmoothingK = 50.0f;
-    private const float MomentumCap = 0.5f; //max. 50% wzrostu w 24h
+    private const float MomentumCap = 0.5f;
 
-    private const float GameSaturation = 1.0f; //raw / (raw + c)
+    private const float GameSaturation = 1.0f;
     private const float ParentGameFactor = 0.5f;
     private const float MaxAlpha = 0.9f;
 
@@ -45,6 +50,7 @@ public class EventScoringEngine
         IEnumerable<EventVector> events,
         bool isUpcomingSection,
         int maxFollowers,
+        ScoringMode mode = ScoringMode.Hybrid,
         CancellationToken ct = default)
     {
         var eventList = events.ToList();
@@ -54,7 +60,7 @@ public class EventScoringEngine
             ? await LoadFollowerBaselineAsync(eventList.Select(e => e.EventId).ToList(), ct)
             : new Dictionary<int, int>();
 
-        return ScoreEvents(userProfile, eventList, baseline, isUpcomingSection, maxFollowers);
+        return ScoreEvents(userProfile, eventList, baseline, isUpcomingSection, maxFollowers, mode);
     }
 
 
@@ -65,7 +71,8 @@ public class EventScoringEngine
         UserProfileVector profile,
         IReadOnlyList<EventVector> events,
         IReadOnlyDictionary<int, int> followerBaseline,
-        bool isUpcomingSection, int maxFollowers)
+        bool isUpcomingSection, int maxFollowers,
+        ScoringMode mode = ScoringMode.Hybrid)
     {
         if (events.Count == 0) return [];
 
@@ -109,7 +116,7 @@ public class EventScoringEngine
                 }
             }
 
-            float gameFacet = gameRaw / (gameRaw + GameSaturation); // 0 ... 1
+            float gameFacet = gameRaw / (gameRaw + GameSaturation);
             
             if (directHits > 0) result.Labels.Add(new RecLabel(LabelCodes.FollowedGame, directHits));
             if (parentHits > 0) result.Labels.Add(new RecLabel(LabelCodes.FollowedGameAddon, parentHits));
@@ -131,9 +138,9 @@ public class EventScoringEngine
             result.SeriesFacetContribution = seriesFacet * wSeries;
 
             result.PersonalScore = result.GameFacetContribution
-                                   + result.GenreFacetContribution
-                                   + result.PlatformGroupFacetContribution
-                                   + result.SeriesFacetContribution;
+                                       + result.GenreFacetContribution
+                                       + result.PlatformGroupFacetContribution
+                                       + result.SeriesFacetContribution;
 
             result.PopularityScore = Math.Min(1f, MathF.Log(evt.FollowerCount + 1) / logMax);
 
@@ -144,9 +151,21 @@ public class EventScoringEngine
                 result.MomentumScore = Math.Min(1f, raw / MomentumCap);
             }
 
-            result.FinalScore = (alpha * result.PersonalScore)
-                                + ((1f - alpha) * result.PopularityScore)
-                                + (beta * result.MomentumScore);
+            // Apply scoring mode
+            switch (mode)
+            {
+                case ScoringMode.Personalized:
+                    // Pure personal score, no popularity, no momentum
+                    result.FinalScore = result.PersonalScore;
+                    break;
+                    
+                case ScoringMode.Hybrid:
+                default:
+                    result.FinalScore = (alpha * result.PersonalScore)
+                                        + ((1f - alpha) * result.PopularityScore)
+                                        + (beta * result.MomentumScore);
+                    break;
+            }
             
             results.Add(result);
         }
