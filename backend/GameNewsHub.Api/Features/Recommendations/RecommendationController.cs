@@ -25,11 +25,12 @@ public class RecommendationController : ControllerBase
     public async Task<ActionResult<RecommendationResponse>> GetEvents(
         [FromQuery] DateTimeOffset? from,
         [FromQuery] DateTimeOffset? to,
+        [FromQuery] int? limit,
         CancellationToken ct = default)
     {
         int? userId = int.TryParse(User.FindFirstValue(ClaimTypes.NameIdentifier), out var id) ? id : null;
 
-        return Ok(await _service.GetRecommendationsAsync(userId, from, to, ct));
+        return Ok(await _service.GetRecommendationsAsync(userId, from, to, limit, ct));
     }
 
 }

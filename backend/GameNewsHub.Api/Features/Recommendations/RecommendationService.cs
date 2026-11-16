@@ -41,10 +41,12 @@ public class RecommendationService
     /// <param name="userId">null = uzytkownik niezalogowany (popularnosc + momentum)</param>
     /// <param name="from">poczatek zakresu (kalendarz: zwykle poczatek miesiaca)</param>
     /// <param name="to">koniec zakresu</param>
+    /// <param name="limit">Maksymalna liczba wyników (null = domyślna z config)</param>
     public async Task<RecommendationResponse> GetRecommendationsAsync(
         int? userId,
         DateTimeOffset? from,
         DateTimeOffset? to,
+        int? limit = null,
         CancellationToken ct = default)
     {
         var stopwatch = Stopwatch.StartNew();
@@ -90,24 +92,38 @@ public class RecommendationService
         var upcoming = events.Where(e => (e.EndTime ?? e.StartTime) > now).ToList();
         var archived = events.Where(e => (e.EndTime ?? e.StartTime) <= now).ToList();
 
-        var upcomingScored = await ScoreGroupAsync(profile, upcoming, isUpcoming: true, maxFollowers, ct);
-        var archivedScored = await ScoreGroupAsync(profile, archived, isUpcoming: false, maxFollowers, ct);
+        // Use Personalized mode: pure personal score, no popularity, no momentum
+        var upcomingScored = await ScoreGroupAsync(profile, upcoming, isUpcoming: true, maxFollowers, ScoringMode.Personalized, ct);
+        var archivedScored = await ScoreGroupAsync(profile, archived, isUpcoming: false, maxFollowers, ScoringMode.Personalized, ct);
 
-        var dtos = upcomingScored.Select(r => (Result: r, IsUpcoming: true))
+        // Combine and sort all scored events
+        var allScored = upcomingScored.Select(r => (Result: r, IsUpcoming: true))
             .Concat(archivedScored.Select(r => (Result: r, IsUpcoming: false)))
             .OrderByDescending(x => x.Result.FinalScore)
-            .Where(x => x.Result.FinalScore >= _options.Threshold)
-            .Select(x =>
-            {
-                var dto = _mapper.MapToRecommendation(x.Result, eventsById[x.Result.EventVector.EventId]);
-                dto.IsUpcoming = x.IsUpcoming;
-                return dto;
-            })
             .ToList();
 
+        // Hybrid threshold + minResults: first filter by threshold, then ensure minimum results
+        var thresholdFiltered = allScored.Where(x => x.Result.FinalScore >= _options.Threshold).ToList();
+        var minResults = _options.MinResults;
+
+        var finalResults = thresholdFiltered.Count >= minResults
+            ? thresholdFiltered
+            : allScored.Take(Math.Max(minResults, thresholdFiltered.Count)).ToList();
+
+        // Apply user limit (or default)
+        var effectiveLimit = limit ?? _options.DefaultLimit;
+        finalResults = finalResults.Take(effectiveLimit).ToList();
+
+        var dtos = finalResults.Select(x =>
+        {
+            var dto = _mapper.MapToRecommendation(x.Result, eventsById[x.Result.EventVector.EventId]);
+            dto.IsUpcoming = x.IsUpcoming;
+            return dto;
+        }).ToList();
+
         _logger.LogInformation(
-            "Recommendations for user {UserId}: {Candidates} candidates, {Returned} returned, alpha {Alpha:F2}, {Ms} ms",
-            userId, events.Count, dtos.Count, profile.Alpha, stopwatch.ElapsedMilliseconds);
+            "Recommendations for user {UserId}: {Candidates} candidates, {ThresholdFiltered} above threshold, {Returned} returned, alpha {Alpha:F2}, {Ms} ms",
+            userId, allScored.Count, thresholdFiltered.Count, dtos.Count, profile.Alpha, stopwatch.ElapsedMilliseconds);
 
         return new RecommendationResponse
         {
@@ -121,12 +137,13 @@ public class RecommendationService
         List<Event> events,
         bool isUpcoming,
         int maxFollowers,
+        ScoringMode mode,
         CancellationToken ct)
     {
         if (events.Count == 0) return [];
 
         var vectors = await _representer.BuildEventVectorListAsync(events, ct);
-        var scored = await _engine.ScoreEventsAsync(profile, vectors, isUpcoming, maxFollowers, ct);
+        var scored = await _engine.ScoreEventsAsync(profile, vectors, isUpcoming, maxFollowers, mode, ct);
 
         return scored;
     }

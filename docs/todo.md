@@ -5,6 +5,9 @@
 - zaznaczanie daty w kalendarzu - jakiś efekt wizualny
 - rekomendacje - obecny jest do wyrzucenia (testowy)
 - uzupełnić `docs/`
+
+### Steam
+- zamiast po url, to jest external_game i external_game_source - od razu jest id
 ### maybe do
 - sync button w admin panelu? - np. jak błąd przy pobieraniu z igdb albo coś zaktualizują
 - testy (przydałyby się)

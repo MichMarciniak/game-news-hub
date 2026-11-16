@@ -1,13 +1,13 @@
-> obecna implementacja jest testowa i słaba
+
 ## Cel
+
+## NOtatki
+- wyrzucam popularity z rekomendacji - rekomendacje powinny być do użytkownika, bez względu na innych.
 
 
 ## Główne elementy
 
 ### Baza danych
-```mermaid
-
-```
 
 ## Przepływ
 -

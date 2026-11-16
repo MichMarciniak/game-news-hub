@@ -1,16 +1,16 @@
-
 <script setup lang="ts">
-import type { EventListItemDto } from '@/api/generated/models';
+import type { EventListItemDto, RecommendationDto } from '@/api/generated/models';
 import { monthDayFormatter } from '@/utils/date';
 import EventDayItem from './EventDayItem.vue';
-import { OiBan, OiTimes } from '@openvue/openicons-vue';
+import RecommendationDayItem from './RecommendationDayItem.vue';
+import { OiTimes } from '@openvue/openicons-vue';
 import EventFullDateItem from '@/features/events/list/EventFullDateItem.vue';
 
 const props = defineProps<{
-  events: EventListItemDto[],
-  date: Date
+  events: (EventListItemDto | RecommendationDto)[],
+  date: Date,
+  isRecommendations?: boolean
 }>()
-
 </script>
 
 <template>
@@ -22,8 +22,9 @@ const props = defineProps<{
     <div class="flex flex-col items-center">
       <Divider class="max-w-[90%]"/>
       <div class=" w-full mb-4">
-        <template v-if="events">
-          <EventFullDateItem v-for="e in events" :key="e.id" :event="e"/>
+        <template v-if="events && events.length">
+          <RecommendationDayItem v-if="props.isRecommendations" v-for="e in events" :key="e.id" :event="e" />
+          <EventFullDateItem v-else v-for="e in events" :key="e.id" :event="e" />
         </template>
         <div v-else class="flex flex-col mx-auto items-center text-muted-color">
           <OiTimes size="2rem"/>
