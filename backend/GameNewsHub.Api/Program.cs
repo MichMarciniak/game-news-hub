@@ -41,6 +41,7 @@ var dbOptions = services.AddValidatedOptions<DatabaseOptions>(config);
 var frontendOptions = services.AddValidatedOptions<FrontendOptions>(config);
 var seqOptions = services.AddValidatedOptions<SeqOptions>(config);
 var igdbOptions = services.AddValidatedOptions<IgdbOptions>(config);
+var apiRateLimitOptions = services.AddValidatedOptions<ApiRateLimitOptions>(config);
 
 var devAuth = config.GetValue<bool>("DevAuth");
 
@@ -124,6 +125,9 @@ services.AddCors(options =>
     });
 });
 
+// RATE LIMITING
+services.AddRateLimiting(apiRateLimitOptions);
+
 services.Configure<RouteOptions>(opt =>
 {
     opt.LowercaseUrls = true;
@@ -178,6 +182,8 @@ app.Lifetime.ApplicationStarted.Register(() =>
 
 // app.UseHttpsRedirection();
 app.UseCors(FrontendCorsPolicy);
+
+app.UseRateLimiter();
 
 app.UseAuthentication();
 

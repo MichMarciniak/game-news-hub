@@ -4,6 +4,7 @@ using GameNewsHub.Contracts.Auth;
 using GameNewsHub.Contracts.User;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.RateLimiting;
 
 namespace GameNewsHub.Api.Features.Auth;
 
@@ -19,6 +20,7 @@ public class AuthController : ControllerBase
     }
 
     [HttpPost("register")]
+    [EnableRateLimiting("AuthStrict")]
     public async Task<ActionResult<EmailDto>> PostRegister(RegisterDto request)
     {
         var result = await _service.Register(request);
@@ -26,6 +28,7 @@ public class AuthController : ControllerBase
     }
 
     [HttpPost("login")]
+    [EnableRateLimiting("AuthStrict")]
     public async Task<ActionResult<ProfileDto>> PostLogin(LoginDto request)
     {
         var result = await _service.Login(request);
@@ -33,6 +36,7 @@ public class AuthController : ControllerBase
     }
 
     [HttpPost("logout")]
+    [EnableRateLimiting("AuthModerate")]
     public async Task<IActionResult> PostLogout()
     {
         await _service.Logout();
@@ -41,6 +45,7 @@ public class AuthController : ControllerBase
 
     [HttpPost("logout-all")]
     [Authorize]
+    [EnableRateLimiting("AuthModerate")]
     public async Task<IActionResult> PostLogoutAll()
     {
         var userId = User.GetId();
@@ -49,6 +54,7 @@ public class AuthController : ControllerBase
     }
 
     [HttpPost("confirm-email")]
+    [EnableRateLimiting("AuthStrict")]
     public async Task<IActionResult> PostConfirmEmail(EmailConfirmDto request)
     {
         var result = await _service.ConfirmEmail(request.UserId, request.Token);
@@ -56,6 +62,7 @@ public class AuthController : ControllerBase
     }
 
     [HttpPost("resend-email")]
+    [EnableRateLimiting("AuthStrict")]
     public async Task<IActionResult> PostResendConfirmation(EmailDto request)
     {
         var result = await _service.ResendConfirmation(request.Email);
@@ -63,6 +70,7 @@ public class AuthController : ControllerBase
     }
 
     [HttpPost("forgot-password")]
+    [EnableRateLimiting("AuthStrict")]
     public async Task<IActionResult> PostRequestPasswordReset(EmailDto request)
     {
         var result = await _service.RequestPasswordReset(request.Email);
@@ -70,6 +78,7 @@ public class AuthController : ControllerBase
     }
 
     [HttpPost("reset-password")]
+    [EnableRateLimiting("AuthStrict")]
     public async Task<IActionResult> PostResetPassword(ResetPasswordDto request)
     {
         var result = await _service.ResetPassword(request.UserId, request.Token, request.Password);
@@ -78,6 +87,7 @@ public class AuthController : ControllerBase
 
     [HttpPost("change-password")]
     [Authorize]
+    [EnableRateLimiting("AuthModerate")]
     public async Task<IActionResult> PostChangePassword(ChangePasswordDto request)
     {
         var userId = User.GetId();

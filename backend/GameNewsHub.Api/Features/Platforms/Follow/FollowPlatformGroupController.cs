@@ -2,6 +2,7 @@ using GameNewsHub.Api.Extensions;
 using GameNewsHub.Api.Features.Shared;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.RateLimiting;
 
 namespace GameNewsHub.Api.Features.Platforms.Follow;
 
@@ -20,6 +21,7 @@ public class FollowPlatformGroupController : ControllerBase
     }
     
     [HttpPost("groups/{id}/follow")]
+    [EnableRateLimiting("WriteModerate")]
     public async Task<IActionResult> PostFollowGroup(int id)
     {
         var userId = User.GetId();
@@ -28,6 +30,7 @@ public class FollowPlatformGroupController : ControllerBase
     }
 
     [HttpDelete("groups/{id}/follow")]
+    [EnableRateLimiting("WriteModerate")]
     public async Task<IActionResult> DeleteFollowGroup(int id)
     {
         var userId = User.GetId();
