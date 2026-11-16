@@ -1,11 +1,13 @@
 using GameNewsHub.Contracts;
 using GameNewsHub.Contracts.Genres;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.RateLimiting;
 
 namespace GameNewsHub.Api.Features.Genres;
 
 [ApiController]
 [Route("genres")]
+[EnableRateLimiting("ReadLenient")]
 public class GenreController : ControllerBase
 {
     private readonly GenreService _service;

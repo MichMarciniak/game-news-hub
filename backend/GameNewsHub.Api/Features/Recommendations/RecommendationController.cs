@@ -4,12 +4,14 @@ using GameNewsHub.Contracts.Recommendations;
 using GameNewsHub.Recommendation;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.RateLimiting;
 
 namespace GameNewsHub.Api.Features.Recommendations;
 
 [ApiController]
 [Route("[controller]")]
 [Authorize]
+[EnableRateLimiting("ReadLenient")]
 public class RecommendationController : ControllerBase
 {
     private readonly RecommendationService _service;

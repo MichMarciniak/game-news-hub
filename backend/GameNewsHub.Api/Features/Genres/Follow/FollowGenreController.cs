@@ -1,6 +1,7 @@
 using GameNewsHub.Api.Extensions;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.RateLimiting;
 
 namespace GameNewsHub.Api.Features.Genres.Follow;
 
@@ -21,6 +22,7 @@ public class FollowGenreController : ControllerBase
     
     
     [HttpPost("{id}/follow")]
+    [EnableRateLimiting("WriteModerate")]
     public async Task<IActionResult> PostFollowGenre(int id)
     {
         var userId = User.GetId();
@@ -29,6 +31,7 @@ public class FollowGenreController : ControllerBase
     }
 
     [HttpDelete("{id}/follow")]
+    [EnableRateLimiting("WriteModerate")]
     public async Task<IActionResult> DeleteFollowGenre(int id)
     {
         var userId = User.GetId();

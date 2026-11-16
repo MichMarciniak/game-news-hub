@@ -5,11 +5,13 @@ using GameNewsHub.Contracts.Games;
 using GameNewsHub.Contracts.Shared;
 using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.RateLimiting;
 
 namespace GameNewsHub.Api.Features.Games;
 
 [ApiController]
 [Route("games")]
+[EnableRateLimiting("ReadLenient")]
 public class GameController : ControllerBase
 {
     private readonly GameService _service;

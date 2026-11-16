@@ -4,11 +4,13 @@ using GameNewsHub.Contracts;
 using GameNewsHub.Contracts.Events;
 using GameNewsHub.Contracts.Shared;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.RateLimiting;
 
 namespace GameNewsHub.Api.Features.Events;
 
 [ApiController]
 [Route("events")]
+[EnableRateLimiting("ReadLenient")]
 public class EventController : ControllerBase
 {
     private readonly EventService _service;

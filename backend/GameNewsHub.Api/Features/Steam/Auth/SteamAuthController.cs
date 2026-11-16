@@ -2,6 +2,7 @@ using GameNewsHub.Api.Extensions;
 using GameNewsHub.Api.Options;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.RateLimiting;
 using Microsoft.Extensions.Options;
 
 namespace GameNewsHub.Api.Features.Steam.Auth;
@@ -24,6 +25,7 @@ public class SteamAuthController : ControllerBase
     }
 
     [HttpGet("connect")]
+    [EnableRateLimiting("SteamAuth")]
     public async Task<ActionResult<string>> GetSteamLoginUrl()
     {
         var result = _authService.GetLoginUrl();
@@ -34,6 +36,7 @@ public class SteamAuthController : ControllerBase
     
     [HttpGet("connect/redirect")]
     [ProducesResponseType(StatusCodes.Status302Found)]
+    [EnableRateLimiting("SteamAuth")]
     public async Task<IActionResult> GetSteamLoginUrlRedirect()
     {
         var result = _authService.GetLoginUrl();
@@ -43,6 +46,7 @@ public class SteamAuthController : ControllerBase
     
     [HttpGet("callback")]
     [ProducesResponseType(StatusCodes.Status302Found)]
+    [EnableRateLimiting("SteamAuth")]
     public async Task<IActionResult> GetSteamCallback()
     {
         var userId = User.GetId();

@@ -5,6 +5,7 @@ using GameNewsHub.Contracts.Games;
 using GameNewsHub.Contracts.User;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.RateLimiting;
 
 namespace GameNewsHub.Api.Features.Steam;
 
@@ -23,6 +24,7 @@ public class SteamApiController : ControllerBase
     }
 
     [HttpGet("import/games")]
+    [EnableRateLimiting("SteamApi")]
     public async Task<ActionResult<SteamGameWrapperDto>> GetGamesFromSteam()
     {
         var userId = User.GetId();
@@ -31,6 +33,7 @@ public class SteamApiController : ControllerBase
     }
 
     [HttpGet("import/wishlist")]
+    [EnableRateLimiting("SteamApi")]
     public async Task<ActionResult<WishlistDto>> GetWishlistFromSteam()
     {
         var userId = User.GetId();

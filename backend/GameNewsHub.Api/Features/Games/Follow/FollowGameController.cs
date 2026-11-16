@@ -4,6 +4,7 @@ using GameNewsHub.Contracts;
 using GameNewsHub.Contracts.Shared;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.RateLimiting;
 
 namespace GameNewsHub.Api.Features.Games.Follow;
 
@@ -22,6 +23,7 @@ public class FollowGameController : ControllerBase
     }
     
     [HttpPost("{id}/follow")]
+    [EnableRateLimiting("WriteModerate")]
     public async Task<IActionResult> PostFollowGame(int id)
     {
         var userId = User.GetId();
@@ -30,6 +32,7 @@ public class FollowGameController : ControllerBase
     }
 
     [HttpDelete("{id}/follow")]
+    [EnableRateLimiting("WriteModerate")]
     public async Task<IActionResult> DeleteFollowGame(int id)
     {
         var userId = User.GetId();
@@ -38,6 +41,7 @@ public class FollowGameController : ControllerBase
     }
 
     [HttpPost("batch/follow")]
+    [EnableRateLimiting("WriteModerate")]
     public async Task<IActionResult> PostBatchFollowGames([FromBody] BatchFollowDto<int> gameIds)
     {
         var userId = User.GetId();

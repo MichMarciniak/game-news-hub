@@ -1,6 +1,7 @@
 using GameNewsHub.Api.Extensions;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.RateLimiting;
 
 namespace GameNewsHub.Api.Features.Events.Follow;
 
@@ -19,6 +20,7 @@ public class FollowEventController : ControllerBase
     }
     
     [HttpPost("{id}/follow")]
+    [EnableRateLimiting("WriteModerate")]
     public async Task<IActionResult> PostFollowEvent(int id)
     {
         var userId = User.GetId();
@@ -27,6 +29,7 @@ public class FollowEventController : ControllerBase
     }
 
     [HttpDelete("{id}/follow")]
+    [EnableRateLimiting("WriteModerate")]
     public async Task<IActionResult> DeleteFollowEvent(int id)
     {
         var userId = User.GetId();
@@ -34,5 +37,4 @@ public class FollowEventController : ControllerBase
         return result.ToNoContent(this);
     }
     
-
 }

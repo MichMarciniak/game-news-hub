@@ -4,6 +4,7 @@ using GameNewsHub.Contracts;
 using GameNewsHub.Contracts.Games;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.RateLimiting;
 
 namespace GameNewsHub.Api.Features.Users.Wishlist;
 
@@ -22,6 +23,7 @@ public class UserWishlistController : UserControllerBase
     
     
     [HttpGet("wishlist")]
+    [EnableRateLimiting("ReadLenient")]
     public async Task<ActionResult<List<GameListItemDto>>> GetWishlist()
     {
         var userId = User.GetId();
@@ -31,6 +33,7 @@ public class UserWishlistController : UserControllerBase
     }
 
     [HttpPost("wishlist/games/{gameId}")]
+    [EnableRateLimiting("WriteModerate")]
     public async Task<IActionResult> PostGame(int gameId)
     {
         var userId = User.GetId();
@@ -39,6 +42,7 @@ public class UserWishlistController : UserControllerBase
         return result.ToNoContent(this);
     }
     [HttpDelete("wishlist/games/{gameId}")]
+    [EnableRateLimiting("WriteModerate")]
     public async Task<IActionResult> DeleteGame(int gameId)
     {
         var userId = User.GetId();
