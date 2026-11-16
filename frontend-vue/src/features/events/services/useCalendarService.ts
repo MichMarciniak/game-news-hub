@@ -1,5 +1,5 @@
 import { useGetEvents, useGetRecommendationEvents } from '@/api/generated'
-import type { EventListItemDto } from '@/api/generated/models/eventListItemDto.ts'
+import type { EventListItemDto, RecommendationDto, RecommendationResponse } from '@/api/generated/models'
 import { isInRange } from '@/utils/date'
 import { computed, ref } from 'vue'
 import { keepPreviousData } from '@tanstack/vue-query'
@@ -9,11 +9,11 @@ export function useCalendarService(apiType: 'events' | 'recommendations' = 'even
   const rangeEnd = ref<Date>()
 
   const selectedDate = ref<Date>(new Date())
-  const selectedDateEvents = ref<EventListItemDto[]>([])
+  const selectedDateEvents = ref<(EventListItemDto | RecommendationDto)[]>([])
 
   const apiHook = apiType === 'recommendations' ? useGetRecommendationEvents : useGetEvents
 
-  const { data: eventsData, isPending } = apiHook(
+  const { data: rawEventsData, isPending } = apiHook(
     computed(() => ({
       from: rangeStart.value?.toISOString(),
       to: rangeEnd.value?.toISOString()
@@ -22,6 +22,15 @@ export function useCalendarService(apiType: 'events' | 'recommendations' = 'even
       query: { placeholderData: keepPreviousData }
     }
   )
+
+  // Extract just the events array for recommendations
+  const eventsData = computed(() => {
+    if (!rawEventsData.value) return []
+    if (apiType === 'recommendations') {
+      return (rawEventsData.value as RecommendationResponse).events ?? []
+    }
+    return rawEventsData.value ?? []
+  })
 
   function handleRangeChange(start: Date, end: Date) {
     rangeStart.value = start
@@ -35,11 +44,8 @@ export function useCalendarService(apiType: 'events' | 'recommendations' = 'even
 
   function updateSelectedDateEvents() {
     if (!eventsData.value) return []
-    const items = apiType === 'recommendations'
-      ? (eventsData.value as any).events ?? []
-      : (eventsData.value ?? [])
-    selectedDateEvents.value = items.filter(
-      (e: EventListItemDto) => isInRange(selectedDate.value, e.startTime as string, e.endTime as string | undefined)
+    selectedDateEvents.value = eventsData.value.filter(
+      (e: EventListItemDto | RecommendationDto) => isInRange(selectedDate.value, e.startTime as string, e.endTime as string | undefined)
     )
   }
 

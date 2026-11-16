@@ -22,13 +22,15 @@ const {
       class="lg:w-[80%]"
       :events="eventsData as any[]"
       :selected-date="selectedDate"
+      :is-recommendations="true"
       @range-change="handleRangeChange"
       @date-select="handleDateSelect"
     />
     <EventDayList
       class="w-full lg:w-[20%]"
       :events="selectedDateEvents" 
-      :date="selectedDate" 
+      :date="selectedDate"
+      :is-recommendations="true"
     />
   </div>
 </template>

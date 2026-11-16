@@ -5,14 +5,16 @@ import dayGridPlugin from '@fullcalendar/daygrid'
 import interactionPlugin from '@fullcalendar/interaction'
 import type { CalendarOptions, DatesSetArg, EventClickArg, DayCellMountArg } from '@fullcalendar/core'
 import type { DateClickArg } from '@fullcalendar/interaction'
-import type { EventListItemDto } from '@/api/generated/models'
+import type { EventListItemDto, RecommendationDto } from '@/api/generated/models'
 import CalendarHeader from './CalendarHeader.vue'
 import { isTodayInRange } from '@/utils/date.ts'
 import EventPopover from './EventPopover.vue'
+import RecommendationPopover from './RecommendationPopover.vue'
 
 const props = defineProps<{
-  events: EventListItemDto[],
-  selectedDate?: Date
+  events: (EventListItemDto | RecommendationDto)[],
+  selectedDate?: Date,
+  isRecommendations?: boolean
 }>()
 
 const emit = defineEmits<{
@@ -24,16 +26,16 @@ const title = ref('')
 const currentView = ref('dayGridMonth')
 const today = ref(true)
 
-const popoverRef = ref<InstanceType<typeof EventPopover> | null>(null)
-const selectedEvent = ref<EventListItemDto | null>(null)
+const popoverRef = ref<InstanceType<typeof EventPopover> | InstanceType<typeof RecommendationPopover> | null>(null)
+const selectedEvent = ref<EventListItemDto | RecommendationDto | null>(null)
 
-const toCalendarEvent = (event: EventListItemDto) => {
+const toCalendarEvent = (event: EventListItemDto | RecommendationDto) => {
   return {
     id: String(event.id),
     title: event.name,
     start: event.startTime,
     end: event.endTime ?? undefined,
-    extendedProps: {raw: event }
+    extendedProps: { raw: event }
   }
 }
 
@@ -42,7 +44,7 @@ const events = computed(() => (props.events ?? []).map((e) => toCalendarEvent(e)
 
 
 function handleEventClick(clickInfo: EventClickArg) {
-  selectedEvent.value = clickInfo.event.extendedProps.raw as EventListItemDto
+  selectedEvent.value = clickInfo.event.extendedProps.raw as EventListItemDto | RecommendationDto
   popoverRef.value?.open(clickInfo.jsEvent, clickInfo.el, clickInfo.event.id)
 }
 
@@ -142,6 +144,12 @@ function changeView(view: string) {
     <FullCalendar ref="calendarRef" :options="calendarOptions"/>
 
     <EventPopover 
+      v-if="!props.isRecommendations"
+      ref="popoverRef"
+      :event="selectedEvent"
+    />
+    <RecommendationPopover 
+      v-else
       ref="popoverRef"
       :event="selectedEvent"
     />
