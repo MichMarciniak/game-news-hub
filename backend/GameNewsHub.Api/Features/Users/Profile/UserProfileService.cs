@@ -6,6 +6,8 @@ using GameNewsHub.Api.Features.Platforms;
 using GameNewsHub.Contracts;
 using GameNewsHub.Contracts.User;
 using GameNewsHub.Data;
+using GameNewsHub.Data.Entities;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 
 namespace GameNewsHub.Api.Features.Users.Profile;
@@ -13,10 +15,12 @@ namespace GameNewsHub.Api.Features.Users.Profile;
 public class UserProfileService
 {
     private readonly AppDbContext _context;
+    private readonly UserManager<AppUser> _userManager;
 
-    public UserProfileService(AppDbContext context)
+    public UserProfileService(AppDbContext context, UserManager<AppUser> userManager)
     {
         _context = context;
+        _userManager = userManager;
     }
 
     public async Task<ErrorOr<ProfileDto>> GetProfile(int userId)
@@ -31,6 +35,8 @@ public class UserProfileService
         var result = ProfileMapper.ToDto(user);
         result.Settings = settings;
         result.IsAdmin = false;
+        result.IsGoogleConnected = (await _userManager.GetLoginsAsync(user))
+            .Any(l => l.LoginProvider == "Google");
         return result;
     }
 
@@ -65,6 +71,8 @@ public class UserProfileService
         var settings = ProfileMapper.ToSettingsDto(user);
         var result = ProfileMapper.ToFullDto(user);
         result.Settings = settings;
+        result.IsGoogleConnected = (await _userManager.GetLoginsAsync(user))
+            .Any(l => l.LoginProvider == "Google");
         return result;
     }
 }

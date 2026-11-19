@@ -50,13 +50,22 @@ export default defineConfig(({ mode }) => {
     },
   },
   server: {
-    allowedHosts: ['debpc', 'debpc:5173'],
+    allowedHosts: ['localhost', 'localhost:5173'],
     proxy: {
       '/api': {
         target: proxyTarget,
         changeOrigin: true,
         secure: false,
         rewrite: (path) => path.replace(/^\/api/, ''),
+        configure: (proxy) => {
+          proxy.on('proxyReq', (proxyReq, req) => {
+            // Forward cookies from the browser request to the backend
+            const cookie = req.headers.cookie;
+            if (cookie) {
+              proxyReq.setHeader('cookie', cookie);
+            }
+          });
+        },
       },
     },
   },

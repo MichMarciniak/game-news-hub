@@ -7,6 +7,11 @@ export const authRoutes: RouteRecordRaw[] = [
     component: () => import('@/features/auth/pages/LoginPage.vue')
   },
   {
+    path: '/auth/callback',
+    name: 'auth-callback',
+    component: () => import('@/features/auth/pages/AuthCallbackPage.vue')
+  },
+  {
     path: '/register',
     name: 'register',
     component: () => import('@/features/auth/pages/RegisterPage.vue')

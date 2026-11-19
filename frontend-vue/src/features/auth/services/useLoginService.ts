@@ -9,14 +9,14 @@ export function useLoginService() {
   const toast = useToast()
   const loginError = ref<string | null>(null)
 
-  const login = async (rawValues: unknown, redirectPath?: string) => {
+  const login = async (rawValues: unknown) => {
     loginError.value = null
     const values = loginSchema.parse(rawValues) as LoginDto
 
     try {
       await authStore.login(values)
       toast.add({ severity: 'success', summary: 'Logged in', detail: 'Welcome back', life: 3000 })
-      return { success: true, redirectTo: redirectPath || '/' }
+      return { success: true }
     } catch {
       loginError.value = 'Invalid email or password'
       return { success: false, error: loginError.value }

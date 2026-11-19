@@ -83,6 +83,9 @@ namespace Data.Migrations
                     b.Property<DateTimeOffset?>("LockoutEnd")
                         .HasColumnType("timestamp with time zone");
 
+                    b.Property<string>("Name")
+                        .HasColumnType("text");
+
                     b.Property<string>("NormalizedEmail")
                         .HasMaxLength(256)
                         .HasColumnType("character varying(256)");
@@ -396,10 +399,6 @@ namespace Data.Migrations
 
                     b.Property<int>("AppUserId")
                         .HasColumnType("integer");
-
-                    b.Property<string>("FriendSteamIds")
-                        .IsRequired()
-                        .HasColumnType("text");
 
                     b.Property<DateTimeOffset>("LastImportedAt")
                         .HasColumnType("timestamp with time zone");

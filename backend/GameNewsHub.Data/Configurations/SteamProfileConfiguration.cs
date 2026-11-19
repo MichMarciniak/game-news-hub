@@ -15,13 +15,6 @@ public class SteamProfileConfiguration : IEntityTypeConfiguration<SteamProfile>
 
         builder.Property(x => x.LastImportedAt).IsRequired();
 
-        builder.Property(x => x.FriendSteamIds)
-            .HasConversion(
-                v => string.Join(',', v),
-                v => v.Split(',', StringSplitOptions.RemoveEmptyEntries)
-                    .Select(ulong.Parse)
-                    .ToList());
-
         builder.HasOne(x => x.AppUser)
             .WithOne(au => au.SteamProfile)
             .HasForeignKey<SteamProfile>(x => x.AppUserId)

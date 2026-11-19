@@ -10,6 +10,7 @@ import PlatformFollowCard from '@/features/platforms/PlatformFollowCard.vue'
 import Settings from '@/features/profile/components/Settings.vue'
 import { useRouter } from 'vue-router'
 import SteamContainer from '@/features/profile/steam/SteamContainer.vue'
+import GoogleContainer from '@/features/profile/google/GoogleContainer.vue'
 import GameGrid from '@/features/games/components/GameGrid.vue'
 import GameCard from '@/features/games/components/GameCard.vue'
 import GameCardWishlist from '@/features/games/components/GameCardWishlist.vue'
@@ -55,13 +56,14 @@ function onLogout(fn: Function) {
 
       <div class="mt-4">
         <SteamContainer />
+        <GoogleContainer />
       </div>
     </div>
 
     <!-- Right column: tabs -->
     <div class="flex flex-col gap-6">
       <Tabs :value="activeTab" class="mt-2">
-        <TabList class="flex flex-wrap gap-2 mb-6">
+        <TabList class="flex flex-wrap gap-2">
           <Tab value="settings">Settings</Tab>
           <Tab value="followed-games">Followed games</Tab>
           <Tab value="followed-events">Followed events</Tab>
@@ -79,7 +81,7 @@ function onLogout(fn: Function) {
 
           <!-- Followed games -->
           <TabPanel value="followed-games">
-            <h2 class="text-xl font-semibold mb-4">Followed games</h2>
+            <h2 class="text-xl font-semibold my-4">Followed games</h2>
             <div v-if="gamesPending" class="flex flex-col gap-2">
               <div class="h-4 bg-surface-200 rounded w-1/3 mb-2"></div>
               <div class="h-6 bg-surface-200 rounded w-full mb-4"></div>
@@ -92,7 +94,7 @@ function onLogout(fn: Function) {
 
           <!-- Followed events -->
           <TabPanel value="followed-events">
-            <h2 class="text-xl font-semibold mb-4">Followed events</h2>
+            <h2 class="text-xl font-semibold my-4">Followed events</h2>
             <div v-if="eventsPending" class="flex flex-col gap-2">
               <div class="h-4 bg-surface-200 rounded w-1/3 mb-2"></div>
               <div class="h-6 bg-surface-200 rounded w-full mb-4"></div>
@@ -105,7 +107,7 @@ function onLogout(fn: Function) {
 
           <!-- Wishlist -->
           <TabPanel value="wishlist">
-            <h2 class="text-xl font-semibold mb-4">Wishlist</h2>
+            <h2 class="text-xl font-semibold my-4">Wishlist</h2>
             <div v-if="wishlistPending" class="flex flex-col gap-2">
               <div class="h-4 bg-surface-200 rounded w-1/3 mb-2"></div>
               <div class="h-6 bg-surface-200 rounded w-full mb-4"></div>
@@ -118,7 +120,7 @@ function onLogout(fn: Function) {
 
           <!-- Genres -->
           <TabPanel value="genres">
-            <h2 class="text-xl font-semibold mb-4">Genres</h2>
+            <h2 class="text-xl font-semibold my-4">Genres</h2>
             <div class="flex flex-row flex-wrap gap-4">
               <GenreFollowCard v-for="g in (genres ?? [])" :key="String(g.id)"
                 :id="String(g.id)"
@@ -129,7 +131,7 @@ function onLogout(fn: Function) {
 
           <!-- Platforms -->
           <TabPanel value="platforms">
-            <h2 class="text-xl font-semibold mb-4">Platforms</h2>
+            <h2 class="text-xl font-semibold my-4">Platforms</h2>
             <div class="flex flex-row flex-wrap gap-4">
               <PlatformFollowCard v-for="p in (platforms ?? [])" :key="String(p.id)"
                 :id="String(p.id)"

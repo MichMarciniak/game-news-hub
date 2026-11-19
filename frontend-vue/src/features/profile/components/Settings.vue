@@ -6,7 +6,7 @@ const { user, updateSetting, settingsConf } = useProfileService()
 </script>
 
 <template>
-  <div class="flex flex-col gap-1">
+  <div class="flex flex-col gap-1 my-4">
     <div 
       v-for="setting in settingsConf" 
       :key="setting.key"

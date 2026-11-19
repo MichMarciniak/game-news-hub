@@ -5,6 +5,7 @@ using GameNewsHub.Api.BackgroundServices;
 using GameNewsHub.Api.Configuration;
 using GameNewsHub.Api.Extensions;
 using GameNewsHub.Api.Features;
+using GameNewsHub.Api.Features.Google.Auth;
 using GameNewsHub.Api.Options;
 using GameNewsHub.Api.Services;
 using GameNewsHub.Data;
@@ -20,6 +21,7 @@ using GameNewsHub.Recommendation;
 using GameNewsHub.Sync.Core;
 using GameNewsHub.Sync.Core.Games;
 using Microsoft.AspNetCore.Authentication;
+using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
@@ -52,6 +54,18 @@ services.AddDbContext<AppDbContext>(options =>
 services.AddIdentity<AppUser, IdentityRole<int>>()
     .AddEntityFrameworkStores<AppDbContext>()
     .AddDefaultTokenProviders();
+
+services.ConfigureApplicationCookie(options =>
+{
+    options.Cookie.SameSite = SameSiteMode.Lax;
+    options.Cookie.IsEssential = true;
+});
+
+services.Configure<CookieAuthenticationOptions>(IdentityConstants.ExternalScheme, options =>
+{
+    options.Cookie.SameSite = SameSiteMode.Lax;
+    options.Cookie.IsEssential = true;
+});
 
 services.AddHttpContextAccessor();
 
@@ -148,7 +162,7 @@ if (devAuth)
 }
 else
 {
-    services.AddAuthorization();
+    services.AddGoogleAuth(config);
 }
 
 builder.AddAppLogging(seqOptions);
