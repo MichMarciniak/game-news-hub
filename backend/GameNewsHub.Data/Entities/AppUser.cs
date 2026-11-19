@@ -18,4 +18,5 @@ public class AppUser : IdentityUser<int>
     public ICollection<Game> WishlistedGames { get; set; } = new List<Game>();
     public int? SteamProfileId { get; set; }
     public SteamProfile? SteamProfile { get; set; }
+    public string? GoogleId { get; set; }
 }

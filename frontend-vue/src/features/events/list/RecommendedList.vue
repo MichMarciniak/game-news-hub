@@ -1,3 +1,4 @@
+<script setup lang="ts">
 import { useGetRecommendationEvents } from '@/api/generated';
 import { addDays } from '@/utils/date';
 import { ref, computed, watch } from 'vue';
@@ -34,7 +35,17 @@ const limitOptions = [
   { label: '20', value: 20 }
 ]
 
-function onLimitChange(value: number) {
-  limit.value = value
+function onLimitChange(event: { value: number }) {
+  limit.value = event.value
   refetch()
 }
+</script>
+
+<template>
+  <div class="flex flex-col gap-4">
+    <EventFullDateItem v-for="e in events" :key="e.id" :event="e" />
+    <div v-if="isPending" class="text-center text-muted-color">Loading...</div>
+    <div v-else-if="events.length === 0" class="text-center text-muted-color">No recommended events.</div>
+    <Select v-model="limit" :options="limitOptions" @change="onLimitChange" />
+  </div>
+</template>

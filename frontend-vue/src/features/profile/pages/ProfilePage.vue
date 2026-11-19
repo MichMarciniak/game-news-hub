@@ -10,6 +10,7 @@ import PlatformFollowCard from '@/features/platforms/PlatformFollowCard.vue'
 import Settings from '@/features/profile/components/Settings.vue'
 import { useRouter } from 'vue-router'
 import SteamContainer from '@/features/profile/steam/SteamContainer.vue'
+import GoogleContainer from '@/features/profile/google/GoogleContainer.vue'
 import GameGrid from '@/features/games/components/GameGrid.vue'
 import GameCard from '@/features/games/components/GameCard.vue'
 import GameCardWishlist from '@/features/games/components/GameCardWishlist.vue'
@@ -55,6 +56,7 @@ function onLogout(fn: Function) {
 
       <div class="mt-4">
         <SteamContainer />
+        <GoogleContainer />
       </div>
     </div>
 
