@@ -1,14 +1,20 @@
 import { useAuthStore } from '@/stores/auth';
-import { getGoogleAuthLinkRedirect, postGoogleAuthLink } from '@/api/google-auth';
-import { useQuery, useMutation } from '@tanstack/vue-query';
+import { postGoogleAuthLink } from '@/api/google-auth';
+import { useMutation } from '@tanstack/vue-query';
 import { computed } from 'vue';
 import type { ProfileDto } from '@/api/generated/models';
+import { useRoute } from 'vue-router';
+import { useAuthRedirect } from '@/composables/useAuthRedirect';
 
 export function useGoogleService() {
   const authStore = useAuthStore();
+  const route = useRoute();
+  const { saveRedirectPath } = useAuthRedirect();
   const isGoogleConnected = computed(() => authStore.user?.isGoogleConnected ?? false);
 
   const handleGoogleLogin = () => {
+    const redirectPath = route.query.redirectPath as string | undefined
+    saveRedirectPath(redirectPath)
     window.location.href = '/api/auth/google/login/redirect';
   };
 

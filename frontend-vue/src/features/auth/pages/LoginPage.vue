@@ -1,7 +1,8 @@
 <script setup lang="ts">
-import { ref } from 'vue'
+import { ref, onMounted } from 'vue'
 import { useRoute, useRouter, RouterLink } from 'vue-router'
 import { useLoginService } from '@/features/auth/services/useLoginService'
+import { useAuthRedirect } from '@/composables/useAuthRedirect'
 import AuthPageWrapper from '@/features/auth/components/AuthPageWrapper.vue'
 import LoginForm from '../components/LoginForm.vue'
 
@@ -9,20 +10,28 @@ const route = useRoute()
 const router = useRouter()
 
 const { login, loginError } = useLoginService()
+const { saveRedirectPath, consumeRedirectPath } = useAuthRedirect()
 const errorMessage = ref('')
 
+onMounted(() => {
+  const redirectPath = route.query.redirectPath as string | undefined
+  saveRedirectPath(redirectPath)
+})
+
 const handleGoogleLogin = () => {
+  const redirectPath = route.query.redirectPath as string | undefined
+  saveRedirectPath(redirectPath)
   window.location.href = '/api/auth/google/login/redirect'
 }
 
 const onSubmit = async (values: unknown) => {
   errorMessage.value = ''
-  const redirectPath = route.query.redirectPath as string | undefined
-  const result = await login(values, redirectPath)
+  const result = await login(values)
   if (!result?.success) {
     errorMessage.value = result.error ?? 'Login error'
-  } else if (result.redirectTo) {
-    await router.push(result.redirectTo)
+  } else {
+    const redirectTo = consumeRedirectPath()
+    await router.push(redirectTo)
   }
 }
 </script>

@@ -1,5 +1,6 @@
 <script setup lang="ts">
-import { ref } from 'vue'
+import { ref, onMounted } from 'vue'
+import { useRoute, useRouter } from 'vue-router'
 import { useGetGenres, useGetPlatformsGroups } from '@/api/generated'
 import { useProfileService } from '@/features/profile/services/useProfileService'
 import { useWishlistService } from '@/features/profile/services/useWishlistService'
@@ -8,7 +9,6 @@ import PasswordChange from '@/features/auth/pages/PasswordChangePage.vue'
 import GenreFollowCard from '@/features/genres/GenreFollowCard.vue'
 import PlatformFollowCard from '@/features/platforms/PlatformFollowCard.vue'
 import Settings from '@/features/profile/components/Settings.vue'
-import { useRouter } from 'vue-router'
 import SteamContainer from '@/features/profile/steam/SteamContainer.vue'
 import GoogleContainer from '@/features/profile/google/GoogleContainer.vue'
 import GameGrid from '@/features/games/components/GameGrid.vue'
@@ -16,8 +16,14 @@ import GameCard from '@/features/games/components/GameCard.vue'
 import GameCardWishlist from '@/features/games/components/GameCardWishlist.vue'
 import EventItem from '@/features/events/components/EventItem.vue'
 import Button from 'openvue/button'
+import { useAuthRedirect } from '@/composables/useAuthRedirect'
+import { useToast } from 'openvue'
 
+const route = useRoute()
 const router = useRouter()
+
+const { saveRedirectPath, consumeRedirectPath } = useAuthRedirect()
+const toast = useToast()
 
 const {
   user,
@@ -35,6 +41,39 @@ const {data: platforms} = useGetPlatformsGroups()
 const {data: genres} = useGetGenres()
 
 const activeTab = ref('settings')
+
+onMounted(() => {
+  const googleResult = route.query.google as string | undefined
+  if (googleResult) {
+    const redirectPath = consumeRedirectPath()
+    
+    if (googleResult === 'connected') {
+      router.push(redirectPath)
+      return
+    }
+    
+    if (googleResult === 'linked') {
+      toast.add({ severity: 'success', summary: 'Google connected', detail: 'Your Google account has been linked', life: 3000 })
+      return
+    }
+    
+    if (googleResult === 'account_exists') {
+      const message = route.query.message as string | undefined
+      toast.add({ severity: 'warn', summary: 'Account exists', detail: message ?? 'An account with this email already exists. Log in first to link your Google account.', life: 5000 })
+      return
+    }
+    
+    // Error cases
+    const errorCode = route.query.code as string | undefined
+    const errorMessage = route.query.message as string | undefined
+    toast.add({ severity: 'error', summary: 'Google authentication failed', detail: errorMessage ?? 'An error occurred during Google authentication', life: 5000 })
+    
+    // If there was a saved redirect, still go there after showing error
+    if (redirectPath !== '/') {
+      router.push(redirectPath)
+    }
+  }
+})
 
 function onLogout(fn: Function) {
   fn()
