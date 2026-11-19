@@ -10,13 +10,11 @@ const hasGoogleQuery = computed(() =>
   route.query.google !== undefined || route.query.code !== undefined
 )
 
-const { googleId, googleLoginUrl, handleGoogleLogin } = useGoogleService()
+const { isGoogleConnected, handleGoogleLogin } = useGoogleService()
 
 // Auto-refresh user data when coming back from Google callback with query params
 onMounted(() => {
   if (hasGoogleQuery.value) {
-    // The auth store will auto-refresh on next navigation or we can manually trigger
-    // For now, just log - the user data will be refreshed by the auth store
     console.log('Returned from Google OAuth')
   }
 })
@@ -26,7 +24,7 @@ onMounted(() => {
   <div class="rounded-border border-2 p-2 border-surface w-fit">
     <h2 class="font-semibold text-2xl">Google</h2>
 
-    <GoogleActionsMenu v-if="googleId" />
+    <GoogleActionsMenu v-if="isGoogleConnected" />
 
     <GoogleConnectButton v-else @connect="handleGoogleLogin" />
   </div>

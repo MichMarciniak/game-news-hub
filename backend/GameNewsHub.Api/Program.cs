@@ -21,6 +21,7 @@ using GameNewsHub.Recommendation;
 using GameNewsHub.Sync.Core;
 using GameNewsHub.Sync.Core.Games;
 using Microsoft.AspNetCore.Authentication;
+using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
@@ -43,7 +44,6 @@ var frontendOptions = services.AddValidatedOptions<FrontendOptions>(config);
 var seqOptions = services.AddValidatedOptions<SeqOptions>(config);
 var igdbOptions = services.AddValidatedOptions<IgdbOptions>(config);
 var apiRateLimitOptions = services.AddValidatedOptions<ApiRateLimitOptions>(config);
-var googleAuthOptions = services.AddValidatedOptions<GoogleAuthOptions>(config);
 
 var devAuth = config.GetValue<bool>("DevAuth");
 
@@ -58,7 +58,12 @@ services.AddIdentity<AppUser, IdentityRole<int>>()
 services.ConfigureApplicationCookie(options =>
 {
     options.Cookie.SameSite = SameSiteMode.Lax;
-    options.Cookie.Domain = "localhost";
+    options.Cookie.IsEssential = true;
+});
+
+services.Configure<CookieAuthenticationOptions>(IdentityConstants.ExternalScheme, options =>
+{
+    options.Cookie.SameSite = SameSiteMode.Lax;
     options.Cookie.IsEssential = true;
 });
 
@@ -74,7 +79,6 @@ services.AddSyncCoreServices();
 services.AddRecommendation();
 services.AddFeatureServices();
 services.AddBackgroundServices();
-services.AddHttpClient<GoogleAuthService>();
 
 // OPENAPI
 
@@ -158,8 +162,7 @@ if (devAuth)
 }
 else
 {
-    services.AddAuthentication();
-    services.AddAuthorization();
+    services.AddGoogleAuth(config);
 }
 
 builder.AddAppLogging(seqOptions);

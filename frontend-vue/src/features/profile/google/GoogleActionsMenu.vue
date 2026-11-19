@@ -3,7 +3,7 @@ import { ref } from 'vue';
 import { useGoogleService } from '../services/useGoogleService';
 import Button from 'openvue/button';
 
-const { googleId, linkGoogleAccount, isLinking, linkError, handleGoogleLink } = useGoogleService();
+const { isGoogleConnected, linkGoogleAccount, isLinking, linkError, handleGoogleLink } = useGoogleService();
 const showUnlinkConfirm = ref(false);
 
 function unlinkGoogle() {

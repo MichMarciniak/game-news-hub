@@ -19,14 +19,12 @@ namespace GameNewsHub.Api.Features.Users.Profile;
 [UseStaticMapper(typeof(PlatformMapper))]
 public static partial class ProfileMapper
 {
-    [MapProperty(nameof(AppUser.UserName), nameof(ProfileDto.Username))]
-    [MapProperty(nameof(AppUser.GoogleId), nameof(ProfileDto.GoogleId))]
+    [MapProperty(nameof(AppUser.Name), nameof(ProfileDto.Username))]
     [MapperIgnoreTarget(nameof(ProfileDto.Settings))]
     [MapperIgnoreTarget(nameof(ProfileDto.IsAdmin))]
     public static partial ProfileDto ToDto(AppUser source);
 
-    [MapProperty(nameof(AppUser.UserName), nameof(FullProfileDto.Username))]
-    [MapProperty(nameof(AppUser.GoogleId), nameof(FullProfileDto.GoogleId))]
+    [MapProperty(nameof(AppUser.Name), nameof(FullProfileDto.Username))]
     [MapProperty(nameof(AppUser.FollowedEvents), nameof(FullProfileDto.Events))]
     [MapProperty(nameof(AppUser.FollowedGames), nameof(FullProfileDto.Games))]
     [MapProperty(nameof(AppUser.FollowedGenres), nameof(FullProfileDto.Genres))]
