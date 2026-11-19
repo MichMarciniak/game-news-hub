@@ -137,6 +137,6 @@ public class GoogleAuthController : ControllerBase
             parameters["message"] = outcome.Message;
         }
 
-        return QueryHelpers.AddQueryString($"{_frontendOptions.Url}me", parameters);
+        return QueryHelpers.AddQueryString($"{_frontendOptions.Url}auth/callback", parameters);
     }
 }
