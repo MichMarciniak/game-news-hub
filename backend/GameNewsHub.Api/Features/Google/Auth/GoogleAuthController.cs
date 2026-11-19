@@ -1,17 +1,13 @@
 using System.Security.Claims;
-using ErrorOr;
 using GameNewsHub.Api.Extensions;
 using GameNewsHub.Api.Options;
-using GameNewsHub.Contracts.Auth;
-using GameNewsHub.Contracts.User;
-using GameNewsHub.Data.Constants;
-using GameNewsHub.Data.Entities;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.Google;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.RateLimiting;
+using Microsoft.AspNetCore.WebUtilities;
 using Microsoft.Extensions.Options;
 
 namespace GameNewsHub.Api.Features.Google.Auth;
@@ -21,34 +17,21 @@ namespace GameNewsHub.Api.Features.Google.Auth;
 public class GoogleAuthController : ControllerBase
 {
     private readonly FrontendOptions _frontendOptions;
-    private readonly GoogleAuthOptions _googleOptions;
-    private readonly UserManager<AppUser> _userManager;
-    private readonly SignInManager<AppUser> _signInManager;
+    private readonly GoogleAuthService _googleAuthService;
 
     public GoogleAuthController(
         IOptions<FrontendOptions> frontendOptions,
-        IOptions<GoogleAuthOptions> googleOptions,
-        UserManager<AppUser> userManager,
-        SignInManager<AppUser> signInManager)
+        GoogleAuthService googleAuthService)
     {
         _frontendOptions = frontendOptions.Value;
-        _googleOptions = googleOptions.Value;
-        _userManager = userManager;
-        _signInManager = signInManager;
+        _googleAuthService = googleAuthService;
     }
 
     [HttpGet("login/redirect")]
     [EnableRateLimiting("AuthStrict")]
     public IActionResult GetLoginUrlRedirect()
     {
-        var props = new AuthenticationProperties
-        {
-            RedirectUri = "/auth/google/callback",
-            Items =
-            {
-                { "LoginProvider", "Google" }
-            }
-        };
+        var props = _googleAuthService.GetLoginRedirectProperties();
         return Challenge(props, GoogleDefaults.AuthenticationScheme);
     }
 
@@ -57,94 +40,33 @@ public class GoogleAuthController : ControllerBase
     [EnableRateLimiting("AuthStrict")]
     public async Task<IActionResult> Callback()
     {
-        // Get the external authentication result using Identity's external scheme
         var result = await HttpContext.AuthenticateAsync(IdentityConstants.ExternalScheme);
-        if (!result.Succeeded || result.Principal == null)
+
+        GoogleCallbackOutcome outcome;
+        try
         {
-            return Redirect($"{_frontendOptions.Url}me?google=error&code=Google.AuthFailed&message=External authentication failed");
-        }
+            outcome = await _googleAuthService.ProcessLoginCallbackAsync(result);
 
-        // Extract user info from Google's claims
-        var googleId = result.Principal.FindFirstValue(ClaimTypes.NameIdentifier);
-        var email = result.Principal.FindFirstValue(ClaimTypes.Email)?.ToLowerInvariant();
-        var name = result.Principal.FindFirstValue(ClaimTypes.Name);
-
-        if (string.IsNullOrEmpty(email))
-        {
-            return Redirect($"{_frontendOptions.Url}me?google=error&code=Google.EmailMissing&message=Email not provided by Google");
-        }
-
-        // Check if Google account is already linked to a local user
-        var existingLogin = await _userManager.FindByLoginAsync("Google", googleId);
-        if (existingLogin != null)
-        {
-            await _signInManager.ExternalLoginSignInAsync("Google", googleId, isPersistent: true);
-            return Redirect($"{_frontendOptions.Url}me?google=connected");
-        }
-
-        // Check if email is already taken by a user with a different Google account
-        var existingUser = await _userManager.FindByEmailAsync(email);
-
-        if (existingUser != null)
-        {
-            var existingLogins = await _userManager.GetLoginsAsync(existingUser);
-            var hasGoogleLogin = existingLogins.Any(l => l.LoginProvider == "Google" && l.ProviderKey == googleId);
-
-            if (hasGoogleLogin)
+            if (outcome.Kind is "connected" or "create")
             {
-                await _signInManager.ExternalLoginSignInAsync("Google", googleId, isPersistent: true);
-                return Redirect($"{_frontendOptions.Url}me?google=connected");
+                outcome = await _googleAuthService.CompleteSignInAsync(outcome);
             }
-
-            // Link Google account to existing local account
-            await _userManager.AddLoginAsync(existingUser, new UserLoginInfo("Google", googleId, "Google"));
-            if (!string.IsNullOrEmpty(name) && string.IsNullOrEmpty(existingUser.Name))
+        }
+        catch (Exception)
+        {
+            outcome = new GoogleCallbackOutcome
             {
-                existingUser.Name = name;
-                await _userManager.UpdateAsync(existingUser);
-            }
-            await _signInManager.SignInAsync(existingUser, isPersistent: true);
-            return Redirect($"{_frontendOptions.Url}me?google=connected");
+                Kind = "error",
+                Code = "Google.ServerError",
+                Message = "An error occurred while processing Google authentication"
+            };
+        }
+        finally
+        {
+            await HttpContext.SignOutAsync(IdentityConstants.ExternalScheme);
         }
 
-        // Create new user
-        var newUser = new AppUser
-        {
-            Email = email,
-            UserName = email,
-            Name = name,
-            EmailConfirmed = true,
-            CreatedAt = DateTimeOffset.UtcNow
-        };
-
-        var createResult = await _userManager.CreateAsync(newUser);
-        if (!createResult.Succeeded)
-        {
-            return Redirect($"{_frontendOptions.Url}me?google=error&code=Google.SignupFailed&message=Failed to create user");
-        }
-
-        await _userManager.AddLoginAsync(newUser, new UserLoginInfo("Google", googleId, "Google"));
-        await _userManager.AddToRoleAsync(newUser, Roles.User);
-        await _signInManager.SignInAsync(newUser, isPersistent: true);
-
-        return Redirect($"{_frontendOptions.Url}me?google=connected");
-    }
-
-    [HttpPost("link")]
-    [Authorize]
-    [EnableRateLimiting("AuthModerate")]
-    public async Task<IActionResult> LinkAccount([FromBody] GoogleLinkRequest request)
-    {
-        var userId = User.GetId();
-        var result = await LinkGoogleAccountAsync(userId, request.Code);
-        
-        if (result.IsError)
-        {
-            var error = result.Errors[0];
-            return error.Type == ErrorType.Conflict ? Conflict(error) : BadRequest(error);
-        }
-        
-        return NoContent();
+        return Redirect(BuildRedirectUrl(outcome));
     }
 
     [HttpGet("link/redirect")]
@@ -153,102 +75,68 @@ public class GoogleAuthController : ControllerBase
     [EnableRateLimiting("AuthModerate")]
     public IActionResult LinkAccountRedirect()
     {
-        var state = $"link:{User.GetId()}";
-        var props = new AuthenticationProperties
-        {
-            RedirectUri = $"{_frontendOptions.Url}me?google=linked",
-            Items =
-            {
-                { "LoginProvider", "Google" },
-                { "state", state }
-            }
-        };
+        var userId = User.GetId();
+        var props = _googleAuthService.GetLinkRedirectProperties(userId);
         return Challenge(props, GoogleDefaults.AuthenticationScheme);
     }
 
-    private async Task<ErrorOr<Success>> LinkGoogleAccountAsync(int userId, string code)
+    [HttpGet("link/callback")]
+    [Authorize]
+    [ProducesResponseType(StatusCodes.Status302Found)]
+    [EnableRateLimiting("AuthModerate")]
+    public async Task<IActionResult> LinkCallback()
     {
-        var tokenRequest = new Dictionary<string, string>
-        {
-            ["code"] = code,
-            ["client_id"] = _googleOptions.ClientId,
-            ["client_secret"] = _googleOptions.ClientSecret,
-            ["redirect_uri"] = $"{_frontendOptions.ApiUrl}{_googleOptions.CallbackPath}",
-            ["grant_type"] = "authorization_code"
-        };
+        var result = await HttpContext.AuthenticateAsync(IdentityConstants.ExternalScheme);
+        var userId = User.GetId();
 
-        using var httpClient = new HttpClient();
-        var response = await httpClient.PostAsync("https://oauth2.googleapis.com/token", new FormUrlEncodedContent(tokenRequest));
-        var content = await response.Content.ReadAsStringAsync();
-
-        if (!response.IsSuccessStatusCode)
+        GoogleCallbackOutcome outcome;
+        try
         {
-            return Error.Failure("Google.TokenExchangeFailed", "Failed to exchange code for tokens");
+            if (!result.Succeeded || result.Principal == null)
+            {
+                outcome = new GoogleCallbackOutcome
+                {
+                    Kind = "error",
+                    Code = "Google.AuthFailed",
+                    Message = "External authentication failed"
+                };
+            }
+            else
+            {
+                outcome = await _googleAuthService.ProcessLinkCallbackAsync(userId, result);
+            }
+        }
+        catch (Exception)
+        {
+            outcome = new GoogleCallbackOutcome
+            {
+                Kind = "error",
+                Code = "Google.ServerError",
+                Message = "An error occurred while linking your Google account"
+            };
+        }
+        finally
+        {
+            await HttpContext.SignOutAsync(IdentityConstants.ExternalScheme);
         }
 
-        var tokenResponse = System.Text.Json.JsonSerializer.Deserialize<GoogleTokenResponse>(content, new System.Text.Json.JsonSerializerOptions
-        {
-            PropertyNameCaseInsensitive = true
-        });
-
-        if (tokenResponse == null || string.IsNullOrEmpty(tokenResponse.AccessToken))
-        {
-            return Error.Failure("Google.InvalidTokenResponse", "Invalid token response from Google");
-        }
-
-        using var userInfoRequest = new HttpRequestMessage(HttpMethod.Get, "https://www.googleapis.com/oauth2/v2/userinfo");
-        userInfoRequest.Headers.Authorization = new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", tokenResponse.AccessToken);
-        var userInfoResponse = await httpClient.SendAsync(userInfoRequest);
-        var userInfoContent = await userInfoResponse.Content.ReadAsStringAsync();
-
-        if (!userInfoResponse.IsSuccessStatusCode)
-        {
-            return Error.Failure("Google.UserInfoFailed", "Failed to get user info from Google");
-        }
-
-        var googleUser = System.Text.Json.JsonSerializer.Deserialize<GoogleUserInfo>(userInfoContent, new System.Text.Json.JsonSerializerOptions
-        {
-            PropertyNameCaseInsensitive = true
-        });
-
-        if (googleUser == null)
-        {
-            return Error.Failure("Google.InvalidUserInfo", "Invalid user info response from Google");
-        }
-
-        var email = googleUser.Email?.ToLowerInvariant();
-
-        if (string.IsNullOrEmpty(email) || !googleUser.VerifiedEmail.GetValueOrDefault(false))
-        {
-            return Error.Validation("Google.InvalidAccount", "Invalid Google account");
-        }
-
-        var user = await _userManager.FindByIdAsync(userId.ToString());
-        if (user == null)
-        {
-            return Error.NotFound("User.NotFound", "User does not exist");
-        }
-
-        if (user.Email?.ToLowerInvariant() != email)
-        {
-            return Error.Conflict("Google.EmailMismatch", "Google account email does not match your account email");
-        }
-
-        var existingLogins = await _userManager.GetLoginsAsync(user);
-        var hasGoogleLogin = existingLogins.Any(l => l.LoginProvider == "Google" && l.ProviderKey == googleUser.Id);
-
-        if (!hasGoogleLogin)
-        {
-            await _userManager.AddLoginAsync(user, new UserLoginInfo("Google", googleUser.Id, "Google"));
-        }
-
-        if (!string.IsNullOrEmpty(googleUser.Name) && string.IsNullOrEmpty(user.Name))
-        {
-            user.Name = googleUser.Name;
-            await _userManager.UpdateAsync(user);
-        }
-
-        return Result.Success;
+        return Redirect(BuildRedirectUrl(outcome));
     }
 
+    private string BuildRedirectUrl(GoogleCallbackOutcome outcome)
+    {
+        var parameters = new Dictionary<string, string?> { ["google"] = outcome.Kind };
+
+        if (!string.IsNullOrEmpty(outcome.Code))
+        {
+            parameters["code"] = outcome.Code;
+        }
+
+        if (!string.IsNullOrEmpty(outcome.Message))
+        {
+            parameters["message"] = outcome.Message;
+        }
+
+        return QueryHelpers.AddQueryString($"{_frontendOptions.Url}me", parameters);
+    }
 }

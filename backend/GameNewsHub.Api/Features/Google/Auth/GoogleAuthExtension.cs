@@ -22,13 +22,11 @@ public static class GoogleAuthExtension
                 options.ClientId = googleOptions.ClientId;
                 options.ClientSecret = googleOptions.ClientSecret;
                 options.CallbackPath = "/signin-google";
-                options.SaveTokens = true;
                 options.Scope.Add("openid");
                 options.Scope.Add("email");
                 options.Scope.Add("profile");
 
                 options.CorrelationCookie.SameSite = SameSiteMode.Lax;
-                options.CorrelationCookie.Domain = "localhost";
                 options.CorrelationCookie.IsEssential = true;
                 options.CorrelationCookie.SecurePolicy = CookieSecurePolicy.SameAsRequest;
 
@@ -36,6 +34,8 @@ public static class GoogleAuthExtension
             });
 
         services.AddAuthorization();
+
+        services.AddScoped<GoogleAuthService>();
 
         return services;
     }

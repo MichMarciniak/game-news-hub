@@ -9,4 +9,5 @@ public class GoogleAuthOptions : IConfigSection
     [Required] public string ClientId { get; init; } = "";
     [Required] public string ClientSecret { get; init; } = "";
     public string CallbackPath { get; init; } = "/auth/google/callback";
+    public string[] VerifiedEmailClaims { get; init; } = ["verified_email", "email_verified"];
 }
