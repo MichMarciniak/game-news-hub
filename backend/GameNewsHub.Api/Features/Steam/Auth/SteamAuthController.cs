@@ -1,3 +1,4 @@
+using System.Text;
 using GameNewsHub.Api.Extensions;
 using GameNewsHub.Api.Options;
 using Microsoft.AspNetCore.Authorization;
@@ -55,7 +56,7 @@ public class SteamAuthController : ControllerBase
 
         return result.Match(
             _ => Redirect($"{_frontendOptions.Url}me?steam=connected"),
-            err => Redirect($"{_frontendOptions.Url}me?steam=error={err[0].Code}&{err[0].Description}")
+            err => Redirect($"{_frontendOptions.Url}me?steam=error&code={Uri.EscapeDataString(err[0].Code)}&message={Uri.EscapeDataString(err[0].Description)}")
         );
     }
 }
