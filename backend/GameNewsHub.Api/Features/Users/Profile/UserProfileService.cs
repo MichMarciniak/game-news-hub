@@ -35,6 +35,7 @@ public class UserProfileService
         var result = ProfileMapper.ToDto(user);
         result.Settings = settings;
         result.IsAdmin = false;
+        result.IsSteamConnected = user.SteamProfileId.HasValue;
         result.IsGoogleConnected = (await _userManager.GetLoginsAsync(user))
             .Any(l => l.LoginProvider == "Google");
         return result;
@@ -71,6 +72,7 @@ public class UserProfileService
         var settings = ProfileMapper.ToSettingsDto(user);
         var result = ProfileMapper.ToFullDto(user);
         result.Settings = settings;
+        result.IsSteamConnected = user.SteamProfileId.HasValue;
         result.IsGoogleConnected = (await _userManager.GetLoginsAsync(user))
             .Any(l => l.LoginProvider == "Google");
         return result;

@@ -1,29 +1,23 @@
 <script setup lang="ts">
 import SteamIcon from './SteamIcon.vue';
+import Button from 'openvue/button'
 
-
-defineProps<{
-  steamId?: string;
-}>();
-
-defineEmits<{
-  (e: 'importWishlist'): void
-  (e: 'importOwned'): void
-}>();
-
+const emit = defineEmits<{
+  (e: 'import-wishlist'): void
+  (e: 'import-owned'): void
+}>()
 </script>
 
 <template>
-  <div class="flex flex-col gap-2 ">
-    <h2 class="text-semibold text-2xl">Steam</h2>
+  <div class="flex flex-col gap-2">
     <Button
-      @click="$emit('importWishlist')"
+      @click="emit('import-wishlist')"
       class="w-fit"
     >
       Import Wishlist
     </Button>
     <Button
-      @click="$emit('importOwned')"
+      @click="emit('import-owned')"
       class="w-fit"
     >
       Import Owned Games

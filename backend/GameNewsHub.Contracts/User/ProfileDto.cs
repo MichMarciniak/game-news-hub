@@ -13,6 +13,7 @@ public class ProfileDto
     public SettingsDto Settings { get; set; }
     public bool IsAdmin { get; set; }  
     public string? SteamId { get; set; }
+    public bool IsSteamConnected { get; set; }
     public bool IsGoogleConnected { get; set; }
 
 }
@@ -30,5 +31,6 @@ public class FullProfileDto
     public List<PlatformGroupDto> PlatformGroups { get; set; } = [];
     public List<GameListItemDto> Wishlist { get; set; } = [];
     public string? SteamId { get; set; }
+    public bool IsSteamConnected { get; set; }
     public bool IsGoogleConnected { get; set; }
 }

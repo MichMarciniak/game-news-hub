@@ -61,7 +61,9 @@ public class SteamAuthService
 
         var steamProfile = new SteamProfile
         {
-            SteamId = steamId
+            SteamId = steamId,
+            AppUserId = userId,
+            LastImportedAt = DateTimeOffset.UtcNow
         };
 
         user.SteamProfile = steamProfile;
