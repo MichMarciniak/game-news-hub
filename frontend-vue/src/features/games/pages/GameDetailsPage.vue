@@ -18,7 +18,7 @@ const router = useRouter()
 
 const gameId = String(route.params.id)
 
-const { game, isPending, isFollowed, toggleFollowGame, formatGameType } = useGameService(gameId)
+const { game, isPending, isFollowed, toggleFollowGame, formatGameType, formatReleaseDate } = useGameService(gameId)
 const { wishlistIds, toggleWishlist, isWishlisted } = useWishlist()
 
 const isWishlistedGame = computed(() => !!game.value?.id && isWishlisted(game.value.id))
@@ -90,7 +90,7 @@ function toggleWishlistGame() {
           <Divider v-if="game.parentGame" layout="vertical"/>
           <span v-if="game.parentGame" @click="goToGame" class="cursor-pointer self-start">{{ game.parentGame.title }}</span>
         </div>
-        <span class="text-muted-color-emphasis text-xl">{{ game.releaseDate }}</span>
+        <span class="text-muted-color-emphasis text-xl">{{ formatReleaseDate(game.releaseDate) }}</span>
         <span class="text-muted-color">{{ game.summary }}</span>
       </div>
     </div>

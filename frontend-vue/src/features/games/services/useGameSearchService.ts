@@ -16,7 +16,7 @@ export function useGameSearchService() {
     platformIds: []
   })
 
-  useSearchQuerySync(searchQuery)
+  useSearchQuerySync(searchQuery, { arrayKeys: ['genreIds', 'platformIds'], numberKeys: ['genreIds', 'platformIds'] })
 
   const sortOptions = [
     { label: 'Relevance', value: GameSortBy.Relevance },

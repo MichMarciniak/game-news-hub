@@ -5,11 +5,12 @@ import { watch, type Ref } from 'vue'
 
 export function useSearchQuerySync<T extends Record<string, any>>(
   searchQuery: Ref<T>,
-  options?: { arrayKeys?: (keyof T)[] }
+  options?: { arrayKeys?: (keyof T)[]; numberKeys?: (keyof T)[] }
 ) {
   const route = useRoute()
   const router = useRouter()
   const arrayKeys = new Set(options?.arrayKeys ?? [])
+  const numberKeys = new Set(options?.numberKeys ?? [])
 
   // 1. Wczytaj stan z URL przy starcie (np. po powrocie "wstecz" albo wejściu z linku)
   function loadFromUrl() {
@@ -22,7 +23,10 @@ export function useSearchQuerySync<T extends Record<string, any>>(
 
       if (arrayKeys.has(key)) {
         // query param może być stringiem albo tablicą stringów w zależności od tego ile wartości
-        restored[key] = Array.isArray(rawValue) ? rawValue : [rawValue]
+        const values = Array.isArray(rawValue) ? rawValue : [rawValue]
+        restored[key] = numberKeys.has(key)
+          ? values.map((v) => { const n = Number(v); return Number.isNaN(n) ? v : n })
+          : values
       } else if (typeof searchQuery.value[key] === 'number') {
         restored[key] = Number(rawValue)
       } else if (typeof searchQuery.value[key] === 'boolean') {

@@ -1,6 +1,7 @@
 import { useGetGamesId } from '@/api/generated'
 import { useFollowedGames } from '@/composables/gameFollows'
 import { computed } from 'vue'
+import { formatEventDate } from '@/utils/date'
 
 export function useGameService(gameId: string | number | undefined) {
   const { data: gameResponse, isPending } = useGetGamesId(computed(() => String(gameId)))
@@ -14,11 +15,17 @@ export function useGameService(gameId: string | number | undefined) {
     return type.replace(/([a-z])([A-Z])/g, '$1 $2')
   }
 
+  const formatReleaseDate = (value?: string | null): string => {
+    if (!value) return '—'
+    return formatEventDate(value, false)
+  }
+
   return {
     game,
     isPending,
     isFollowed,
     toggleFollowGame,
-    formatGameType
+    formatGameType,
+    formatReleaseDate
   }
 }
