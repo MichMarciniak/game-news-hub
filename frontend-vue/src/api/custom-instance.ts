@@ -6,6 +6,21 @@ export const AXIOS_INSTANCE = axios.create({
   // Use same-origin /api in dev (via Vite proxy) to avoid cross-site cookie issues.
   baseURL: import.meta.env.VITE_API_BASE_URL ?? '/api',
   withCredentials: true,
+  paramsSerializer: {
+    serialize: (params) => {
+      const searchParams = new URLSearchParams();
+      for (const [key, value] of Object.entries(params)) {
+        if (Array.isArray(value)) {
+          for (const item of value) {
+            searchParams.append(key, String(item));
+          }
+        } else if (value !== undefined && value !== null) {
+          searchParams.set(key, String(value));
+        }
+      }
+      return searchParams.toString();
+    },
+  },
 });
 
 let onUnauthorized: (() => void) | null = null;

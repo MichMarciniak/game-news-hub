@@ -31,9 +31,20 @@ export function useGameSearchService() {
   })
 
   watch(
-    () => [searchQuery.value.query, searchQuery.value.genreIds, searchQuery.value.platformIds, searchQuery.value.sortBy],
-    () => { searchQuery.value.page = 1 },
-    { deep: true }
+    () => searchQuery.value.query,
+    () => { searchQuery.value.page = 1 }
+  )
+  watch(
+    () => searchQuery.value.sortBy,
+    () => { searchQuery.value.page = 1 }
+  )
+  watch(
+    () => (searchQuery.value.genreIds ?? []).join(','),
+    () => { searchQuery.value.page = 1 }
+  )
+  watch(
+    () => (searchQuery.value.platformIds ?? []).join(','),
+    () => { searchQuery.value.page = 1 }
   )
 
   function onPageChange(event: PageState) {

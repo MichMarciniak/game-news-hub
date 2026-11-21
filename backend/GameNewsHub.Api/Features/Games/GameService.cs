@@ -34,7 +34,8 @@ public class GameService
 
     public async Task<SearchDto<GameListItemDto>> SearchGamesAsync(
         string? query, int page, int pageSize,
-        GameSortBy? sortBy, bool descending)
+        GameSortBy? sortBy, bool descending,
+        List<int>? genreIds, List<int>? platformIds)
     {
         page = Math.Max(page, 1);
         pageSize = Math.Clamp(pageSize, 1, 100);
@@ -56,6 +57,26 @@ public class GameService
             filteredQuery = filteredQuery.Where(g =>
                 EF.Functions.ILike(g.Title, like) ||
                 EF.Functions.TrigramsAreWordSimilar(g.Title, cleanQuery));
+        }
+
+        // AND filtering for genres - game must have ALL selected genres
+        if (genreIds is { Count: > 0 })
+        {
+            foreach (var genreId in genreIds)
+            {
+                var id = genreId; // capture for closure
+                filteredQuery = filteredQuery.Where(g => g.Genres.Any(genre => genre.Id == id));
+            }
+        }
+
+        // AND filtering for platforms - game must have ALL selected platforms
+        if (platformIds is { Count: > 0 })
+        {
+            foreach (var platformId in platformIds)
+            {
+                var id = platformId; // capture for closure
+                filteredQuery = filteredQuery.Where(g => g.Platforms.Any(platform => platform.Id == id));
+            }
         }
 
         var total = await filteredQuery.CountAsync();

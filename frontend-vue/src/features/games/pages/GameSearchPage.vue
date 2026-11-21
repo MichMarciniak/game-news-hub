@@ -100,7 +100,7 @@ const isMobileOpen = ref<boolean>(false)
 
         <!-- Game grid -->
         <FadeTransition>
-          <GameGrid :key="isPending ? 'skeleton' : `${searchQuery.page}-${searchQuery.pageSize}-${searchQuery.query}-${searchQuery.sortBy}-${searchQuery.descending}`">
+          <GameGrid :key="isPending ? 'skeleton' : JSON.stringify(searchQuery)">
             <template v-if="isPending">
               <SkeletonGameCard v-for="num in searchQuery.pageSize" :key="`skeleton-${num}`" />
             </template>
