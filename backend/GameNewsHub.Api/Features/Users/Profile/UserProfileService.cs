@@ -6,6 +6,7 @@ using GameNewsHub.Api.Features.Platforms;
 using GameNewsHub.Contracts;
 using GameNewsHub.Contracts.User;
 using GameNewsHub.Data;
+using GameNewsHub.Data.Constants;
 using GameNewsHub.Data.Entities;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
@@ -72,7 +73,7 @@ public class UserProfileService
         var settings = ProfileMapper.ToSettingsDto(user);
         var result = ProfileMapper.ToFullDto(user);
         result.Settings = settings;
-        result.IsSteamConnected = user.SteamProfileId.HasValue;
+        result.IsAdmin = await _userManager.IsInRoleAsync(user, Roles.Admin);
         result.IsGoogleConnected = (await _userManager.GetLoginsAsync(user))
             .Any(l => l.LoginProvider == "Google");
         return result;

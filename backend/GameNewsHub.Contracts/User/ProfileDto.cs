@@ -33,4 +33,5 @@ public class FullProfileDto
     public string? SteamId { get; set; }
     public bool IsSteamConnected { get; set; }
     public bool IsGoogleConnected { get; set; }
+    public bool IsAdmin { get; set; }
 }
