@@ -2,12 +2,14 @@
 import { onMounted } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 import { useAuthRedirect } from '@/composables/useAuthRedirect'
+import { useAuthStore } from '@/stores/auth'
 import { useToast } from 'openvue'
 
 const route = useRoute()
 const router = useRouter()
 const { consumeRedirectPath } = useAuthRedirect()
 const toast = useToast()
+const authStore = useAuthStore()
 
 onMounted(() => {
   const googleResult = route.query.google as string | undefined
@@ -19,11 +21,13 @@ onMounted(() => {
   const redirectPath = consumeRedirectPath()
 
   if (googleResult === 'connected') {
+    authStore.initialize()
     router.push(redirectPath)
     return
   }
 
   if (googleResult === 'linked') {
+    authStore.initialize()
     toast.add({ severity: 'success', summary: 'Google connected', detail: 'Your Google account has been linked', life: 3000 })
     router.push({ name: 'profile' })
     return

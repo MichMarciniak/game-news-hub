@@ -4,18 +4,21 @@ import { useRoute } from 'vue-router'
 import GoogleActionsMenu from './GoogleActionsMenu.vue';
 import GoogleConnectButton from './GoogleConnectButton.vue';
 import { useGoogleService } from '../services/useGoogleService';
+import { useAuthStore } from '@/stores/auth';
 
 const route = useRoute()
 const hasGoogleQuery = computed(() => 
   route.query.google !== undefined || route.query.code !== undefined
 )
 
+const authStore = useAuthStore()
 const { isGoogleConnected, handleGoogleLogin } = useGoogleService()
 
 // Auto-refresh user data when coming back from Google callback with query params
 onMounted(() => {
   if (hasGoogleQuery.value) {
     console.log('Returned from Google OAuth')
+    authStore.initialize()
   }
 })
 </script>

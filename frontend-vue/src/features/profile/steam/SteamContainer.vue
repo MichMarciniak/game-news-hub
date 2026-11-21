@@ -4,18 +4,21 @@ import { useRoute } from 'vue-router'
 import SteamActionsMenu from './SteamActionsMenu.vue';
 import SteamConnectButton from './SteamConnectButton.vue';
 import { useSteamService } from '@/features/profile/services/useSteamService';
+import { useAuthStore } from '@/stores/auth';
 
 const route = useRoute()
 const hasSteamQuery = computed(() => 
   route.query.steam !== undefined || route.query.code !== undefined
 )
 
+const authStore = useAuthStore()
 const { steamId, steamUrl, isPending, handleSteamConnect } = useSteamService()
 
-// Auto-redirect when coming back from Steam callback with query params
+// Auto-refresh user data when coming back from Steam callback with query params
 onMounted(() => {
   if (hasSteamQuery.value && steamUrl.value) {
     handleSteamConnect()
+    authStore.initialize()
   }
 })
 </script>
