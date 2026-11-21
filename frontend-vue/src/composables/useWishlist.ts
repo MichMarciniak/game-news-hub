@@ -5,7 +5,7 @@ import { computed } from 'vue'
 export function useWishlist() {
   const queryClient = useQueryClient()
 
-  const { data: wishlistData } = useGetUsersMeWishlist({
+  const { data: wishlistData, isPending } = useGetUsersMeWishlist({
     query: { staleTime: Infinity }
   })
 
@@ -39,7 +39,9 @@ export function useWishlist() {
   const isWishlisted = (gameId: string | number) => wishlistIds.value.has(String(gameId))
 
   return {
+    wishlist: wishlistData,
     wishlistIds,
+    isPending,
     toggleWishlist,
     isWishlisted
   }

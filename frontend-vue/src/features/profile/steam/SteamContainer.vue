@@ -49,7 +49,7 @@ onMounted(() => {
 
 <template>
   <div class="rounded-border border-2 p-2 border-surface w-fit">
-    <h2 class="font-semibold text-2xl">Steam</h2>
+    <h2 class="font-semibold text-2xl mb-2">Steam</h2>
 
     <SteamActionsMenu v-if="steamId" />
 

@@ -2,7 +2,7 @@
 import { ref } from 'vue'
 import { useGetGenres, useGetPlatformsGroups } from '@/api/generated'
 import { useProfileService } from '@/features/profile/services/useProfileService'
-import { useWishlistService } from '@/features/profile/services/useWishlistService'
+import { useWishlist } from '@/composables/useWishlist'
 import { useUserFollowedService } from '@/features/profile/services/useUserFollowedService'
 import PasswordChange from '@/features/auth/pages/PasswordChangePage.vue'
 import GenreFollowCard from '@/features/genres/GenreFollowCard.vue'
@@ -28,7 +28,7 @@ const {
   logoutAll
 } = useProfileService()
 
-const { wishlist, isPending: wishlistPending } = useWishlistService()
+const { wishlist, isPending: wishlistPending } = useWishlist()
 const { followedGames, gamesPending, followedEvents, eventsPending } = useUserFollowedService()
 
 const {data: platforms} = useGetPlatformsGroups()
@@ -54,7 +54,7 @@ function onLogout(fn: Function) {
         </div>
       </div>
 
-      <div class="mt-4">
+      <div class="mt-4 flex flex-col gap-2">
         <SteamContainer />
         <GoogleContainer />
       </div>
