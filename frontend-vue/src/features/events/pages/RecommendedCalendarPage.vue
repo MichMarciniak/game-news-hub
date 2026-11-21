@@ -42,7 +42,10 @@ function onLimitChange(value: number) {
 
       />
       <div class="pt-4 self-start  w-full lg:w-48">
-        <Select v-model="limit" :options="limitOptions" option-label="label" option-value="value" placeholder="Limit" class="w-full" @update:model-value="onLimitChange" />
+        <div class="flex items-center gap-2">
+          <span class="text-sm text-muted-color">Max recommendations:</span>
+          <Select v-model="limit" :options="limitOptions" option-label="label" option-value="value" placeholder="Limit" class="w-full" @update:model-value="onLimitChange" />
+        </div>
       </div>
 
     </div>

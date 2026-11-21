@@ -3,7 +3,7 @@ import { ref, computed, watch } from 'vue'
 import FullCalendar from '@fullcalendar/vue3'
 import dayGridPlugin from '@fullcalendar/daygrid'
 import interactionPlugin from '@fullcalendar/interaction'
-import type { CalendarOptions, DatesSetArg, EventClickArg, DayCellMountArg } from '@fullcalendar/core'
+import type { CalendarOptions, DatesSetArg, EventClickArg, DayCellContentArg } from '@fullcalendar/core'
 import type { DateClickArg } from '@fullcalendar/interaction'
 import type { EventListItemDto, RecommendationDto } from '@/api/generated/models'
 import CalendarHeader from './CalendarHeader.vue'
@@ -58,6 +58,12 @@ function handleDatesSet(arg: DatesSetArg) {
 function handleDateClick(arg: DateClickArg) {
   emit('dateSelect', arg.date)
   popoverRef.value?.hide()
+  
+  // Manually highlight the selected date cell
+  document.querySelectorAll('.fc-daygrid-day').forEach(el => {
+    el.classList.remove('calendar-day-selected')
+  })
+  arg.dayEl.classList.add('calendar-day-selected')
 }
 
 const calendarOptions = ref<CalendarOptions>({
@@ -69,7 +75,7 @@ const calendarOptions = ref<CalendarOptions>({
   eventClick: handleEventClick,
   datesSet: handleDatesSet,
   dateClick: handleDateClick,
-  dayCellDidMount: handleDayCellMount,
+  dayCellClassNames: handleDayCellClassNames,
   headerToolbar: false,
   views: {
     dayGridMonth: {
@@ -78,17 +84,15 @@ const calendarOptions = ref<CalendarOptions>({
   }
 })
 
-function handleDayCellMount(arg: DayCellMountArg) {
-  if (!props.selectedDate) return
+function handleDayCellClassNames(arg: DayCellContentArg): string[] {
+  if (!props.selectedDate) return []
   const cellDate = arg.date
   const isSelected =
     cellDate.getFullYear() === props.selectedDate.getFullYear() &&
     cellDate.getMonth() === props.selectedDate.getMonth() &&
     cellDate.getDate() === props.selectedDate.getDate()
 
-  if (isSelected) {
-    arg.el.classList.add('calendar-day-selected')
-  }
+  return isSelected ? ['calendar-day-selected'] : []
 }
 
 watch(
@@ -156,10 +160,8 @@ function changeView(view: string) {
   </div>
 </template>
 
-<style lang="css" scoped>
+<style lang="css">
 .calendar-day-selected {
-  background-color: rgba(99, 102, 241, 0.15);
-  border-radius: 0.5rem;
   position: relative;
 }
 
@@ -167,8 +169,8 @@ function changeView(view: string) {
   content: '';
   position: absolute;
   inset: 0;
-  border: 2px solid #6366f1;
-  border-radius: 0.5rem;
+  border: 2px solid;
+  border-radius: 0;
   pointer-events: none;
 }
 </style>
