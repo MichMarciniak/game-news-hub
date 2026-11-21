@@ -2,6 +2,7 @@ using ErrorOr;
 using GameNewsHub.Data;
 using GameNewsHub.Data.Entities;
 using GameNewsHub.External.Steam.Client;
+using Microsoft.EntityFrameworkCore;
 
 namespace GameNewsHub.Api.Features.Steam.Auth;
 
@@ -49,9 +50,20 @@ public class SteamAuthService
             return Error.Failure("Invalid steam Id");
         }
 
+        // Sprawdź czy steamId nie jest już przypisane do innego użytkownika
+        var existingProfile = await _context.Set<SteamProfile>()
+            .FirstOrDefaultAsync(sp => sp.SteamId == steamId);
+
+        if (existingProfile != null && existingProfile.AppUserId != userId)
+        {
+            return Error.Conflict("SteamAccountAlreadyLinked", "This Steam account is already linked to another account.");
+        }
+
         var steamProfile = new SteamProfile
         {
-            SteamId = steamId
+            SteamId = steamId,
+            AppUserId = userId,
+            LastImportedAt = DateTimeOffset.UtcNow
         };
 
         user.SteamProfile = steamProfile;

@@ -11,7 +11,7 @@ export const useAuthStore = defineStore('auth', () => {
   
   const isAuthenticated = computed(() => user.value !== null)
   const isAdmin = computed(() => user.value?.isAdmin)
-  const isSteamConnected = computed(() => user.value?.steamId !== null)
+  const isSteamConnected = computed(() => user.value?.isSteamConnected ?? false)
 
   const clear = () => {user.value = null}
   setUnauthorizedHandler(clear)

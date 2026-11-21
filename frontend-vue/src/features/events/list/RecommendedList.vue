@@ -42,10 +42,21 @@ function onLimitChange(event: { value: number }) {
 </script>
 
 <template>
-  <div class="flex flex-col gap-4">
-    <EventFullDateItem v-for="e in events" :key="e.id" :event="e" />
-    <div v-if="isPending" class="text-center text-muted-color">Loading...</div>
-    <div v-else-if="events.length === 0" class="text-center text-muted-color">No recommended events.</div>
-    <Select v-model="limit" :options="limitOptions" @change="onLimitChange" />
-  </div>
+  <Panel class="flex flex-col gap-4">
+    <template #header>
+      <div class="flex items-center justify-between w-full">
+        <h3 class="text-xl flex-1 shrink-0">Recommended events</h3>
+        <div class="flex items-center gap-2">
+          <span class="text-sm text-muted-color">Max recommendations:</span>
+          <Select v-model="limit" :options="limitOptions" option-label="label" option-value="value" @change="onLimitChange" />
+        </div>
+      </div>
+    </template>
+
+    <div class="flex flex-col gap-4">
+      <EventFullDateItem v-for="e in events" :key="e.id" :event="e" />
+      <div v-if="isPending" class="text-center text-muted-color">Loading...</div>
+      <div v-else-if="events.length === 0" class="text-center text-muted-color">No recommended events.</div>
+    </div>
+  </Panel>
 </template>

@@ -21,6 +21,7 @@ public class UserWishlistService
     public async Task<ErrorOr<List<GameListItemDto>>> GetWishlist(int userId)
     {
         var wishlistedGames = await _context.Users
+            .Where(u => u.Id == userId)
             .SelectMany(u => u.WishlistedGames)
             .ProjectToListItemDto()
             .ToListAsync();
@@ -64,6 +65,14 @@ public class UserWishlistService
         {
             return Error.NotFound("User.NotFound", "User not found");
         }
+
+        // await _context.Entry(user).Collection(u => u.WishlistedGames).LoadAsync();
+
+        // var gameInWishlist = user.WishlistedGames.FirstOrDefault(g => g.Id == gameId);
+        // if (gameInWishlist == null)
+        // {
+        //     return Error.NotFound("Game.NotInWishlist", "Game not in wishlist");
+        // }
 
         user.WishlistedGames.Remove(game);
         await _context.SaveChangesAsync();

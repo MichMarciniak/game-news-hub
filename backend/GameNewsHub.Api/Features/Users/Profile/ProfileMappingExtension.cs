@@ -31,6 +31,7 @@ public static partial class ProfileMapper
     [MapProperty(nameof(AppUser.FollowedPlatformGroups), nameof(FullProfileDto.PlatformGroups))]
     [MapProperty(nameof(AppUser.WishlistedGames), nameof(FullProfileDto.Wishlist))]
     [MapperIgnoreTarget(nameof(FullProfileDto.Settings))]
+    [MapperIgnoreTarget(nameof(FullProfileDto.IsAdmin))]
     public static partial FullProfileDto ToFullDto(AppUser source);
 
     public static partial SettingsDto ToSettingsDto(AppUser source);

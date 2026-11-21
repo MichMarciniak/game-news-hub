@@ -5,6 +5,7 @@ using GameNewsHub.Api.Features.Shared;
 using GameNewsHub.Contracts;
 using GameNewsHub.Contracts.Events;
 using GameNewsHub.Contracts.Shared;
+using GameNewsHub.Data.Constants;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
@@ -12,7 +13,7 @@ namespace GameNewsHub.Api.Features.Admin;
 
 [ApiController]
 [Route("[controller]")]
-[Authorize]
+[Authorize(Roles = Roles.Admin)]
 public class AdminController : ControllerBase
 {
     private readonly AdminService _service;
