@@ -69,6 +69,14 @@ public static class RateLimiterConfiguration
                 o.QueueLimit = 20;
             });
 
+            // Search lenient - 120 req/min for game search
+            options.AddFixedWindowLimiter("SearchLenient", o =>
+            {
+                o.PermitLimit = 120;
+                o.Window = TimeSpan.FromMinutes(1);
+                o.QueueLimit = 20;
+            });
+
             options.RejectionStatusCode = StatusCodes.Status429TooManyRequests;
             
             // Custom response when rate limit is exceeded

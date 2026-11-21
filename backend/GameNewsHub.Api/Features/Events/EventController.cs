@@ -36,6 +36,7 @@ public class EventController : ControllerBase
     }
 
     [HttpGet("search")]
+    [EnableRateLimiting("SearchLenient")]
     public async Task<ActionResult<SearchDto<EventListItemDto>>> GetEventSearch(
         string? query, int page = 1, int pageSize = 25,
         EventSortBy sortBy = EventSortBy.Relevance, bool descending = true)
